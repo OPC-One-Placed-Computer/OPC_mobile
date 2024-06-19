@@ -117,6 +117,9 @@ class LoginView extends StatelessWidget {
                                           content: Text('Login Successful'),
                                         ),
                                       );
+                                      // Navigate to /products route
+                                      Navigator.of(context)
+                                          .pushReplacementNamed('/products');
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

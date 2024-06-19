@@ -29,12 +29,12 @@ class HomeView extends StackedView<HomeViewModel> {
               ),
             ),
             SizedBox(
-              height: 200, // Adjust the height according to your needs
+              height: 250, // Adjust the height according to your needs
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
                   Container(
-                    width: 370.0,
+                    width: 320.0,
                     margin: const EdgeInsets.all(20.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
@@ -45,7 +45,7 @@ class HomeView extends StackedView<HomeViewModel> {
                     ),
                   ),
                   Container(
-                    width: 370.0,
+                    width: 320.0,
                     margin: const EdgeInsets.all(20.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
@@ -56,7 +56,7 @@ class HomeView extends StackedView<HomeViewModel> {
                     ),
                   ),
                   Container(
-                    width: 370.0,
+                    width: 320.0,
                     margin: const EdgeInsets.all(20.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
@@ -73,11 +73,23 @@ class HomeView extends StackedView<HomeViewModel> {
               padding: EdgeInsets.all(8.0),
               child: Text(
                 'Featured Products',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.only(
+                  left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Latest Products',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
             const Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Wrap(
                 spacing: 20.0,
                 runSpacing: 20.0,
@@ -104,8 +116,76 @@ class HomeView extends StackedView<HomeViewModel> {
                 ],
               ),
             ),
-            const Center(
-              child: Text('Home View'),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/view_more');
+                },
+                child: const Text(
+                  'View More',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(
+                  left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Top Sale Products',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              child: Wrap(
+                spacing: 20.0,
+                runSpacing: 20.0,
+                children: [
+                  ProductItem(
+                    imageUrl: 'https://via.placeholder.com/150',
+                    productName: 'Product 1',
+                    brandName: 'Brand 1',
+                    price: '\$100',
+                  ),
+                  ProductItem(
+                    imageUrl: 'https://via.placeholder.com/150',
+                    productName: 'Product 2',
+                    brandName: 'Brand 2',
+                    price: '\$200',
+                  ),
+                  ProductItem(
+                    imageUrl: 'https://via.placeholder.com/150',
+                    productName: 'Product 3',
+                    brandName: 'Brand 3',
+                    price: '\$300',
+                  ),
+                  // Add more ProductItem widgets as needed
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/view_more');
+                },
+                child: const Text(
+                  'View More',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -148,7 +228,8 @@ class ProductItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(8.0)),
                 child: Image.network(
                   imageUrl,
                   width: double.infinity,
@@ -163,12 +244,12 @@ class ProductItem extends StatelessWidget {
                   children: [
                     Text(
                       productName,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(brandName),
                     Text(
                       price,
-                      style: TextStyle(color: Colors.green),
+                      style: const TextStyle(color: Colors.green),
                     ),
                   ],
                 ),
@@ -179,7 +260,7 @@ class ProductItem extends StatelessWidget {
             bottom: 0.0,
             right: 0.0,
             child: IconButton(
-              icon: Icon(Icons.shopping_cart),
+              icon: const Icon(Icons.shopping_cart),
               onPressed: () {
                 Navigator.pushNamed(context, '/product_details');
               },

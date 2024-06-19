@@ -11,6 +11,6 @@ class StartupViewModel extends BaseViewModel {
     await Future.delayed(const Duration(seconds: 3));
 
     // Navigate to LoginView after the delay
-    _navigationService.replaceWith(Routes.productsView);
+    _navigationService.replaceWith(Routes.loginView);
   }
 }
