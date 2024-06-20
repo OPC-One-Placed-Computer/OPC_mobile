@@ -15,6 +15,7 @@ class SignupView extends StackedView<SignupViewModel> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(''),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

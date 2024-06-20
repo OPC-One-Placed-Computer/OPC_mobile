@@ -15,7 +15,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
       BuildContext context, ProductsViewModel viewModel, Widget? child) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products'),
+        title: const Text('One Place Computer'),
         backgroundColor: Colors.blue,
         actions: <Widget>[
           IconButton(
@@ -54,12 +54,23 @@ class ProductsView extends StackedView<ProductsViewModel> {
               decoration: BoxDecoration(
                 color: Colors.blue,
               ),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: AssetImage(
+                        'assets/placeholder.png'), // Replace with your placeholder image asset path
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'User Name',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
             ListTile(
@@ -92,6 +103,59 @@ class ProductsView extends StackedView<ProductsViewModel> {
               onTap: () {
                 viewModel.setIndex(3);
                 Navigator.pop(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                // Add your settings navigation here
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.help),
+              title: const Text('Help & Feedback'),
+              onTap: () {
+                // Add your help & feedback navigation here
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () async {
+                bool shouldLogout = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm Logout'),
+                      content: const Text('Are you sure you want to logout?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pop(false); // Return false if "No" is pressed
+                          },
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pop(true); // Return true if "Yes" is pressed
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (shouldLogout) {
+                  // If the user confirmed, navigate to the login route
+                  Navigator.pushNamed(context, '/login');
+                }
               },
             ),
           ],

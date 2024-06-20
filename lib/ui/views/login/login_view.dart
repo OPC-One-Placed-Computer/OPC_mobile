@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:stacked/stacked.dart';
 
 import 'login_viewmodel.dart';
@@ -13,6 +14,7 @@ class LoginView extends StatelessWidget {
       builder: (context, model, child) => Scaffold(
         appBar: AppBar(
           title: const Text(''),
+          automaticallyImplyLeading: false,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -161,7 +163,7 @@ class LoginView extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // Navigate to the registration screen
-                        Navigator.pushNamed(context, '/register');
+                        model.navigationService.navigateTo(Routes.signup);
                       },
                       child: const Text(
                         "Register here",

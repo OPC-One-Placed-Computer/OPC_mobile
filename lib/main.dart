@@ -4,7 +4,7 @@ import 'package:opc_mobile_development/app/app.dialogs.dart';
 import 'package:opc_mobile_development/app/app.locator.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/ui/views/login/login_view.dart';
-import 'package:opc_mobile_development/ui/views/productdetails/productdetails_view.dart';
+import 'package:opc_mobile_development/ui/views/product_details/productdetails_view.dart';
 import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/ui/views/signup/signup_view.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -24,18 +24,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: Routes.startupView,
       onGenerateRoute: StackedRouter().onGenerateRoute,
       navigatorKey: StackedService.navigatorKey,
       navigatorObservers: [
         StackedService.routeObserver,
-      ],
-      routes: {
-        '/login': (context) => const LoginView(), // Add the login route
-        '/register': (context) => const SignupView(),
-        '/products': (context) => const ProductsView(),
-        '/product_details': (context) => const ProductdetailsView(),
-      },
+      ]
     );
   }
 }

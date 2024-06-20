@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/ui/views/widgets/featured_product.dart';
 import 'package:stacked/stacked.dart';
 
 import 'home_viewmodel.dart';
@@ -32,40 +33,10 @@ class HomeView extends StackedView<HomeViewModel> {
               height: 250, // Adjust the height according to your needs
               child: ListView(
                 scrollDirection: Axis.horizontal,
-                children: [
-                  Container(
-                    width: 320.0,
-                    margin: const EdgeInsets.all(20.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        'https://via.placeholder.com/370x200',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 320.0,
-                    margin: const EdgeInsets.all(20.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        'https://via.placeholder.com/370x200',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 320.0,
-                    margin: const EdgeInsets.all(20.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        'https://via.placeholder.com/370x200',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                children: const [
+                  FeaaturedProduct(image: 'https://i.imgur.com/8UdKNS4.jpeg'),
+                  FeaaturedProduct(image: 'https://i.imgur.com/8UdKNS4.jpeg'),
+                  FeaaturedProduct(image: 'https://i.imgur.com/8UdKNS4.jpeg'),
                 ],
               ),
             ),

@@ -12,6 +12,10 @@ class ProductdetailsView extends StatelessWidget {
       viewModelBuilder: () => ProductdetailsViewModel(),
       builder: (context, viewModel, child) {
         return Scaffold(
+          appBar: AppBar(
+            title: const Text('Product Details'),
+            backgroundColor: Colors.blue,
+          ),
           backgroundColor: Theme.of(context).colorScheme.background,
           body: SingleChildScrollView(
             child: Container(
