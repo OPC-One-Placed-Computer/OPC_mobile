@@ -27,11 +27,11 @@ import 'package:stacked_services/stacked_services.dart' as _i12;
 class Routes {
   static const startupView = '/startup-view';
 
-  static const loginView = '/login-view';
+  static const login = '/login-view';
 
   static const signup = '/signup-view';
 
-  static const productsView = '/';
+  static const products = '/';
 
   static const homeView = '/home-view';
 
@@ -41,18 +41,18 @@ class Routes {
 
   static const profileView = '/profile-view';
 
-  static const productdetailsView = '/productdetails-view';
+  static const products_view = '/productdetails-view';
 
   static const all = <String>{
     startupView,
-    loginView,
+    login,
     signup,
-    productsView,
+    products,
     homeView,
     storeView,
     wishlistView,
     profileView,
-    productdetailsView,
+    products_view,
   };
 }
 
@@ -63,7 +63,7 @@ class StackedRouter extends _i1.RouterBase {
       page: _i2.StartupView,
     ),
     _i1.RouteDef(
-      Routes.loginView,
+      Routes.login,
       page: _i3.LoginView,
     ),
     _i1.RouteDef(
@@ -71,7 +71,7 @@ class StackedRouter extends _i1.RouterBase {
       page: _i4.SignupView,
     ),
     _i1.RouteDef(
-      Routes.productsView,
+      Routes.products,
       page: _i5.ProductsView,
     ),
     _i1.RouteDef(
@@ -91,7 +91,7 @@ class StackedRouter extends _i1.RouterBase {
       page: _i9.ProfileView,
     ),
     _i1.RouteDef(
-      Routes.productdetailsView,
+      Routes.products_view,
       page: _i10.ProductdetailsView,
     ),
   ];
@@ -175,14 +175,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToLoginView([
+  Future<dynamic> navigateToLogin([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return navigateTo<dynamic>(Routes.loginView,
+    return navigateTo<dynamic>(Routes.login,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -203,14 +203,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToProductsView([
+  Future<dynamic> navigateToProducts([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return navigateTo<dynamic>(Routes.productsView,
+    return navigateTo<dynamic>(Routes.products,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -273,14 +273,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToProductdetailsView([
+  Future<dynamic> navigateToProducts_view([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return navigateTo<dynamic>(Routes.productdetailsView,
+    return navigateTo<dynamic>(Routes.products_view,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -301,14 +301,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithLoginView([
+  Future<dynamic> replaceWithLogin([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return replaceWith<dynamic>(Routes.loginView,
+    return replaceWith<dynamic>(Routes.login,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -329,14 +329,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithProductsView([
+  Future<dynamic> replaceWithProducts([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return replaceWith<dynamic>(Routes.productsView,
+    return replaceWith<dynamic>(Routes.products,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -399,14 +399,14 @@ extension NavigatorStateExtension on _i12.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithProductdetailsView([
+  Future<dynamic> replaceWithProducts_view([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return replaceWith<dynamic>(Routes.productdetailsView,
+    return replaceWith<dynamic>(Routes.products_view,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

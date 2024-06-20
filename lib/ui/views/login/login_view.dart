@@ -120,8 +120,8 @@ class LoginView extends StatelessWidget {
                                         ),
                                       );
                                       // Navigate to /products route
-                                      Navigator.of(context)
-                                          .pushReplacementNamed('/products');
+                                      model.navigationService
+                                          .navigateTo(Routes.products);
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

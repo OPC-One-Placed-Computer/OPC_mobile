@@ -166,7 +166,7 @@ class SignupView extends StackedView<SignupViewModel> {
                   GestureDetector(
                     onTap: () {
                       // Navigate to the login screen
-                      Navigator.pushNamed(context, '/login');
+                      viewModel.navigationService.back();
                     },
                     child: const Text(
                       "Login here",
