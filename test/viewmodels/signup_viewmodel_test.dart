@@ -4,7 +4,7 @@ import 'package:opc_mobile_development/app/app.locator.dart';
 import '../helpers/test_helpers.dart';
 
 void main() {
-  group('HomeViewModel Tests -', () {
+  group('SignupViewModel Tests -', () {
     setUp(() => registerServices());
     tearDown(() => locator.reset());
   });
