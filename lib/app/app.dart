@@ -1,3 +1,4 @@
+import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/bottom_sheets/notice/notice_sheet.dart';
 import 'package:opc_mobile_development/ui/dialogs/info_alert/info_alert_dialog.dart';
 import 'package:opc_mobile_development/ui/views/home/home_view.dart';
@@ -11,26 +12,28 @@ import 'package:opc_mobile_development/ui/views/store/store_view.dart';
 import 'package:opc_mobile_development/ui/views/wishlist/wishlist_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
 import 'package:opc_mobile_development/ui/views/product_details/productdetails_view.dart';
+import 'package:opc_mobile_development/services/api/api_service_service.dart';
 // @stacked-import
 
 @StackedApp(
   routes: [
     MaterialRoute(page: StartupView),
-    MaterialRoute(page: LoginView),
+    MaterialRoute(page: LoginView, name: 'login'),
     MaterialRoute(page: SignupView, name: 'signup'),
-    MaterialRoute(page: ProductsView, initial: true),
+    MaterialRoute(page: ProductsView, name: 'products', initial: true),
     MaterialRoute(page: HomeView),
     MaterialRoute(page: StoreView),
     MaterialRoute(page: WishlistView),
     MaterialRoute(page: ProfileView),
-    MaterialRoute(page: ProductdetailsView),
+    MaterialRoute(page: ProductdetailsView, name: 'products_view'),
 // @stacked-route
   ],
   dependencies: [
     LazySingleton(classType: BottomSheetService),
     LazySingleton(classType: DialogService),
     LazySingleton(classType: NavigationService),
-    // @stacked-service
+    LazySingleton(classType: ApiServiceImpl, asType: ApiServiceService),
+// @stacked-service
   ],
   bottomsheets: [
     StackedBottomsheet(classType: NoticeSheet),

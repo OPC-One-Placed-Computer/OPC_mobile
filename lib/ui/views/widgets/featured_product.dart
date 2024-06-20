@@ -15,8 +15,8 @@ class FeaaturedProduct extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
         child: CachedNetworkImage(
           imageUrl: "http://via.placeholder.com/350x150",
-          placeholder: (context, url) => CircularProgressIndicator(),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ),
     );

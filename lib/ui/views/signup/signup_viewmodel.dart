@@ -1,5 +1,4 @@
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
-import 'package:stacked/stacked.dart';
 
 class SignupViewModel extends AppBaseViewModel {
   String _email = '';
@@ -32,7 +31,7 @@ class SignupViewModel extends AppBaseViewModel {
     const String correctPassword = 'password123';
 
     // Simulate a network call with a delay
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
     setBusy(false);
 
     // Check if the provided credentials match the hard-coded credentials

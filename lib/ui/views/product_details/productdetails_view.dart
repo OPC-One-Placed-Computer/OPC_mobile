@@ -16,7 +16,7 @@ class ProductdetailsView extends StatelessWidget {
             title: const Text('Product Details'),
             backgroundColor: Colors.blue,
           ),
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: SingleChildScrollView(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -79,7 +79,7 @@ class ProductdetailsView extends StatelessWidget {
                   ),
                   const SizedBox(
                       height: 20), // Space before quantity incrementer
-                  QuantityIncrementer(),
+                  const QuantityIncrementer(),
                   const SizedBox(
                       height: 100), // Additional space at the bottom for safety
                 ],
