@@ -1,6 +1,4 @@
-import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
-import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class LoginViewModel extends AppBaseViewModel {

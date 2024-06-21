@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
-import 'package:opc_mobile_development/ui/views/products/products_view.dart';
-import 'package:opc_mobile_development/ui/views/login/login_view.dart';
-import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
-import 'package:opc_mobile_development/ui/views/signup/signup_view.dart';
-import 'package:opc_mobile_development/ui/views/store/store_view.dart';
-import 'package:opc_mobile_development/ui/views/wishlist/wishlist_view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'home_view_model.dart';
@@ -34,10 +28,7 @@ class HomeView extends StackedView<HomeViewModel> {
                   child: const Text('No'),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(true); // Return true if "Yes" is pressed
-                  },
+                  onPressed: viewModel.logout,
                   child: const Text('Yes'),
                 ),
               ],
@@ -72,7 +63,7 @@ class HomeView extends StackedView<HomeViewModel> {
           )
         ],
       ),
-      body: _getViewForIndex(viewModel.currentIndex),
+      body: viewModel.getViewForIndex(viewModel.currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewModel.currentIndex,
         onTap: viewModel.setIndex,
@@ -173,23 +164,12 @@ class HomeView extends StackedView<HomeViewModel> {
     );
   }
 
-  Widget _getViewForIndex(int index) {
-    switch (index) {
-      case 0:
-        return const HomeView();
-      case 1:
-        return const StoreView();
-      case 2:
-        return const WishlistView();
-      case 3:
-        return const ProfileView();
-      case 4:
-        return const SignupView();
-      default:
-        return const HomeView();
-    }
-  }
-
   @override
   HomeViewModel viewModelBuilder(BuildContext context) => HomeViewModel();
+
+  @override
+  void onViewModelReady(HomeViewModel viewModel) {
+    viewModel.init();
+    super.onViewModelReady(viewModel);
+  }
 }

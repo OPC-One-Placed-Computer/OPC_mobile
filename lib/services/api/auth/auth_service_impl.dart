@@ -1,12 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.locator.dart';
 import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
+import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service.dart';
 import 'package:opc_mobile_development/services/helpers/dio_client.dart';
 
 class AuthServiceImpl implements AuthApiService {
   AuthServiceImpl({Dio? dio}) : _dio = dio ?? DioClient().instance;
 
   final Dio _dio;
+  final _sharedPrefService = locator<SharedPreferenceService>();
 
   @override
   Future<bool> registerUser(User user, String password) async {
@@ -37,7 +41,23 @@ class AuthServiceImpl implements AuthApiService {
           queryParameters: {'email': email, 'password': password});
       if (response.statusCode != null && response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
-        return User.fromJson(data['data']).copyWith(token: data['token']);
+        final user = User.fromJson(data['data']).copyWith(token: data['token']);
+        await _sharedPrefService.setUser(user);
+        return user;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<bool> logout(User user) async {
+    try {
+      final response = await _dio.post('/logout', data: user.toJson());
+      if (response.statusCode != null && response.statusCode == 200) {
+        return true;
       } else {
         throw Exception(response.statusMessage);
       }

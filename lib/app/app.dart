@@ -3,7 +3,6 @@ import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_service_impl.dart';
 import 'package:opc_mobile_development/ui/bottom_sheets/notice/notice_sheet.dart';
 import 'package:opc_mobile_development/ui/dialogs/info_alert/info_alert_dialog.dart';
-import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/ui/views/startup/startup_view.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
