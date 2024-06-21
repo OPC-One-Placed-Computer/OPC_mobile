@@ -1,9 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/user.dart';
+import 'package:opc_mobile_development/utils/constants.dart';
 
 class SignupViewModel extends AppBaseViewModel {
   String _email = '';
   String _password = '';
   bool _obscureText = true; // Added for password visibility toggle
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
 
   String get email => _email;
   String get password => _password;
@@ -24,19 +30,34 @@ class SignupViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  Future<bool> login() async {
+  Future<void> register() async {
     setBusy(true);
-    // Hard-coded credentials
-    const String correctEmail = 'user@gmail.com';
-    const String correctPassword = 'password123';
-
-    // Simulate a network call with a delay
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      await authService
+          .registerUser(
+              User(
+                  email: email,
+                  firstName: firstNameController.text,
+                  lastName: lastNameController.text),
+              _password)
+          .then((value) {
+        if (value) {
+          snackbarService.showSnackbar(message: 'Register Successful');
+          navigationService.navigateTo(Routes.login);
+        } else {
+          snackbarService.showSnackbar(message: 'Failed to register');
+        }
+      });
+    } catch (_) {
+      snackbarService.showSnackbar(message: Constants.errorMessage);
+    }
     setBusy(false);
-
-    // Check if the provided credentials match the hard-coded credentials
-    return _email == correctEmail && _password == correctPassword;
   }
 
-  signup() {}
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    super.dispose();
+  }
 }
