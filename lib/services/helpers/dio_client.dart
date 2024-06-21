@@ -11,27 +11,26 @@ class DioClient {
   Dio get instance => _dio;
   Dio createDioClient() {
     final Dio dio = Dio(BaseOptions(
-      baseUrl: '${Constants.baseUrl}/api/v1',
-      // receiveTimeout: const Duration(seconds: 15),
-      // connectTimeout: const Duration(seconds: 15),
-      // sendTimeout: const Duration(seconds: 15),
-      // headers: {
-      //   Headers.acceptHeader: 'application/json',
-      //   Headers.contentTypeHeader: 'application/json'
-      // }
-    ))
+        baseUrl: '${Constants.baseUrl}/api/v1',
+        receiveTimeout: const Duration(seconds: 15),
+        connectTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 15),
+        headers: {
+          Headers.acceptHeader: 'application/json',
+          Headers.contentTypeHeader: 'application/json'
+        }))
       ..options
           .headers
           .addEntries([const MapEntry('acccept', 'application/json')]);
-    // dio.interceptors.addAll([
-    //   LogInterceptor(
-    //       requestHeader: true,
-    //       requestBody: true,
-    //       responseBody: true,
-    //       responseHeader: true,
-    //       error: true),
-    //   // AppInterceptors(),
-    // ]);
+    dio.interceptors.addAll([
+      LogInterceptor(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: true,
+          error: true),
+      // AppInterceptors(),
+    ]);
     return dio;
   }
 }

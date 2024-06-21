@@ -1,4 +1,7 @@
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/user.dart';
+import 'package:opc_mobile_development/utils/constants.dart';
 
 class LoginViewModel extends AppBaseViewModel {
   String _email = '';
@@ -24,17 +27,14 @@ class LoginViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  Future<bool> login() async {
+  Future<void> login() async {
     setBusy(true);
-    // Hard-coded credentials
-    const String correctEmail = 'user@gmail.com';
-    const String correctPassword = 'password123';
-
-    // Simulate a network call with a delay
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final user = await authService.loginUser(email, _password);
+      snackbarService.showSnackbar(message: user.token ?? 'null');
+    } catch (_) {
+      snackbarService.showSnackbar(message: Constants.errorMessage);
+    }
     setBusy(false);
-
-    // Check if the provided credentials match the hard-coded credentials
-    return _email == correctEmail && _password == correctPassword;
   }
 }

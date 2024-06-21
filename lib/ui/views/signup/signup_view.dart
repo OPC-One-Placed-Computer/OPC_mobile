@@ -13,144 +13,140 @@ class SignupView extends StackedView<SignupViewModel> {
   Widget builder(
       BuildContext context, SignupViewModel viewModel, Widget? child) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(''),
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
+      body: Container(
+        color: const Color.fromARGB(255, 2, 0, 60),
+        height: MediaQuery.sizeOf(context).height,
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Card header with OPC title
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
+              Image.asset(
+                'lib/resources/images/logo.png',
+                height: 150,
+                width: 150,
+                fit: BoxFit.contain,
+              ),
+              Center(
+                child: Card(
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Card header with OPC title
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Text(
+                            'OPC',
+                            style: TextStyle(
+                              fontSize: 70.0,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.black.withOpacity(0.5),
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10), // Reduced height
+                      // "Sign Up" text
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
-                          'OPC',
+                          'Sign Up',
                           style: TextStyle(
-                            fontSize: 70.0,
+                            fontSize: 30.0,
                             fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 10.0,
-                                color: Colors.black.withOpacity(0.5),
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 40), // Reduced height
-                    // "Sign Up" text
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          fontSize: 30.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // First name field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'First Name',
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        onChanged: (value) {
-                          // Handle first name change
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Last name field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Last Name',
-                          prefixIcon: Icon(Icons.person),
-                        ),
-                        onChanged: (value) {
-                          // Handle last name change
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Email field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
-                        ),
-                        onChanged: (value) {
-                          viewModel.setEmail(value);
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Password field
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              viewModel.togglePasswordVisibility();
-                            },
-                            child: Icon(
-                              viewModel.obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
+                      const SizedBox(height: 10),
+                      // First name field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'First Name',
+                            prefixIcon: Icon(Icons.person),
                           ),
+                          controller: viewModel.firstNameController,
                         ),
-                        obscureText: viewModel.obscureText,
-                        onChanged: (value) {
-                          viewModel.setPassword(value);
-                        },
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    viewModel.isBusy
-                        ? const Center(child: CircularProgressIndicator())
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 8.0), // Adjusted padding
-                            child: ElevatedButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Button Tested'),
-                                  ),
-                                );
+                      const SizedBox(height: 16),
+                      // Last name field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Last Name',
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                          controller: viewModel.lastNameController,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Email field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.email),
+                          ),
+                          onChanged: (value) {
+                            viewModel.setEmail(value);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Password field
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                viewModel.togglePasswordVisibility();
                               },
-                              child: const Text('Register'),
+                              child: Icon(
+                                viewModel.obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
                             ),
                           ),
-
-                    const SizedBox(height: 10),
-                  ],
+                          obscureText: viewModel.obscureText,
+                          onChanged: (value) {
+                            viewModel.setPassword(value);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      viewModel.isBusy
+                          ? const Center(child: CircularProgressIndicator())
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 8.0), // Adjusted padding
+                              child: ElevatedButton(
+                                onPressed: () async =>
+                                    await viewModel.register(),
+                                child: const Text('Register'),
+                              ),
+                            ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
