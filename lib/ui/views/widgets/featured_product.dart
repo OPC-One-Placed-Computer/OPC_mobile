@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class FeaaturedProduct extends StatelessWidget {
-  const FeaaturedProduct({super.key, required this.image});
+class FeaturedProduct extends StatelessWidget {
+  const FeaturedProduct({super.key, required this.image});
 
   final String image;
 

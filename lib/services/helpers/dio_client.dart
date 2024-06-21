@@ -11,7 +11,7 @@ class DioClient {
   Dio get instance => _dio;
   Dio createDioClient() {
     final Dio dio = Dio(BaseOptions(
-      baseUrl: '${Constants.baseUrl}/api/V1',
+      baseUrl: '${Constants.baseUrl}/api/v1',
       // receiveTimeout: const Duration(seconds: 15),
       // connectTimeout: const Duration(seconds: 15),
       // sendTimeout: const Duration(seconds: 15),

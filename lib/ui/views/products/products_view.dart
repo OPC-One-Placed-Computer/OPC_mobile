@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/ui/views/home/home_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
 import 'package:opc_mobile_development/ui/views/store/store_view.dart';
@@ -13,14 +14,55 @@ class ProductsView extends StackedView<ProductsViewModel> {
   @override
   Widget builder(
       BuildContext context, ProductsViewModel viewModel, Widget? child) {
+    var listTile = ListTile(
+      leading: const Icon(Icons.logout),
+      title: const Text('Logout'),
+      onTap: () async {
+        bool shouldLogout = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirm Logout'),
+              content: const Text('Are you sure you want to logout?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(false); // Return false if "No" is pressed
+                  },
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pop(true); // Return true if "Yes" is pressed
+                  },
+                  child: const Text('Yes'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (shouldLogout) {
+          // If the user confirmed, navigate to the login route
+          viewModel.navigationService.navigateTo(Routes.login);
+        }
+      },
+    );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('One Place Computer'),
-        backgroundColor: Colors.blue,
+        title: const Text(
+          'One Place Computer',
+          style: TextStyle(
+            color: Colors.white, // Change this to your desired color
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 44, 45, 114),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
-              Icons.shopping_cart,
+              Icons.notifications,
               color: Colors.white,
             ),
             onPressed: () {
@@ -33,7 +75,8 @@ class ProductsView extends StackedView<ProductsViewModel> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewModel.currentIndex,
         onTap: viewModel.setIndex,
-        backgroundColor: Colors.blue, // Set your desired background color here
+        backgroundColor: const Color.fromARGB(
+            255, 44, 45, 114), // Set your desired background color here
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.white, // Set your desired selected item color
         unselectedItemColor:
@@ -42,7 +85,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Store'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Wishlist'),
+              icon: Icon(Icons.shopping_cart), label: 'Cart'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
@@ -122,42 +165,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () async {
-                bool shouldLogout = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Confirm Logout'),
-                      content: const Text('Are you sure you want to logout?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pop(false); // Return false if "No" is pressed
-                          },
-                          child: const Text('No'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pop(true); // Return true if "Yes" is pressed
-                          },
-                          child: const Text('Yes'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-
-                if (shouldLogout) {
-                  // If the user confirmed, navigate to the login route
-                  Navigator.pushNamed(context, '/login');
-                }
-              },
-            ),
+            listTile,
           ],
         ),
       ),

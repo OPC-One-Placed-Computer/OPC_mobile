@@ -21,4 +21,17 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
+
+  @override
+  Future<Product> getProduct(String id) async {
+    try {
+      final response = await _dio.get('/products/$id');
+      final product = response.data as Map<String, dynamic>;
+      final prod = Product.fromJson(product['data']);
+      print(prod);
+      return prod;
+    } catch (_) {
+      rethrow;
+    }
+  }
 }
