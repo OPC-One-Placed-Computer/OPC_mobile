@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
+import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/widgets/featured_product.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
@@ -38,11 +40,11 @@ class HomeView extends StackedView<HomeViewModel> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: const [
-                        FeaaturedProduct(
+                        FeaturedProduct(
                             image: 'https://i.imgur.com/8UdKNS4.jpeg'),
-                        FeaaturedProduct(
+                        FeaturedProduct(
                             image: 'https://i.imgur.com/8UdKNS4.jpeg'),
-                        FeaaturedProduct(
+                        FeaturedProduct(
                             image: 'https://i.imgur.com/8UdKNS4.jpeg'),
                       ],
                     ),
@@ -76,27 +78,12 @@ class HomeView extends StackedView<HomeViewModel> {
                         runSpacing: 20.0,
                         children: viewModel.products.map((product) {
                           return ProductItem(
-                              imageUrl: Constants.baseUrl + product.imagePath,
-                              productName: product.productName,
-                              brandName: product.brand,
-                              price: product.price.toString());
+                            product: product,
+                            onProductTapped: (product) => viewModel
+                                .navigationService
+                                .navigateTo(Routes.products_view, arguments: ProductdetailsViewArguments(product: product)),
+                          );
                         }).toList()),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/view_more');
-                      },
-                      child: const Text(
-                        'View More',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
                   ),
                   const Padding(
                     padding: EdgeInsets.only(
@@ -110,51 +97,24 @@ class HomeView extends StackedView<HomeViewModel> {
                       ),
                     ),
                   ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    child: Wrap(
-                      spacing: 20.0,
-                      runSpacing: 20.0,
-                      children: [
-                        ProductItem(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          productName: 'Product 1',
-                          brandName: 'Brand 1',
-                          price: '\$100',
-                        ),
-                        ProductItem(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          productName: 'Product 2',
-                          brandName: 'Brand 2',
-                          price: '\$200',
-                        ),
-                        ProductItem(
-                          imageUrl: 'https://via.placeholder.com/150',
-                          productName: 'Product 3',
-                          brandName: 'Brand 3',
-                          price: '\$300',
-                        ),
-                        // Add more ProductItem widgets as needed
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+                  // ignore: prefer_const_constructors
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/view_more');
-                      },
-                      child: const Text(
-                        'View More',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Wrap(
+                        spacing: 20.0,
+                        runSpacing: 20.0,
+                        children: viewModel.products.map((product) {
+                          return ProductItem(
+                            product: product,
+                            onProductTapped: (value) => viewModel
+                                .navigationService
+                                .navigateTo(Routes.products_view, arguments: ProductdetailsViewArguments(product: product)),
+                          );
+                        }).toList()),
                   ),
+
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -175,73 +135,70 @@ class HomeView extends StackedView<HomeViewModel> {
 }
 
 class ProductItem extends StatelessWidget {
-  final String imageUrl;
-  final String productName;
-  final String brandName;
-  final String price;
+  final Product product;
+  final ValueChanged<Product> onProductTapped;
 
-  const ProductItem({
-    Key? key,
-    required this.imageUrl,
-    required this.productName,
-    required this.brandName,
-    required this.price,
-  }) : super(key: key);
+  const ProductItem(
+      {Key? key, required this.product, required this.onProductTapped})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width / 2 - 24,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(8.0)),
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  )),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      productName,
-                      maxLines: 2,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    Text(brandName),
-                    Text(
-                      price,
-                      style: const TextStyle(color: Colors.green),
-                    ),
-                  ],
+    return InkWell(
+      onTap: () => onProductTapped.call(product),
+      child: Container(
+        width: MediaQuery.of(context).size.width / 2 - 24,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(8.0)),
+                    child: CachedNetworkImage(
+                      imageUrl: Constants.baseUrl + product.imagePath,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.productName,
+                        maxLines: 2,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                      Text(product.brand),
+                      Text(
+                        product.price.toString(),
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 0.0,
-            right: 0.0,
-            child: IconButton(
-              icon: const Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.pushNamed(context, '/product_details');
-              },
+              ],
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 0.0,
+              right: 0.0,
+              child: IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: () {
+                  // onProductTapped.call(product);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -11,7 +11,7 @@ import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/ui/views/store/store_view.dart';
 import 'package:opc_mobile_development/ui/views/wishlist/wishlist_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
-import 'package:opc_mobile_development/ui/views/product_details/productdetails_view.dart';
+import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 // @stacked-import
 

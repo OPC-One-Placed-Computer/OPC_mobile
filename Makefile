@@ -1,4 +1,4 @@
-buildApp:
-	dart pub run build_runner build -d
+app:
+	dart run build_runner build -d
 get:
 	flutter pub get
