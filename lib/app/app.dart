@@ -1,6 +1,8 @@
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_service_impl.dart';
+import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service.dart';
+import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service_impl.dart';
 import 'package:opc_mobile_development/ui/bottom_sheets/notice/notice_sheet.dart';
 import 'package:opc_mobile_development/ui/dialogs/info_alert/info_alert_dialog.dart';
 import 'package:opc_mobile_development/ui/views/startup/startup_view.dart';
@@ -14,6 +16,7 @@ import 'package:opc_mobile_development/ui/views/wishlist/wishlist_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
 import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
+import 'package:opc_mobile_development/ui/views/place_order/place_order_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -27,6 +30,7 @@ import 'package:opc_mobile_development/services/api/api_service_service.dart';
     MaterialRoute(page: WishlistView),
     MaterialRoute(page: ProfileView),
     MaterialRoute(page: ProductdetailsView, name: 'products_view'),
+    MaterialRoute(page: PlaceOrderView, name: 'place_order'),
 // @stacked-route
   ],
   dependencies: [
@@ -35,6 +39,9 @@ import 'package:opc_mobile_development/services/api/api_service_service.dart';
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: ApiServiceImpl, asType: ApiServiceService),
     LazySingleton(classType: AuthServiceImpl, asType: AuthApiService),
+    LazySingleton(
+        classType: SharedPreferenceServiceImpl,
+        asType: SharedPreferenceService),
     LazySingleton(classType: SnackbarService),
 // @stacked-service
   ],

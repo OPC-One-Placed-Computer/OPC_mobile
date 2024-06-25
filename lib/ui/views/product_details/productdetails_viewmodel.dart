@@ -26,13 +26,13 @@ class ProductdetailsViewModel extends AppBaseViewModel {
 
   void incrementQuantity() {
     _quantity++;
-    notifyListeners(); // Notify listeners to update UI
+    notifyListeners();
   }
 
   void decrementQuantity() {
     if (_quantity > 1) {
       _quantity--;
-      notifyListeners(); // Notify listeners to update UI
+      notifyListeners();
     }
   }
 }

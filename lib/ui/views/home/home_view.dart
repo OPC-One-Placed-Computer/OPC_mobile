@@ -22,8 +22,7 @@ class HomeView extends StackedView<HomeViewModel> {
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context)
-                        .pop(false); // Return false if "No" is pressed
+                    Navigator.of(context).pop(false);
                   },
                   child: const Text('No'),
                 ),
@@ -37,42 +36,50 @@ class HomeView extends StackedView<HomeViewModel> {
         );
 
         if (shouldLogout) {
-          // If the user confirmed, navigate to the login route
           viewModel.navigationService.navigateTo(Routes.login);
         }
       },
     );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'One Place Computer',
+          'One Pc',
           style: TextStyle(
-            color: Colors.white, // Change this to your desired color
+            color: Colors.white,
           ),
         ),
         backgroundColor: const Color.fromARGB(255, 44, 45, 114),
         actions: <Widget>[
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
           IconButton(
             icon: const Icon(
               Icons.notifications,
               color: Colors.white,
             ),
-            onPressed: () {
-              // do something
-            },
+            onPressed: () {},
           )
         ],
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: viewModel.getViewForIndex(viewModel.currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewModel.currentIndex,
         onTap: viewModel.setIndex,
-        backgroundColor: const Color.fromARGB(
-            255, 44, 45, 114), // Set your desired background color here
+        backgroundColor: const Color.fromARGB(255, 44, 45, 114),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.white, // Set your desired selected item color
-        unselectedItemColor:
-            Colors.white70, // Set your desired unselected item color
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Store'),
@@ -87,15 +94,14 @@ class HomeView extends StackedView<HomeViewModel> {
           children: <Widget>[
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Color.fromARGB(255, 44, 45, 114),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage(
-                        'assets/placeholder.png'), // Replace with your placeholder image asset path
+                    backgroundImage: AssetImage('assets/placeholder.png'),
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -109,43 +115,9 @@ class HomeView extends StackedView<HomeViewModel> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                viewModel.setIndex(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('Store'),
-              onTap: () {
-                viewModel.setIndex(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite),
-              title: const Text('Wishlist'),
-              onTap: () {
-                viewModel.setIndex(2);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Profile'),
-              onTap: () {
-                viewModel.setIndex(3);
-                Navigator.pop(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Settings'),
               onTap: () {
-                // Add your settings navigation here
                 Navigator.pop(context);
               },
             ),
@@ -153,11 +125,40 @@ class HomeView extends StackedView<HomeViewModel> {
               leading: const Icon(Icons.help),
               title: const Text('Help & Feedback'),
               onTap: () {
-                // Add your help & feedback navigation here
                 Navigator.pop(context);
               },
             ),
             listTile,
+          ],
+        ),
+      ),
+      endDrawer: Drawer(
+        width: MediaQuery.of(context).size.width * 0.6,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 10),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text('Search Item 1'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.search),
+              title: const Text('Search Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),

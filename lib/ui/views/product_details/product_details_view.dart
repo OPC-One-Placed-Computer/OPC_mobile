@@ -23,10 +23,11 @@ class ProductdetailsView extends StatelessWidget {
             title: const Text(
               'Product Details',
               style: TextStyle(
-                color: Colors.white, // Change this to your desired color
+                color: Colors.white,
               ),
             ),
             backgroundColor: const Color.fromARGB(255, 44, 45, 114),
+            iconTheme: const IconThemeData(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: viewModel.isBusy
@@ -37,7 +38,7 @@ class ProductdetailsView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 40), // Space above "Product 1"
+                        const SizedBox(height: 40),
                         Text(
                           viewModel.product.productName,
                           style: const TextStyle(
@@ -45,9 +46,7 @@ class ProductdetailsView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(
-                            height: 20), // Space between "Product 1" and image
-
+                        const SizedBox(height: 20),
                         ClipRRect(
                           clipBehavior: Clip.hardEdge,
                           child: CachedNetworkImage(
@@ -56,8 +55,7 @@ class ProductdetailsView extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(
-                            height: 20), // Space between image and details
+                        const SizedBox(height: 20),
                         Text(
                           'Brand Name : ${viewModel.product.brand}',
                           style: const TextStyle(
@@ -67,7 +65,7 @@ class ProductdetailsView extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         const Text(
-                          'Specification:',
+                          'Product details:',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
@@ -84,27 +82,22 @@ class ProductdetailsView extends StatelessWidget {
                         RichText(
                           text: TextSpan(
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                             children: [
                               const TextSpan(
                                 text: 'Product price:',
-                                style: TextStyle(
-                                    color: Colors
-                                        .black), // Default color for the text
+                                style: TextStyle(color: Colors.black),
                               ),
                               TextSpan(
                                 text:
-                                    ' ₱ ${viewModel.product.price.toString()}',
-                                style: const TextStyle(
-                                    color: Colors
-                                        .green), // Green color for the price
+                                    ' \$ ${viewModel.product.price.toString()}',
+                                style: const TextStyle(color: Colors.green),
                               ),
                             ],
                           ),
                         ),
-
                         const SizedBox(height: 10),
                         Text(
                           'Quantity: ${viewModel.product.quantity.toString()}',
@@ -121,9 +114,7 @@ class ProductdetailsView extends StatelessWidget {
                                 child: ElevatedButton.icon(
                                   icon: const Icon(Icons.shopping_cart),
                                   label: const Text('Add to Cart'),
-                                  onPressed: () {
-                                    // Handle purchase logic here
-                                  },
+                                  onPressed: () {},
                                 ),
                               ),
                               const SizedBox(height: 10),

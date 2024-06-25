@@ -10,7 +10,7 @@ class FeaturedProduct extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 440.0,
-      margin: const EdgeInsets.all(20.0),
+      margin: const EdgeInsets.all(0.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8.0),
         child: CachedNetworkImage(

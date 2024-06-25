@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="opc_mobile_development"
+        android:label="One PC App"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/opc">
         <activity
             android:name=".MainActivity"
             android:exported="true"

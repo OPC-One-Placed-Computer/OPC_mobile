@@ -20,7 +20,7 @@ class User {
         lastName: json['last_name'],
         token: json['token'],
       );
-        
+
   User copyWith(
           {String? id,
           String? firstName,
