@@ -20,11 +20,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     locator<SnackbarService>().registerSnackbarConfig(
-      SnackbarConfig(
-        duration: Constants.defDuration,
-        borderRadius: 16
-      )
-    );
+        SnackbarConfig(duration: Constants.defDuration, borderRadius: 16));
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: StackedRouter().onGenerateRoute,

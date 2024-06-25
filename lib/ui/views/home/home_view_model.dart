@@ -32,7 +32,7 @@ class HomeViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  /// get user from storage
+ 
   Future<void> _getCachedUser() async {
     try {
       final user = await sharedPrefService.getUser();

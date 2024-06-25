@@ -23,6 +23,12 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   mockito: ^5.4.1
   stacked_generator: ^1.3.3
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+   android: "opc"
+   ios: true
+   image_path: "lib/resources/images/logo.png"
 
 
 flutter:

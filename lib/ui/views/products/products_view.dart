@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
-import 'package:opc_mobile_development/ui/views/widgets/featured_product.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
 
@@ -23,41 +22,58 @@ class ProductsView extends StackedView<ProductsViewModel> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.search),
-                        hintText: 'Search...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                  Container(
+                    height: 180,
+                    color: const Color.fromARGB(255, 90, 88, 214),
+                    alignment: Alignment.center,
+                    child: Transform.translate(
+                      offset: const Offset(
+                        0.0,
+                        -20.0,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'lib/resources/images/logo.png',
+                            height: 100,
+                            width: 120,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Welcome to One Pc Store',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 0),
+                          const Text(
+                            'Where high quality products are in one place',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 250, // Adjust the height according to your needs
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: const [
-                        FeaturedProduct(
-                            image: 'https://i.imgur.com/8UdKNS4.jpeg'),
-                        FeaturedProduct(
-                            image: 'https://i.imgur.com/8UdKNS4.jpeg'),
-                        FeaturedProduct(
-                            image: 'https://i.imgur.com/8UdKNS4.jpeg'),
-                      ],
-                    ),
-                  ),
+                  const SizedBox(height: 30),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
                       'Featured Products',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 8, 255),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
                   const Padding(
                     padding: EdgeInsets.only(
                         left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
@@ -66,7 +82,10 @@ class ProductsView extends StackedView<ProductsViewModel> {
                       child: Text(
                         'Latest Products',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 90, 88, 214),
+                        ),
                       ),
                     ),
                   ),
@@ -87,6 +106,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                           );
                         }).toList()),
                   ),
+                  const SizedBox(height: 40),
                   const Padding(
                     padding: EdgeInsets.only(
                         left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
@@ -95,11 +115,13 @@ class ProductsView extends StackedView<ProductsViewModel> {
                       child: Text(
                         'Top Sale Products',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 90, 88, 214),
+                        ),
                       ),
                     ),
                   ),
-                  // ignore: prefer_const_constructors
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4.0),
@@ -117,7 +139,6 @@ class ProductsView extends StackedView<ProductsViewModel> {
                           );
                         }).toList()),
                   ),
-
                   const SizedBox(height: 10),
                 ],
               ),
@@ -183,7 +204,7 @@ class ProductItem extends StatelessWidget {
                       ),
                       Text(product.brand),
                       Text(
-                        product.price.toString(),
+                        '\$ ${product.price.toString()}',
                         style: const TextStyle(color: Colors.green),
                       ),
                     ],
