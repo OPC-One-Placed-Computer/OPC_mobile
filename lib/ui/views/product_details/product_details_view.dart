@@ -4,6 +4,7 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'productdetails_viewmodel.dart';
 
@@ -20,9 +21,9 @@ class ProductdetailsView extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text(
+            title: Text(
               'Product Details',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
               ),
             ),
@@ -41,24 +42,29 @@ class ProductdetailsView extends StatelessWidget {
                         const SizedBox(height: 40),
                         Text(
                           viewModel.product.productName,
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 20),
                         ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
                           clipBehavior: Clip.hardEdge,
                           child: CachedNetworkImage(
                             imageUrl:
                                 Constants.baseUrl + viewModel.product.imagePath,
                             fit: BoxFit.contain,
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           'Brand Name : ${viewModel.product.brand}',
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -67,21 +73,21 @@ class ProductdetailsView extends StatelessWidget {
                         const Text(
                           'Product details:',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           viewModel.product.description,
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 10),
                         RichText(
                           text: TextSpan(
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
@@ -93,7 +99,8 @@ class ProductdetailsView extends StatelessWidget {
                               TextSpan(
                                 text:
                                     ' \$ ${viewModel.product.price.toString()}',
-                                style: const TextStyle(color: Colors.green),
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0)),
                               ),
                             ],
                           ),
@@ -101,7 +108,7 @@ class ProductdetailsView extends StatelessWidget {
                         const SizedBox(height: 10),
                         Text(
                           'Quantity: ${viewModel.product.quantity.toString()}',
-                          style: const TextStyle(
+                          style: GoogleFonts.poppins(
                             fontSize: 13,
                           ),
                         ),

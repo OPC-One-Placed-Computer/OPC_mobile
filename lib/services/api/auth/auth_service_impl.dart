@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.locator.dart';
 import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
@@ -57,6 +56,7 @@ class AuthServiceImpl implements AuthApiService {
     try {
       final response = await _dio.post('/logout', data: user.toJson());
       if (response.statusCode != null && response.statusCode == 200) {
+        await _sharedPrefService.removeUser();
         return true;
       } else {
         throw Exception(response.statusMessage);
