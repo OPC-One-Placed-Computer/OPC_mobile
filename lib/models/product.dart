@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class Product {
   Product(
       {this.id,
@@ -20,7 +22,7 @@ class Product {
   final String description;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json['id'],
+        id: json['product_id'],
         imageName: json['image_name'],
         price: double.parse(json['price']),
         brand: json['brand'],

@@ -5,7 +5,6 @@ class ProductdetailsViewModel extends AppBaseViewModel {
   ProductdetailsViewModel(this.product);
 
   Product product;
-  int _quantity = 1;
 
   void init() async {
     setBusy(true);
@@ -19,20 +18,6 @@ class ProductdetailsViewModel extends AppBaseViewModel {
       product = await apiService.getProduct(product.id!.toString());
     } catch (_) {
       rethrow;
-    }
-  }
-
-  int get quantity => _quantity;
-
-  void incrementQuantity() {
-    _quantity++;
-    notifyListeners();
-  }
-
-  void decrementQuantity() {
-    if (_quantity > 1) {
-      _quantity--;
-      notifyListeners();
     }
   }
 }

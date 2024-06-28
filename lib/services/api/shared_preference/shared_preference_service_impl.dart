@@ -26,4 +26,14 @@ class SharedPreferenceServiceImpl implements SharedPreferenceService {
       rethrow;
     }
   }
+
+  @override
+  Future<void> removeUser() async {
+    try {
+      final shared = await SharedPreferences.getInstance();
+      shared.remove(Constants.userKey);
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

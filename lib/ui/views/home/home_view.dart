@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:stacked/stacked.dart';
 
@@ -11,24 +12,39 @@ class HomeView extends StackedView<HomeViewModel> {
   Widget builder(BuildContext context, HomeViewModel viewModel, Widget? child) {
     var listTile = ListTile(
       leading: const Icon(Icons.logout),
-      title: const Text('Logout'),
+      title: Text(
+        'Logout',
+        style: GoogleFonts.poppins(),
+      ),
       onTap: () async {
         bool shouldLogout = await showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: const Text('Confirm Logout'),
-              content: const Text('Are you sure you want to logout?'),
+              title: Text(
+                'Confirm Logout',
+                style: GoogleFonts.poppins(),
+              ),
+              content: Text(
+                'Are you sure you want to logout?',
+                style: GoogleFonts.poppins(),
+              ),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
-                  child: const Text('No'),
+                  child: Text(
+                    'No',
+                    style: GoogleFonts.poppins(),
+                  ),
                 ),
                 TextButton(
                   onPressed: viewModel.logout,
-                  child: const Text('Yes'),
+                  child: Text(
+                    'Yes',
+                    style: GoogleFonts.poppins(),
+                  ),
                 ),
               ],
             );
@@ -43,25 +59,12 @@ class HomeView extends StackedView<HomeViewModel> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'One Pc',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          style: GoogleFonts.poppins(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 44, 45, 114),
         actions: <Widget>[
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-          ),
           IconButton(
             icon: const Icon(
               Icons.notifications,
@@ -82,7 +85,6 @@ class HomeView extends StackedView<HomeViewModel> {
         unselectedItemColor: Colors.white70,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Store'),
           BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart), label: 'Cart'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
@@ -92,21 +94,21 @@ class HomeView extends StackedView<HomeViewModel> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
+            DrawerHeader(
+              decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 44, 45, 114),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 40,
                     backgroundImage: AssetImage('assets/placeholder.png'),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'User Name',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 20,
                     ),
@@ -116,49 +118,25 @@ class HomeView extends StackedView<HomeViewModel> {
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              title: Text(
+                'Settings',
+                style: GoogleFonts.poppins(),
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(Icons.help),
-              title: const Text('Help & Feedback'),
+              title: Text(
+                'Help & Feedback',
+                style: GoogleFonts.poppins(),
+              ),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             listTile,
-          ],
-        ),
-      ),
-      endDrawer: Drawer(
-        width: MediaQuery.of(context).size.width * 0.6,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: 10),
-                ],
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search Item 2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
           ],
         ),
       ),

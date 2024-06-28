@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/user.dart';
+import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
 import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
 import 'package:opc_mobile_development/ui/views/store/store_view.dart';
-import 'package:opc_mobile_development/ui/views/wishlist/wishlist_view.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {
@@ -32,7 +32,6 @@ class HomeViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
- 
   Future<void> _getCachedUser() async {
     try {
       final user = await sharedPrefService.getUser();
@@ -46,10 +45,8 @@ class HomeViewModel extends AppBaseViewModel {
       case 0:
         return const ProductsView();
       case 1:
-        return const StoreView();
+        return const AddToCartView();
       case 2:
-        return const WishlistView();
-      case 3:
         return const ProfileView();
       default:
         return const ProductsView();

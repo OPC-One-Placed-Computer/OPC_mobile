@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
@@ -41,20 +42,20 @@ class ProductsView extends StackedView<ProductsViewModel> {
                             fit: BoxFit.contain,
                           ),
                           const SizedBox(height: 10),
-                          const Text(
+                          Text(
                             'Welcome to One Pc Store',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 0),
-                          const Text(
+                          Text(
                             'Where high quality products are in one place',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           ),
                         ],
@@ -62,29 +63,107 @@ class ProductsView extends StackedView<ProductsViewModel> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Featured Products',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 0, 8, 255),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Search products...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
+                      onChanged: (value) {
+                        viewModel.searchProducts(value);
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Padding(
-                    padding: EdgeInsets.only(
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Filtered by:',
+                        style: GoogleFonts.poppins(
+                          color: const Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Opacity(
+                            opacity: 0.8,
+                            child: DropdownButton<String>(
+                              value: viewModel.selectedCategory,
+                              items:
+                                  viewModel.categories.map((String category) {
+                                return DropdownMenuItem<String>(
+                                  value: category,
+                                  child: Text(
+                                    category,
+                                    style: TextStyle(
+                                      color: Colors
+                                          .black, // Ensure text is fully opaque
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                viewModel.setSelectedCategory(newValue);
+                              },
+                              hint: Text('Select Category'),
+                              isExpanded: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: Opacity(
+                            opacity: 0.8,
+                            child: DropdownButton<String>(
+                              value: viewModel.selectedBrand,
+                              items: viewModel.brands.map((String brand) {
+                                return DropdownMenuItem<String>(
+                                  value: brand,
+                                  child: Text(
+                                    brand,
+                                    style: TextStyle(
+                                      color: Colors
+                                          .black, // Ensure text is fully opaque
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                viewModel.setSelectedBrand(newValue);
+                              },
+                              hint: Text('Select Brand'),
+                              isExpanded: true,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
                         left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Latest Products',
-                        style: TextStyle(
+                        'All Products',
+                        style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 90, 88, 214),
+                          color: Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                     ),
@@ -107,38 +186,6 @@ class ProductsView extends StackedView<ProductsViewModel> {
                         }).toList()),
                   ),
                   const SizedBox(height: 40),
-                  const Padding(
-                    padding: EdgeInsets.only(
-                        left: 16.0, top: 8.0, bottom: 8.0, right: 8.0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Top Sale Products',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 90, 88, 214),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 4.0),
-                    child: Wrap(
-                        spacing: 20.0,
-                        runSpacing: 20.0,
-                        children: viewModel.products.map((product) {
-                          return ProductItem(
-                            product: product,
-                            onProductTapped: (value) => viewModel
-                                .navigationService
-                                .navigateTo(Routes.products_view,
-                                    arguments: ProductdetailsViewArguments(
-                                        product: product)),
-                          );
-                        }).toList()),
-                  ),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -198,14 +245,19 @@ class ProductItem extends StatelessWidget {
                       Text(
                         product.productName,
                         maxLines: 2,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            overflow: TextOverflow.ellipsis),
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      Text(product.brand),
+                      Text(
+                        product.brand,
+                        style: GoogleFonts.poppins(),
+                      ),
                       Text(
                         '\$ ${product.price.toString()}',
-                        style: const TextStyle(color: Colors.green),
+                        style: GoogleFonts.poppins(
+                            color: const Color.fromARGB(255, 0, 0, 0)),
                       ),
                     ],
                   ),

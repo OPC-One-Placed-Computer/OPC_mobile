@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:stacked/stacked.dart';
 
-import 'wishlist_viewmodel.dart';
+import 'add_to_cart_viewmodel.dart';
 
-class WishlistView extends StatelessWidget {
-  const WishlistView({Key? key}) : super(key: key);
+class AddToCartView extends StackedView<AddToCartViewModel> {
+  const AddToCartView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<WishlistViewModel>.reactive(
-      viewModelBuilder: () => WishlistViewModel(),
+    return ViewModelBuilder<AddToCartViewModel>.reactive(
+      viewModelBuilder: () => AddToCartViewModel(),
       builder: (context, viewModel, child) {
         return Scaffold(
           body: Column(
@@ -22,12 +23,12 @@ class WishlistView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.only(
+                        Padding(
+                          padding: const EdgeInsets.only(
                               left: 16.0, top: 15.0, right: 8.0, bottom: 8.0),
                           child: Text(
                             'Shopping Cart',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 23,
                               fontWeight: FontWeight.bold,
                             ),
@@ -61,24 +62,25 @@ class WishlistView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'ASUS M3402WAFAK (90PT03L2-M00KL0) All-In-One Desktop',
                                       maxLines: 2,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          overflow: TextOverflow.ellipsis),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 9),
-                                    const Text(
+                                    Text(
                                       '\$50.00',
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontSize: 12,
                                       ),
                                     ),
-                                    const Text(
+                                    Text(
                                       'Quantity: 1',
-                                      style: TextStyle(
+                                      style: GoogleFonts.poppins(
                                         fontSize: 10,
                                         color: Colors.grey,
                                       ),
@@ -90,7 +92,7 @@ class WishlistView extends StatelessWidget {
                                           icon: const Icon(Icons.remove),
                                           onPressed: () {},
                                         ),
-                                        const Text('1'),
+                                        Text('1', style: GoogleFonts.poppins()),
                                         IconButton(
                                           iconSize: 16,
                                           icon: const Icon(Icons.add),
@@ -140,52 +142,52 @@ class WishlistView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Sub Total Item(s)',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                           Text(
                             '1',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                         ],
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Sub Total',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                           Text(
                             '\$100.00',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                         ],
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Shipping',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                           Text(
                             '\$10.00',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
@@ -193,19 +195,19 @@ class WishlistView extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       const Spacer(),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             'Total',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             '\$110.00',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -225,12 +227,15 @@ class WishlistView extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 7.0),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.shopping_cart),
-                                SizedBox(width: 4),
-                                Text('Check Out'),
+                                const Icon(Icons.shopping_cart),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Check Out',
+                                  style: GoogleFonts.poppins(),
+                                ),
                               ],
                             ),
                           ),
@@ -245,5 +250,18 @@ class WishlistView extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  Widget builder(
+      BuildContext context, AddToCartViewModel viewModel, Widget? child) {
+    // TODO: implement builder
+    throw UnimplementedError();
+  }
+
+  @override
+  AddToCartViewModel viewModelBuilder(BuildContext context) {
+    // TODO: implement viewModelBuilder
+    throw UnimplementedError();
   }
 }
