@@ -60,7 +60,7 @@ class HomeView extends StackedView<HomeViewModel> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'One Pc',
+          '',
           style: GoogleFonts.poppins(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 44, 45, 114),

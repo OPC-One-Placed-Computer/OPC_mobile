@@ -6,4 +6,5 @@ class Constants {
   static const loginFailed = 'Login Failed';
   static const defDuration = Duration(milliseconds: 1000);
   static const userKey = "USER";
+  static const tokenKey = "TOKEN";
 }

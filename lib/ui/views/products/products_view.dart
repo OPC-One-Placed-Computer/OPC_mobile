@@ -25,7 +25,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                 children: [
                   Container(
                     height: 180,
-                    color: const Color.fromARGB(255, 90, 88, 214),
+                    color: const Color.fromARGB(255, 44, 45, 114),
                     alignment: Alignment.center,
                     child: Transform.translate(
                       offset: const Offset(
@@ -67,7 +67,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: TextField(
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: const Icon(Icons.search),
                         hintText: 'Search products...',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -109,9 +109,8 @@ class ProductsView extends StackedView<ProductsViewModel> {
                                   value: category,
                                   child: Text(
                                     category,
-                                    style: TextStyle(
-                                      color: Colors
-                                          .black, // Ensure text is fully opaque
+                                    style: const TextStyle(
+                                      color: Colors.black,
                                     ),
                                   ),
                                 );
@@ -119,7 +118,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                               onChanged: (String? newValue) {
                                 viewModel.setSelectedCategory(newValue);
                               },
-                              hint: Text('Select Category'),
+                              hint: const Text('Select Category'),
                               isExpanded: true,
                             ),
                           ),
@@ -135,7 +134,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                                   value: brand,
                                   child: Text(
                                     brand,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors
                                           .black, // Ensure text is fully opaque
                                     ),
@@ -145,7 +144,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                               onChanged: (String? newValue) {
                                 viewModel.setSelectedBrand(newValue);
                               },
-                              hint: Text('Select Brand'),
+                              hint: const Text('Select Brand'),
                               isExpanded: true,
                             ),
                           ),
@@ -163,7 +162,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0),
+                          color: const Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                     ),

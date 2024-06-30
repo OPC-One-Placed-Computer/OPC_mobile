@@ -29,10 +29,8 @@ class ProductsViewModel extends AppBaseViewModel {
 
   void searchProducts(String query) {
     if (query.isEmpty) {
-      // If the query is empty, show all products based on selected filters
       filterProducts();
     } else {
-      // Filter products based on both query and selected filters
       products = allProducts
           .where((product) =>
               product.productName.toLowerCase().contains(query.toLowerCase()) &&
