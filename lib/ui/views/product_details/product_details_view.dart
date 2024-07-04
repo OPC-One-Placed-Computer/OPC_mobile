@@ -27,7 +27,7 @@ class ProductdetailsView extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            backgroundColor: const Color.fromARGB(255, 44, 45, 114),
+            backgroundColor: const Color.fromARGB(255, 19, 7, 46),
             iconTheme: const IconThemeData(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).colorScheme.surface,
@@ -55,8 +55,8 @@ class ProductdetailsView extends StatelessWidget {
                             imageUrl:
                                 Constants.baseUrl + viewModel.product.imagePath,
                             fit: BoxFit.contain,
-                            placeholder: (context, url) =>
-                                const Center(child: CircularProgressIndicator()),
+                            placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator()),
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
                           ),
@@ -97,8 +97,10 @@ class ProductdetailsView extends StatelessWidget {
                                 style: TextStyle(color: Colors.black),
                               ),
                               TextSpan(
-                                text: ' \$ ${viewModel.product.price.toString()}',
-                                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                                text:
+                                    ' \$ ${viewModel.product.price.toString()}',
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 0, 0, 0)),
                               ),
                             ],
                           ),
@@ -109,6 +111,27 @@ class ProductdetailsView extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                           ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              iconSize: 13,
+                              icon: const Icon(Icons.remove_circle),
+                              onPressed: viewModel.decrementQuantity,
+                            ),
+                            Text(
+                              '${viewModel.quantity}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 10,
+                              ),
+                            ),
+                            IconButton(
+                              iconSize: 13,
+                              icon: const Icon(Icons.add_circle),
+                              onPressed: viewModel.incrementQuantity,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 20),
                         Center(
@@ -122,16 +145,19 @@ class ProductdetailsView extends StatelessWidget {
                                   onPressed: () async {
                                     viewModel.setBusy(true);
                                     try {
-                                      await viewModel.addToCart(1, 1); // Replace with actual userId and quantity
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      await viewModel.addToCart();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         const SnackBar(
-                                          content: Text('Product added to cart'),
+                                          content:
+                                              Text('Product added to cart'),
                                           duration: Duration(seconds: 2),
                                           backgroundColor: Colors.green,
                                         ),
                                       );
                                     } catch (e) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text('Error: $e'),
                                           duration: const Duration(seconds: 2),

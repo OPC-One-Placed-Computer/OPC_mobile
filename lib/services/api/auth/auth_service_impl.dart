@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/app/app.locator.dart';
+
 import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
 import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service.dart';
@@ -69,4 +70,7 @@ class AuthServiceImpl implements AuthApiService {
       rethrow;
     }
   }
+
+ 
+ 
 }

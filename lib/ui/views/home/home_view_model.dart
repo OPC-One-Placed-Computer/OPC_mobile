@@ -7,7 +7,6 @@ import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
 import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
-import 'package:opc_mobile_development/ui/views/store/store_view.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {

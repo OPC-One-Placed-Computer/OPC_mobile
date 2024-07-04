@@ -14,7 +14,7 @@ class SignupView extends StackedView<SignupViewModel> {
       BuildContext context, SignupViewModel viewModel, Widget? child) {
     return Scaffold(
       body: Container(
-        color: const Color.fromARGB(255, 2, 0, 60),
+        color: const Color.fromARGB(255, 19, 7, 46),
         height: MediaQuery.sizeOf(context).height,
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

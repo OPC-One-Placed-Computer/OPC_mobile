@@ -6,7 +6,7 @@ class ProductdetailsViewModel extends AppBaseViewModel {
   ProductdetailsViewModel(this.product);
 
   final ApiServiceImpl apiService = ApiServiceImpl();
-
+  int quantity = 1;
   Product product;
 
   void init() async {
@@ -14,6 +14,18 @@ class ProductdetailsViewModel extends AppBaseViewModel {
     await _getProduct();
     print(product);
     setBusy(false);
+  }
+
+  void incrementQuantity() {
+    quantity++;
+    notifyListeners();
+  }
+
+  void decrementQuantity() {
+    if (quantity > 1) {
+      quantity--;
+      notifyListeners();
+    }
   }
 
   Future<void> _getProduct() async {
@@ -24,7 +36,7 @@ class ProductdetailsViewModel extends AppBaseViewModel {
     }
   }
 
-  Future<void> addToCart(int productId, int quantity) async {
+  Future<void> addToCart() async {
     try {
       await apiService.addToCart(product.id!, quantity);
       print('Product added to cart successfully');

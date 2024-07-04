@@ -65,116 +65,126 @@ class AddToCartView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = viewModel.cartItems[index];
                     final product = item.product;
-                    return Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Checkbox(
-                                value:
-                                    viewModel.selectedIndices.contains(index),
-                                onChanged: (value) {
-                                  viewModel.toggleCheckbox(index);
-                                },
-                              ),
-                              const SizedBox(width: 10),
-                              Container(
-                                width: 100,
-                                height: 130,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(8),
+                    return InkWell(
+                      onTap: () {
+                        // Define your onTap functionality here
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Checkbox(
+                                  value:
+                                      viewModel.selectedIndices.contains(index),
+                                  onChanged: (value) {
+                                    viewModel.toggleCheckbox(index);
+                                  },
                                 ),
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      Constants.baseUrl + product.imagePath,
-                                  placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator(),
+                                const SizedBox(width: 10),
+                                Container(
+                                  width: 100,
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        Constants.baseUrl + product.imagePath,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.productName,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Text(
-                                      'Price: ${product.price.toString()}',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Quantity: ${item.quantity}',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        IconButton(
-                                          iconSize: 13,
-                                          icon: const Icon(Icons.remove_circle),
-                                          onPressed: () {
-                                            viewModel.decrementQuantity();
-                                          },
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.productName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Text(
-                                          '${item.quantity}',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 10,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Price: ${product.price.toString()}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Quantity: ${item.quantity}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            iconSize: 13,
+                                            icon:
+                                                const Icon(Icons.remove_circle),
+                                            onPressed: () {
+                                              viewModel
+                                                  .decrementQuantity(index);
+                                            },
                                           ),
-                                        ),
-                                        IconButton(
-                                          iconSize: 13,
-                                          icon: const Icon(Icons.add_circle),
-                                          onPressed: () {
-                                            viewModel.incrementQuantity();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          Text(
+                                            '${item.quantity}',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            iconSize: 13,
+                                            icon: const Icon(Icons.add_circle),
+                                            onPressed: () {
+                                              viewModel
+                                                  .incrementQuantity(index);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -231,23 +241,6 @@ class AddToCartView extends StatelessWidget {
                           ),
                           Text(
                             '\$${viewModel.subtotal.toStringAsFixed(2)}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Shipping',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            '\$10.00',
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),

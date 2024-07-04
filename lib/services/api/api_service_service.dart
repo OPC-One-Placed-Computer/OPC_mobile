@@ -1,4 +1,5 @@
 import 'package:opc_mobile_development/models/cart.dart';
+import 'package:opc_mobile_development/models/current_authentication.dart';
 import 'package:opc_mobile_development/models/product.dart';
 
 abstract class ApiServiceService {
@@ -7,4 +8,5 @@ abstract class ApiServiceService {
   Future<Cart> addToCart(int productId, int quantity);
   Future<List<Cart>> getAllCartItems();
   Future<void> deleteFromCart(int cartId);
+  Future<CurrentAuthentication> getCurrentAuthentication();
 }

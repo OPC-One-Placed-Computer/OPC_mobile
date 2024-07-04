@@ -63,7 +63,7 @@ class HomeView extends StackedView<HomeViewModel> {
           '',
           style: GoogleFonts.poppins(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(255, 44, 45, 114),
+        backgroundColor: const Color(0xFF13072E),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
@@ -79,7 +79,7 @@ class HomeView extends StackedView<HomeViewModel> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewModel.currentIndex,
         onTap: viewModel.setIndex,
-        backgroundColor: const Color.fromARGB(255, 44, 45, 114),
+        backgroundColor: const Color(0xFF13072E),
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
@@ -96,7 +96,7 @@ class HomeView extends StackedView<HomeViewModel> {
           children: <Widget>[
             DrawerHeader(
               decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 44, 45, 114),
+                color: Color.fromARGB(255, 19, 7, 46),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/product.dart';
+import 'package:opc_mobile_development/models/current_authentication.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 import 'package:opc_mobile_development/services/helpers/dio_client.dart';
 import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service_impl.dart';
@@ -122,33 +123,65 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-@override
-Future<void> deleteFromCart(int cartId) async {
-  try {
-    final token = await _sharedPreferenceService.getToken();
-    if (token == null) {
-      throw Exception('No authentication token found');
-    }
+  @override
+  Future<void> deleteFromCart(int cartId) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
 
-    final response = await _dio.delete(
-      '/cart/$cartId',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
+      final response = await _dio.delete(
+        '/cart/$cartId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      print('Product removed from cart successfully');
-    } else {
-      throw Exception('Failed to remove product from cart: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        print('Product removed from cart successfully');
+      } else {
+        throw Exception(
+            'Failed to remove product from cart: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error removing product from cart: $e');
+      rethrow;
     }
-  } catch (e) {
-    print('Error removing product from cart: $e');
-    rethrow;
   }
-}
 
+  @override
+  Future<CurrentAuthentication> getCurrentAuthentication() async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
 
+      final response = await _dio.get(
+        '/current-authentication',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        final currentAuth = CurrentAuthentication.fromJson(
+            responseData['data'] as Map<String, dynamic>);
+        print('Current authentication fetched successfully: $currentAuth');
+        return currentAuth;
+      } else {
+        throw Exception(
+            'Failed to fetch current authentication: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching current authentication: $e');
+      rethrow;
+    }
+  }
 }

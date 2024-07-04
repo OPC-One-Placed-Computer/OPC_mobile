@@ -6,11 +6,13 @@ import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 
 class AddToCartViewModel extends AppBaseViewModel {
   final ApiServiceService _apiService = ApiServiceImpl();
-  Set<int> selectedIndices = {}; // Store the indices of checked checkboxes
-  int quantity = 1;
-  int totalItems = 0;
+  Set<int> selectedIndices = {};
   List<Cart> cartItems = [];
   List<Product> products = [];
+
+  int get totalItems {
+    return cartItems.fold(0, (total, cartItem) => total + cartItem.quantity);
+  }
 
   void init() async {
     await fetchCartItems();
@@ -25,7 +27,6 @@ class AddToCartViewModel extends AppBaseViewModel {
         0, (sum, item) => sum + (item.product.price * item.quantity));
   }
 
-  // Method to calculate total
   double get total {
     const double shippingCost = 10.0;
     return subtotal + shippingCost;
@@ -44,14 +45,18 @@ class AddToCartViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  void incrementQuantity() {
-    quantity++;
-    notifyListeners();
+  void incrementQuantity(int index) {
+    if (index >= 0 && index < cartItems.length) {
+      cartItems[index].quantity++;
+      notifyListeners();
+    }
   }
 
-  void decrementQuantity() {
-    if (quantity > 1) {
-      quantity--;
+  void decrementQuantity(int index) {
+    if (index >= 0 &&
+        index < cartItems.length &&
+        cartItems[index].quantity > 1) {
+      cartItems[index].quantity--;
       notifyListeners();
     }
   }
@@ -61,14 +66,13 @@ class AddToCartViewModel extends AppBaseViewModel {
     try {
       final List<Cart> response = await _apiService.getAllCartItems();
       cartItems = List<Cart>.from(response);
-      totalItems = cartItems.length;
     } catch (e) {
       print('Error fetching cart items: $e');
       cartItems.clear();
-      totalItems = 0;
     } finally {
       setBusy(false);
     }
+    notifyListeners();
   }
 
   Future<void> deleteSelectedItems() async {

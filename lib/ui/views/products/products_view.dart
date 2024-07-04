@@ -25,7 +25,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                 children: [
                   Container(
                     height: 180,
-                    color: const Color.fromARGB(255, 44, 45, 114),
+                    color: const Color.fromARGB(255, 19, 7, 46),
                     alignment: Alignment.center,
                     child: Transform.translate(
                       offset: const Offset(

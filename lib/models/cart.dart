@@ -14,7 +14,7 @@ class Cart {
   final int? userId;
   final int? productId;
   final Product product;
-  final int quantity;
+  int quantity;
   final double subTotal;
 
   factory Cart.fromJson(Map<String, dynamic> json) => Cart(
