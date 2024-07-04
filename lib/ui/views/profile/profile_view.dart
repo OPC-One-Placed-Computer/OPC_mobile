@@ -1,98 +1,163 @@
 import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/services/api/api_service_impl.dart';
+import 'package:opc_mobile_development/ui/views/profile/profile_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
-import 'profile_viewmodel.dart';
-
-class ProfileView extends StackedView<ProfileViewModel> {
+class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
 
   @override
-  Widget builder(
-    BuildContext context,
-    ProfileViewModel viewModel,
-    Widget? child,
-  ) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          const SingleChildScrollView(
-            padding: EdgeInsets.only(top: 200),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 100,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Profile information',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<ProfileViewModel>.reactive(
+      viewModelBuilder: () => ProfileViewModel(apiService: ApiServiceImpl()),
+      onViewModelReady: (model) => model.fetchUserData(),
+      builder: (context, model, child) {
+        final fullNameController = TextEditingController(text: model.fullName);
+        final emailController = TextEditingController(text: model.email);
+        final addressController = TextEditingController(text: model.address);
+
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Center(
+              child: model.isBusy
+                  ? const CircularProgressIndicator()
+                  : model.hasError
+                      ? const Text('An error occurred. Please try again.')
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 50), // Space from top
+                              // Circular icon for profile image
+                              const CircleAvatar(
+                                radius: 50,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 50,
+                                ),
+                              ),
+                              const SizedBox(height: 16), // Add some space
+                              Container(
+                                height: 50, // Adjust the height as needed
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  controller: fullNameController,
+                                  style: const TextStyle(
+                                      fontSize:
+                                          16), // Adjust font size as needed
+                                  decoration: const InputDecoration(
+                                    labelText: 'Full Name',
+                                    labelStyle: TextStyle(
+                                        fontSize: 16), // Adjust label font size
+                                    border: InputBorder.none,
+                                  ),
+                                  readOnly: !model.isEditing,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                height: 50, // Adjust the height as needed
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  controller: emailController,
+                                  style: const TextStyle(
+                                      fontSize:
+                                          16), // Adjust font size as needed
+                                  decoration: const InputDecoration(
+                                    labelText: 'Email',
+                                    labelStyle: TextStyle(
+                                        fontSize: 16), // Adjust label font size
+                                    border: InputBorder.none,
+                                  ),
+                                  readOnly: !model.isEditing,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                height: 50, // Adjust the height as needed
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: TextFormField(
+                                  controller: addressController,
+                                  style: const TextStyle(
+                                      fontSize:
+                                          16), // Adjust font size as needed
+                                  decoration: const InputDecoration(
+                                    labelText: 'Address',
+                                    labelStyle: TextStyle(
+                                        fontSize: 16), // Adjust label font size
+                                    border: InputBorder.none,
+                                  ),
+                                  readOnly: !model.isEditing,
+                                ),
+                              ),
+                              const SizedBox(height: 16), // Add some space
+                              // Edit button
+                              model.isEditing
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            // Split full name into first and last name
+                                            List<String> names =
+                                                fullNameController.text
+                                                    .split(' ');
+                                            String firstName = names.length > 0
+                                                ? names[0]
+                                                : '';
+                                            String lastName = names.length > 1
+                                                ? names[1]
+                                                : '';
+
+                                            model.saveUserData(
+                                              firstName,
+                                              lastName,
+                                              emailController.text,
+                                              addressController.text,
+                                            );
+                                          },
+                                          child: const Text('Save'),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            model.toggleEditing();
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                      ],
+                                    )
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        model.toggleEditing();
+                                      },
+                                      child: const Text('Edit'),
+                                    ),
+                            ],
                           ),
-                          Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                        ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 200,
-            color: Colors.blue,
-            child: const Stack(
-              children: [
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.white,
-                  ),
-                ),
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'My Profile',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      SizedBox(height: 10),
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: AssetImage('assets/placeholder.png'),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Rocky M. Pabalate',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
-
-  @override
-  ProfileViewModel viewModelBuilder(
-    BuildContext context,
-  ) =>
-      ProfileViewModel();
 }

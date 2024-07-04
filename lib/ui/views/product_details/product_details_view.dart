@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'productdetails_viewmodel.dart';
 
@@ -27,7 +27,7 @@ class ProductdetailsView extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            backgroundColor: const Color.fromARGB(255, 44, 45, 114),
+            backgroundColor: const Color.fromARGB(255, 19, 7, 46),
             iconTheme: const IconThemeData(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).colorScheme.surface,
@@ -112,6 +112,27 @@ class ProductdetailsView extends StatelessWidget {
                             fontSize: 13,
                           ),
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              iconSize: 13,
+                              icon: const Icon(Icons.remove_circle),
+                              onPressed: viewModel.decrementQuantity,
+                            ),
+                            Text(
+                              '${viewModel.quantity}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 10,
+                              ),
+                            ),
+                            IconButton(
+                              iconSize: 13,
+                              icon: const Icon(Icons.add_circle),
+                              onPressed: viewModel.incrementQuantity,
+                            ),
+                          ],
+                        ),
                         const SizedBox(height: 20),
                         Center(
                           child: Column(
@@ -121,7 +142,32 @@ class ProductdetailsView extends StatelessWidget {
                                 child: ElevatedButton.icon(
                                   icon: const Icon(Icons.shopping_cart),
                                   label: const Text('Add to Cart'),
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    viewModel.setBusy(true);
+                                    try {
+                                      await viewModel.addToCart();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                              Text('Product added to cart'),
+                                          duration: Duration(seconds: 2),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text('Error: $e'),
+                                          duration: const Duration(seconds: 2),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    } finally {
+                                      viewModel.setBusy(false);
+                                    }
+                                  },
                                 ),
                               ),
                               const SizedBox(height: 10),

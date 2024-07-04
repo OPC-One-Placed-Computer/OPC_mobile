@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/app/app.locator.dart';
+
 import 'package:opc_mobile_development/models/user.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
 import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service.dart';
@@ -41,7 +42,10 @@ class AuthServiceImpl implements AuthApiService {
       if (response.statusCode != null && response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
         final user = User.fromJson(data['data']).copyWith(token: data['token']);
+
         await _sharedPrefService.setUser(user);
+        await _sharedPrefService.setToken(data['token']);
+
         return user;
       } else {
         throw Exception(response.statusMessage);
@@ -57,6 +61,7 @@ class AuthServiceImpl implements AuthApiService {
       final response = await _dio.post('/logout', data: user.toJson());
       if (response.statusCode != null && response.statusCode == 200) {
         await _sharedPrefService.removeUser();
+        await _sharedPrefService.removeToken();
         return true;
       } else {
         throw Exception(response.statusMessage);
@@ -65,4 +70,7 @@ class AuthServiceImpl implements AuthApiService {
       rethrow;
     }
   }
+
+ 
+ 
 }

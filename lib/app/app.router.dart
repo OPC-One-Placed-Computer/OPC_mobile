@@ -5,26 +5,25 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter/material.dart' as _i12;
+import 'package:flutter/material.dart' as _i11;
 import 'package:flutter/material.dart';
-import 'package:opc_mobile_development/models/product.dart' as _i13;
+import 'package:opc_mobile_development/models/product.dart' as _i12;
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart'
-    as _i11;
+    as _i10;
 import 'package:opc_mobile_development/ui/views/home/home_view.dart' as _i5;
 import 'package:opc_mobile_development/ui/views/login/login_view.dart' as _i3;
 import 'package:opc_mobile_development/ui/views/place_order/place_order_view.dart'
-    as _i10;
-import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart'
     as _i9;
-import 'package:opc_mobile_development/ui/views/profile/profile_view.dart'
+import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart'
     as _i8;
+import 'package:opc_mobile_development/ui/views/profile/profile_view.dart'
+    as _i7;
 import 'package:opc_mobile_development/ui/views/signup/signup_view.dart' as _i4;
 import 'package:opc_mobile_development/ui/views/startup/startup_view.dart'
     as _i2;
 import 'package:opc_mobile_development/ui/views/store/store_view.dart' as _i6;
-
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i14;
+import 'package:stacked_services/stacked_services.dart' as _i13;
 
 class Routes {
   static const startupView = '/startup-view';
@@ -38,8 +37,6 @@ class Routes {
   static const homeView = '/home-view';
 
   static const storeView = '/store-view';
-
-  static const wishlistView = '/wishlist-view';
 
   static const profileView = '/profile-view';
 
@@ -56,7 +53,6 @@ class Routes {
     products,
     homeView,
     storeView,
-    wishlistView,
     profileView,
     products_view,
     place_order,
@@ -92,76 +88,76 @@ class StackedRouter extends _i1.RouterBase {
     ),
     _i1.RouteDef(
       Routes.profileView,
-      page: _i8.ProfileView,
+      page: _i7.ProfileView,
     ),
     _i1.RouteDef(
       Routes.products_view,
-      page: _i9.ProductdetailsView,
+      page: _i8.ProductdetailsView,
     ),
     _i1.RouteDef(
       Routes.place_order,
-      page: _i10.PlaceOrderView,
+      page: _i9.PlaceOrderView,
     ),
     _i1.RouteDef(
       Routes.addToCartView,
-      page: _i11.AddToCartView,
+      page: _i10.AddToCartView,
     ),
   ];
 
   final _pagesMap = <Type, _i1.StackedRouteFactory>{
     _i2.StartupView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) => const _i2.StartupView(),
         settings: data,
       );
     },
     _i3.LoginView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) => const _i3.LoginView(),
         settings: data,
       );
     },
     _i4.SignupView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) => const _i4.SignupView(),
         settings: data,
       );
     },
     _i5.HomeView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) => const _i5.HomeView(),
         settings: data,
       );
     },
     _i6.StoreView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) => const _i6.StoreView(),
         settings: data,
       );
     },
-    _i8.ProfileView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
-        builder: (context) => const _i8.ProfileView(),
+    _i7.ProfileView: (data) {
+      return _i11.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i7.ProfileView(),
         settings: data,
       );
     },
-    _i9.ProductdetailsView: (data) {
+    _i8.ProductdetailsView: (data) {
       final args = data.getArgs<ProductdetailsViewArguments>(nullOk: false);
-      return _i12.MaterialPageRoute<dynamic>(
+      return _i11.MaterialPageRoute<dynamic>(
         builder: (context) =>
-            _i9.ProductdetailsView(key: args.key, product: args.product),
+            _i8.ProductdetailsView(key: args.key, product: args.product),
         settings: data,
       );
     },
-    _i10.PlaceOrderView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
-        builder: (context) => const _i10.PlaceOrderView(),
+    _i9.PlaceOrderView: (data) {
+      return _i11.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i9.PlaceOrderView(),
         settings: data,
       );
     },
-    _i11.AddToCartView: (data) {
-      return _i12.MaterialPageRoute<dynamic>(
-        builder: (context) => const _i11.AddToCartView(),
+    _i10.AddToCartView: (data) {
+      return _i11.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i10.AddToCartView(),
         settings: data,
       );
     },
@@ -180,9 +176,9 @@ class ProductdetailsViewArguments {
     required this.product,
   });
 
-  final _i12.Key? key;
+  final _i11.Key? key;
 
-  final _i13.Product product;
+  final _i12.Product product;
 
   @override
   String toString() {
@@ -201,7 +197,7 @@ class ProductdetailsViewArguments {
   }
 }
 
-extension NavigatorStateExtension on _i14.NavigationService {
+extension NavigatorStateExtension on _i13.NavigationService {
   Future<dynamic> navigateToStartupView([
     int? routerId,
     bool preventDuplicates = true,
@@ -286,20 +282,6 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToWishlistView([
-    int? routerId,
-    bool preventDuplicates = true,
-    Map<String, String>? parameters,
-    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
-  ]) async {
-    return navigateTo<dynamic>(Routes.wishlistView,
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
-  }
-
   Future<dynamic> navigateToProfileView([
     int? routerId,
     bool preventDuplicates = true,
@@ -315,8 +297,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
   }
 
   Future<dynamic> navigateToProducts_view({
-    _i12.Key? key,
-    required _i13.Product product,
+    _i11.Key? key,
+    required _i12.Product product,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -443,20 +425,6 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithWishlistView([
-    int? routerId,
-    bool preventDuplicates = true,
-    Map<String, String>? parameters,
-    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
-  ]) async {
-    return replaceWith<dynamic>(Routes.wishlistView,
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
-  }
-
   Future<dynamic> replaceWithProfileView([
     int? routerId,
     bool preventDuplicates = true,
@@ -472,8 +440,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
   }
 
   Future<dynamic> replaceWithProducts_view({
-    _i12.Key? key,
-    required _i13.Product product,
+    _i11.Key? key,
+    required _i12.Product product,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,

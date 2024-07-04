@@ -1,122 +1,193 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
+import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
-
 import 'add_to_cart_viewmodel.dart';
 
-class AddToCartView extends StackedView<AddToCartViewModel> {
+class AddToCartView extends StatelessWidget {
   const AddToCartView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AddToCartViewModel>.reactive(
       viewModelBuilder: () => AddToCartViewModel(),
+      onViewModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) {
+        if (viewModel.isBusy) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
         return Scaffold(
           body: Column(
             children: [
-              Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, top: 15.0, right: 8.0, bottom: 8.0),
-                          child: Text(
-                            'Shopping Cart',
-                            style: GoogleFonts.poppins(
-                              fontSize: 23,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                          padding: const EdgeInsets.all(10),
-                          height: 160,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(Icons.image,
-                                    size: 50, color: Colors.grey),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'ASUS M3402WAFAK (90PT03L2-M00KL0) All-In-One Desktop',
-                                      maxLines: 2,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 9),
-                                    Text(
-                                      '\$50.00',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Quantity: 1',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 10,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          iconSize: 16,
-                                          icon: const Icon(Icons.remove),
-                                          onPressed: () {},
-                                        ),
-                                        Text('1', style: GoogleFonts.poppins()),
-                                        IconButton(
-                                          iconSize: 16,
-                                          icon: const Icon(Icons.add),
-                                          onPressed: () {},
-                                        ),
-                                        const SizedBox(width: 20),
-                                        Transform.scale(
-                                          scale: 0.8,
-                                          child: Checkbox(
-                                            value: true,
-                                            onChanged: (bool? value) {},
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 16.0,
+                  top: 15.0,
+                  right: 8.0,
+                  bottom: 8.0,
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Shopping Cart',
+                      style: GoogleFonts.poppins(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '(${viewModel.totalItems})',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        viewModel.deleteSelectedItems();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 0),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.cartItems.length,
+                  itemBuilder: (context, index) {
+                    final item = viewModel.cartItems[index];
+                    final product = item.product;
+                    return InkWell(
+                      onTap: () {
+                        // Define your onTap functionality here
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 8.0,
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Checkbox(
+                                  value:
+                                      viewModel.selectedIndices.contains(index),
+                                  onChanged: (value) {
+                                    viewModel.toggleCheckbox(index);
+                                  },
+                                ),
+                                const SizedBox(width: 10),
+                                Container(
+                                  width: 100,
+                                  height: 130,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        Constants.baseUrl + product.imagePath,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.productName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Price: ${product.price.toString()}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Quantity: ${item.quantity}',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 10,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            iconSize: 13,
+                                            icon:
+                                                const Icon(Icons.remove_circle),
+                                            onPressed: () {
+                                              viewModel
+                                                  .decrementQuantity(index);
+                                            },
+                                          ),
+                                          Text(
+                                            '${item.quantity}',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            iconSize: 13,
+                                            icon: const Icon(Icons.add_circle),
+                                            onPressed: () {
+                                              viewModel
+                                                  .incrementQuantity(index);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               Container(
@@ -152,7 +223,7 @@ class AddToCartView extends StackedView<AddToCartViewModel> {
                             ),
                           ),
                           Text(
-                            '1',
+                            '${viewModel.totalItems}',
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
@@ -169,24 +240,7 @@ class AddToCartView extends StackedView<AddToCartViewModel> {
                             ),
                           ),
                           Text(
-                            '\$100.00',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Shipping',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            '\$10.00',
+                            '\$${viewModel.subtotal.toStringAsFixed(2)}',
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
@@ -206,7 +260,7 @@ class AddToCartView extends StackedView<AddToCartViewModel> {
                             ),
                           ),
                           Text(
-                            '\$110.00',
+                            '\$${viewModel.total.toStringAsFixed(2)}',
                             style: GoogleFonts.poppins(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -250,18 +304,5 @@ class AddToCartView extends StackedView<AddToCartViewModel> {
         );
       },
     );
-  }
-
-  @override
-  Widget builder(
-      BuildContext context, AddToCartViewModel viewModel, Widget? child) {
-    // TODO: implement builder
-    throw UnimplementedError();
-  }
-
-  @override
-  AddToCartViewModel viewModelBuilder(BuildContext context) {
-    // TODO: implement viewModelBuilder
-    throw UnimplementedError();
   }
 }
