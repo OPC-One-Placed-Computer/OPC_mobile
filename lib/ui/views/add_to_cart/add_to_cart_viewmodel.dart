@@ -1,3 +1,4 @@
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/product.dart';
@@ -10,13 +11,14 @@ class AddToCartViewModel extends AppBaseViewModel {
   List<Cart> cartItems = [];
   List<Product> products = [];
 
+  bool get isAllSelected => selectedIndices.length == cartItems.length;
+
   int get totalItems {
     return cartItems.fold(0, (total, cartItem) => total + cartItem.quantity);
   }
 
   void init() async {
     await fetchCartItems();
-
     setBusy(true);
     await _getProducts();
     setBusy(false);
@@ -28,12 +30,13 @@ class AddToCartViewModel extends AppBaseViewModel {
   }
 
   double get total {
-    const double shippingCost = 10.0;
+    const double shippingCost = 0;
     return subtotal + shippingCost;
   }
 
   Future<void> _getProducts() async {
     products = await apiService.getProducts();
+   
   }
 
   void toggleCheckbox(int index) {
@@ -91,5 +94,23 @@ class AddToCartViewModel extends AppBaseViewModel {
     selectedIndices.clear();
     setBusy(false);
     notifyListeners();
+  }
+void toggleSelectAllItems() {
+    if (selectedIndices.length == cartItems.length) {
+      selectedIndices.clear();
+    } else {
+      selectedIndices = Set<int>.from(List.generate(cartItems.length, (index) => index));
+    }
+    notifyListeners();
+  }
+
+  List<Cart> getSelectedCartItems() {
+    return selectedIndices.map((index) => cartItems[index]).toList();
+  }
+   void navigateToProductDetails(Product product) {
+    navigationService.navigateTo(
+      Routes.products_view,
+      arguments: ProductdetailsViewArguments(product: product),
+    );
   }
 }

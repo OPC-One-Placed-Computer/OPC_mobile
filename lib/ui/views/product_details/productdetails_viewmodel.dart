@@ -3,11 +3,12 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 
 class ProductdetailsViewModel extends AppBaseViewModel {
-  ProductdetailsViewModel(this.product);
-
   final ApiServiceImpl apiService = ApiServiceImpl();
+  late Product product; // Use late to delay initialization until after constructor
+
   int quantity = 1;
-  Product product;
+
+  ProductdetailsViewModel(this.product);
 
   void init() async {
     setBusy(true);
@@ -31,8 +32,9 @@ class ProductdetailsViewModel extends AppBaseViewModel {
   Future<void> _getProduct() async {
     try {
       product = await apiService.getProduct(product.id!.toString());
-    } catch (_) {
-      rethrow;
+    } catch (e) {
+      print('Error fetching product: $e');
+      // Handle error as needed
     }
   }
 
@@ -41,7 +43,7 @@ class ProductdetailsViewModel extends AppBaseViewModel {
       await apiService.addToCart(product.id!, quantity);
       print('Product added to cart successfully');
     } catch (e) {
-      print('Error: $e');
+      print('Error adding product to cart: $e');
     }
   }
 }

@@ -67,10 +67,12 @@ class HomeView extends StackedView<HomeViewModel> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(
-              Icons.notifications,
+              Icons.shopping_cart_checkout,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+               viewModel.navigationService.navigateTo(Routes.order_placed);
+            },
           )
         ],
         iconTheme: const IconThemeData(color: Colors.white),

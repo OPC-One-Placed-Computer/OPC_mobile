@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/models/cart.dart';
+import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/models/current_authentication.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
@@ -184,4 +185,84 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
+
+  @override
+  Future<Checkout> checkOut(String fullName, String address, int total,
+      List<Map<String, dynamic>> cartItems) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/orders',
+        data: {
+          'full_name': fullName,
+          'shipping_address': address,
+          'total': total,
+          'cart_items': cartItems,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.data is Map<String, dynamic>) {
+          final cartData = response.data as Map<String, dynamic>;
+          final checkout =
+              Checkout.fromJson(cartData['data'] as Map<String, dynamic>);
+          print('Product added to cart successfully: $checkout');
+          return checkout;
+        } else {
+          throw Exception('Unexpected response format');
+        }
+      } else {
+        throw Exception(
+            'Failed to add product to cart: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error adding to cart: $e');
+      throw Exception('Error adding to cart: $e');
+    }
+  }
+
+   @override
+  Future<List<Checkout>> getOrdersDetails() async {
+  try {
+    final token = await _sharedPreferenceService.getToken();
+    if (token == null) {
+      throw Exception('No authentication token found');
+    }
+
+    final response = await _dio.get(
+      '/orders',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = response.data['data'] as List<dynamic>;
+      print('Response Data: $responseData'); 
+
+      final List<Checkout> orders = responseData.map((order) => Checkout.fromJson(order)).toList();
+      print('Parsed Orders: $orders'); 
+
+      return orders;
+    } else {
+      throw Exception('Failed to fetch orders: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching orders: $e');
+    rethrow;
+  }
+}
+
+  
 }

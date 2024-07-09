@@ -135,8 +135,7 @@ class ProductsView extends StackedView<ProductsViewModel> {
                                   child: Text(
                                     brand,
                                     style: const TextStyle(
-                                      color: Colors
-                                          .black, // Ensure text is fully opaque
+                                      color: Colors.black,
                                     ),
                                   ),
                                 );
@@ -181,6 +180,16 @@ class ProductsView extends StackedView<ProductsViewModel> {
                                 .navigateTo(Routes.products_view,
                                     arguments: ProductdetailsViewArguments(
                                         product: product)),
+                            onAddToCartTapped: (product) async {
+                              await viewModel.addToCart(product);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      '${product.productName} added to cart'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            },
                           );
                         }).toList()),
                   ),
@@ -208,10 +217,14 @@ class ProductsView extends StackedView<ProductsViewModel> {
 class ProductItem extends StatelessWidget {
   final Product product;
   final ValueChanged<Product> onProductTapped;
+  final ValueChanged<Product> onAddToCartTapped;
 
-  const ProductItem(
-      {Key? key, required this.product, required this.onProductTapped})
-      : super(key: key);
+  const ProductItem({
+    Key? key,
+    required this.product,
+    required this.onProductTapped,
+    required this.onAddToCartTapped,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -268,11 +281,9 @@ class ProductItem extends StatelessWidget {
               right: 0.0,
               child: IconButton(
                 icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  // onProductTapped.call(product);
-                },
+                onPressed: () => onAddToCartTapped(product),
               ),
-            ),
+            )
           ],
         ),
       ),

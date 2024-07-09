@@ -82,7 +82,7 @@ class PlaceOrderView extends StatelessWidget {
                         SizedBox(
                           height: 40,
                           child: TextFormField(
-                            initialValue: 'User 1',
+                            initialValue: viewModel.fullName,
                             enabled: false,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
@@ -94,9 +94,9 @@ class PlaceOrderView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16.0),
-                    child: AddressField(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: AddressField(viewModel: viewModel),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -116,10 +116,8 @@ class PlaceOrderView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   ListView.builder(
-                    shrinkWrap:
-                        true, // Ensure the ListView takes only the necessary space
-                    physics:
-                        const NeverScrollableScrollPhysics(), // Prevent scrolling inside SingleChildScrollView
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: viewModel.cartItems.length,
                     itemBuilder: (context, index) {
                       final item = viewModel.cartItems[index];
@@ -320,7 +318,9 @@ class PlaceOrderView extends StatelessWidget {
 }
 
 class AddressField extends StatefulWidget {
-  const AddressField({Key? key});
+  final PlaceOrderViewModel viewModel;
+
+  const AddressField({Key? key, required this.viewModel}) : super(key: key);
 
   @override
   _AddressFieldState createState() => _AddressFieldState();
@@ -328,8 +328,19 @@ class AddressField extends StatefulWidget {
 
 class _AddressFieldState extends State<AddressField> {
   bool _isEditable = false;
-  final TextEditingController _addressController =
-      TextEditingController(text: 'Carmen, Bohol');
+  late TextEditingController _addressController;
+
+  @override
+  void initState() {
+    super.initState();
+    _addressController = TextEditingController(text: widget.viewModel.address);
+  }
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -353,6 +364,9 @@ class _AddressFieldState extends State<AddressField> {
                 setState(() {
                   _isEditable = !_isEditable;
                 });
+                if (!_isEditable) {
+                  widget.viewModel.address = _addressController.text;
+                }
               },
             ),
           ],

@@ -70,7 +70,4 @@ class AuthServiceImpl implements AuthApiService {
       rethrow;
     }
   }
-
- 
- 
 }
