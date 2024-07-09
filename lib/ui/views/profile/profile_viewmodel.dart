@@ -1,7 +1,7 @@
+import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
-import 'package:stacked/stacked.dart';
 
-class ProfileViewModel extends BaseViewModel {
+class ProfileViewModel extends AppBaseViewModel {
   final ApiServiceService _apiService;
 
   ProfileViewModel({required ApiServiceService apiService})
@@ -10,7 +10,7 @@ class ProfileViewModel extends BaseViewModel {
   String? firstName;
   String? lastName;
   String? email;
-  String address = '123 Placeholder St, Placeholder City, PL 12345';
+  String address = 'Guadalupe, Carmen, Bohol';
 
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
 

@@ -9,6 +9,7 @@ class ProductsViewModel extends AppBaseViewModel {
   String? selectedBrand;
   List<String> categories = ['All'];
   List<String> brands = ['All'];
+  int quantity = 1;
 
   void init() async {
     setBusy(true);
@@ -67,5 +68,14 @@ class ProductsViewModel extends AppBaseViewModel {
           product.brand == selectedBrand;
       return categoryMatches && brandMatches;
     }).toList();
+  }
+
+  Future<void> addToCart(Product product) async {
+    try {
+      await apiService.addToCart(product.id!, quantity);
+      print('Product added to cart successfully');
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

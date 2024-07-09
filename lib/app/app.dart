@@ -18,6 +18,9 @@ import 'package:opc_mobile_development/ui/views/product_details/product_details_
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 import 'package:opc_mobile_development/ui/views/place_order/place_order_view.dart';
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
+import 'package:opc_mobile_development/ui/views/checkout/checkout_view.dart';
+
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -32,7 +35,10 @@ import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dar
     MaterialRoute(page: ProfileView),
     MaterialRoute(page: ProductdetailsView, name: 'products_view'),
     MaterialRoute(page: PlaceOrderView, name: 'place_order'),
-    MaterialRoute(page: AddToCartView),
+    MaterialRoute(page: AddToCartView, name: 'add_cart'),
+    MaterialRoute(page: CheckoutView, name: 'checkout'),
+
+    MaterialRoute(page: OrderPlacedView, name: 'order_placed'),
 // @stacked-route
   ],
   dependencies: [

@@ -1,17 +1,12 @@
-import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/cart.dart';
-import 'package:opc_mobile_development/models/product.dart';
+import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
+import 'package:opc_mobile_development/models/checkout.dart';
 
-class PlaceOrderViewModel extends AppBaseViewModel {
+class CheckoutViewModel extends AppBaseViewModel {
   final ApiServiceService _apiService = ApiServiceImpl();
-
-  Set<int> selectedIndices = {};
-  int quantity = 1;
-  int totalItems = 0;
-  List<Cart> cartItems = [];
-  List<Product> products = [];
+  List<Cart> selectedCartItems = [];
 
   String? firstName;
   String? lastName;
@@ -19,6 +14,8 @@ class PlaceOrderViewModel extends AppBaseViewModel {
   String address = 'Guadalupe, Carmen, Bohol';
 
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
+
+  CheckoutViewModel(this.selectedCartItems);
 
   Future<void> fetchUserData() async {
     try {
@@ -37,30 +34,35 @@ class PlaceOrderViewModel extends AppBaseViewModel {
 
   void init() async {
     await fetchUserData();
-    await fetchCartItems();
-    await _getProducts();
   }
 
-  double get subtotal {
-    return cartItems.fold(
-        0, (sum, item) => sum + (item.product.price * item.quantity));
+  double get totalAmount {
+    double total = 0;
+    for (var cart in selectedCartItems) {
+      total += cart.product.price * cart.quantity;
+    }
+    return total;
   }
 
-  Future<void> _getProducts() async {
-    products = await _apiService.getProducts();
-  }
-
-  Future<void> fetchCartItems() async {
-    setBusy(true);
+  Future<void> placeOrder() async {
     try {
-      final List<Cart> response = await _apiService.getAllCartItems();
-      cartItems = List<Cart>.from(response);
-      totalItems = cartItems.length;
-      notifyListeners();
+      setBusy(true);
+
+      final cartIds = selectedCartItems.map((cart) => cart.id).toList();
+      if (cartIds.isEmpty) {
+        throw Exception('No cart items selected.');
+      }
+
+      final checkout = await _apiService.checkOut(
+        fullName ?? '',
+        address,
+        totalAmount.toInt(),
+        cartIds.map((id) => {'id': id}).toList(),
+      );
+      print('Order placed successfully: $checkout');
     } catch (e) {
-      print('Error fetching cart items: $e');
-      cartItems.clear();
-      totalItems = 0;
+      print('Error placing order: $e');
+      setError('Error placing order: $e');
     } finally {
       setBusy(false);
     }

@@ -107,33 +107,36 @@ class ProductdetailsView extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Quantity: ${viewModel.product.quantity.toString()}',
+                          'Available Quantity: ${viewModel.product.quantity.toString()}',
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                           ),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              iconSize: 13,
-                              icon: const Icon(Icons.remove_circle),
-                              onPressed: viewModel.decrementQuantity,
-                            ),
-                            Text(
-                              '${viewModel.quantity}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center,
+                            children: [
+                              IconButton(
+                                iconSize: 25,
+                                icon: const Icon(Icons.remove_circle),
+                                onPressed: viewModel.decrementQuantity,
                               ),
-                            ),
-                            IconButton(
-                              iconSize: 13,
-                              icon: const Icon(Icons.add_circle),
-                              onPressed: viewModel.incrementQuantity,
-                            ),
-                          ],
+                              Text(
+                                '${viewModel.quantity}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                ),
+                              ),
+                              IconButton(
+                                iconSize: 25,
+                                icon: const Icon(Icons.add_circle),
+                                onPressed: viewModel.incrementQuantity,
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         Center(
                           child: Column(
                             children: [
