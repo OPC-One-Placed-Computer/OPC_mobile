@@ -3,6 +3,7 @@ import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/models/current_authentication.dart';
+import 'package:opc_mobile_development/models/update_user.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 import 'package:opc_mobile_development/services/helpers/dio_client.dart';
 import 'package:opc_mobile_development/services/api/shared_preference/shared_preference_service_impl.dart';
@@ -230,39 +231,123 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-   @override
+  @override
   Future<List<Checkout>> getOrdersDetails() async {
-  try {
-    final token = await _sharedPreferenceService.getToken();
-    if (token == null) {
-      throw Exception('No authentication token found');
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.get(
+        '/orders',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data['data'] as List<dynamic>;
+        print('Response Data: $responseData');
+
+        final List<Checkout> orders =
+            responseData.map((order) => Checkout.fromJson(order)).toList();
+        print('Parsed Orders: $orders');
+
+        return orders;
+      } else {
+        throw Exception('Failed to fetch orders: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching orders: $e');
+      rethrow;
     }
-
-    final response = await _dio.get(
-      '/orders',
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
-
-    if (response.statusCode == 200) {
-      final responseData = response.data['data'] as List<dynamic>;
-      print('Response Data: $responseData'); 
-
-      final List<Checkout> orders = responseData.map((order) => Checkout.fromJson(order)).toList();
-      print('Parsed Orders: $orders'); 
-
-      return orders;
-    } else {
-      throw Exception('Failed to fetch orders: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error fetching orders: $e');
-    rethrow;
   }
-}
 
-  
+  @override
+  Future<UpdateUser> updateUser(UpdateUser user) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/update-user/${user.id}',
+        data: {
+          'email': user.email,
+          'first_name': user.firstName,
+          'last_name': user.lastName,
+          'address': user.address,
+          'image_name': user.imageName,
+          'image_path': user.imagePath,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('User updated successfully');
+        if (response.data is Map<String, dynamic>) {
+          return UpdateUser.fromJson(response.data);
+        } else {
+          throw Exception('Invalid response data format');
+        }
+      } else {
+        throw Exception(
+            'Failed to update user: ${response.statusCode} ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error updating user: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<UpdatePassword> updatePassword(UpdatePassword user) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/update-user/${user.id}',
+        data: {
+          'email': user.email,
+          'first_name': user.firstName,
+          'last_name': user.lastName,
+          'address': user.address,
+          'old_password': user.oldPassword,
+          'new_password': user.newPassword,
+          'new_password_confirmation': user.newPasswordConfirmation,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('User updated successfully');
+        if (response.data is Map<String, dynamic>) {
+          return UpdatePassword.fromJson(response.data);
+        } else {
+          throw Exception('Invalid response data format');
+        }
+      } else {
+        throw Exception(
+            'Failed to update user: ${response.statusCode} ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error updating user: $e');
+      rethrow;
+    }
+  }
 }

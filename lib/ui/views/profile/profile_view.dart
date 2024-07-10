@@ -22,175 +22,327 @@ class ProfileView extends StatelessWidget {
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: model.hasError
-                      ? Center(
-                          child: Text(
-                            'An error occurred. Please try again.',
-                            style: GoogleFonts.poppins(),
-                          ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 50),
+                      Center(
+                        child: Stack(
                           children: [
-                            const SizedBox(height: 50),
-                            Center(
-                              child: Stack(
-                                children: [
-                                  const CircleAvatar(
-                                    radius: 70, // Increased radius
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 90,
-                                    ),
+                            const CircleAvatar(
+                              radius: 70,
+                              child: Icon(
+                                Icons.person,
+                                size: 90,
+                              ),
+                            ),
+                            if (model.isEditing)
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                  radius: 20,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.edit,
+                                        color: Colors.white),
+                                    onPressed: () {},
                                   ),
-                                  if (model.isEditing)
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.blue,
-                                        radius: 20,
-                                        child: IconButton(
-                                          icon: const Icon(Icons.edit,
-                                              color: Colors.white),
-                                          onPressed: () {},
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Text(
+                          'Profile Information',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2, horizontal: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: AbsorbPointer(
+                          absorbing: !model.isEditing,
+                          child: TextFormField(
+                            controller: fullNameController,
+                            style: GoogleFonts.poppins(),
+                            decoration: InputDecoration(
+                              labelText: 'Full Name',
+                              labelStyle: GoogleFonts.poppins(),
+                              border: InputBorder.none,
+                            ),
+                            readOnly: !model.isEditing,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: AbsorbPointer(
+                          absorbing: !model.isEditing,
+                          child: TextFormField(
+                            controller: emailController,
+                            style: GoogleFonts.poppins(),
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              labelStyle: GoogleFonts.poppins(),
+                              border: InputBorder.none,
+                            ),
+                            readOnly: !model.isEditing,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: AbsorbPointer(
+                          absorbing: !model.isEditing,
+                          child: TextFormField(
+                            controller: addressController,
+                            style: GoogleFonts.poppins(),
+                            decoration: InputDecoration(
+                              labelText: 'Address',
+                              labelStyle: GoogleFonts.poppins(),
+                              border: InputBorder.none,
+                            ),
+                            readOnly: !model.isEditing,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Column(
+                          children: [
+                            model.isEditing
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          List<String> names =
+                                              fullNameController.text.split(' ');
+                                          String firstName = names.isNotEmpty
+                                              ? names[0]
+                                              : '';
+                                          String lastName = names.length > 1
+                                              ? names[1]
+                                              : '';
+
+                                          model
+                                              .saveUserData(
+                                                firstName,
+                                                lastName,
+                                                emailController.text,
+                                                addressController.text,
+                                                model.imageName ?? '',
+                                                model.imagePath ?? '',
+                                              )
+                                              .then((value) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Profile updated successfully',
+                                                  style: GoogleFonts.poppins(),
+                                                ),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+                                            model.fetchUserData();
+                                          }).catchError((error) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Error saving user data: $error',
+                                                  style: GoogleFonts.poppins(),
+                                                ),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          });
+                                        },
+                                        icon: Icon(Icons.save),
+                                        label: Text(
+                                          'Save',
+                                          style: GoogleFonts.poppins(),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: Text(
-                                'Profile Information',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: AbsorbPointer(
-                                absorbing: !model.isEditing,
-                                child: TextFormField(
-                                  controller: fullNameController,
-                                  style: GoogleFonts.poppins(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Full Name',
-                                    labelStyle: GoogleFonts.poppins(),
-                                    border: InputBorder.none,
-                                  ),
-                                  readOnly: !model.isEditing,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: AbsorbPointer(
-                                absorbing: !model.isEditing,
-                                child: TextFormField(
-                                  controller: emailController,
-                                  style: GoogleFonts.poppins(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    labelStyle: GoogleFonts.poppins(),
-                                    border: InputBorder.none,
-                                  ),
-                                  readOnly: !model.isEditing,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: AbsorbPointer(
-                                absorbing: !model.isEditing,
-                                child: TextFormField(
-                                  controller: addressController,
-                                  style: GoogleFonts.poppins(),
-                                  decoration: InputDecoration(
-                                    labelText: 'Address',
-                                    labelStyle: GoogleFonts.poppins(),
-                                    border: InputBorder.none,
-                                  ),
-                                  readOnly: !model.isEditing,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Center(
-                              child: model.isEditing
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            List<String> names =
-                                                fullNameController.text
-                                                    .split(' ');
-                                            String firstName = names.isNotEmpty
-                                                ? names[0]
-                                                : '';
-                                            String lastName = names.length > 1
-                                                ? names[1]
-                                                : '';
-
-                                            model.saveUserData(
-                                              firstName,
-                                              lastName,
-                                              emailController.text,
-                                              addressController.text,
-                                            );
-                                          },
-                                          child: Text(
-                                            'Save',
-                                            style: GoogleFonts.poppins(),
-                                          ),
+                                      const SizedBox(width: 8),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          model.toggleEditing();
+                                        },
+                                        child: Text(
+                                          'Cancel',
+                                          style: GoogleFonts.poppins(),
                                         ),
-                                        const SizedBox(width: 8),
+                                      ),
+                                    ],
+                                  )
+                                : ElevatedButton.icon(
+                                    onPressed: () {
+                                      model.toggleEditing();
+                                    },
+                                    icon: Icon(Icons.edit),
+                                    label: Text(
+                                      'Edit',
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                  ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                final oldPasswordController =
+                                    TextEditingController();
+                                final newPasswordController =
+                                    TextEditingController();
+                                final confirmPasswordController =
+                                    TextEditingController();
+
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Change Password',
+                                          style: GoogleFonts.poppins()),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextFormField(
+                                            controller: oldPasswordController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Old Password',
+                                              labelStyle:
+                                                  GoogleFonts.poppins(),
+                                            ),
+                                            obscureText: true,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          TextFormField(
+                                            controller: newPasswordController,
+                                            decoration: InputDecoration(
+                                              labelText: 'New Password',
+                                              labelStyle:
+                                                  GoogleFonts.poppins(),
+                                            ),
+                                            obscureText: true,
+                                          ),
+                                          const SizedBox(height: 8),
+                                          TextFormField(
+                                            controller:
+                                                confirmPasswordController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Confirm Password',
+                                              labelStyle:
+                                                  GoogleFonts.poppins(),
+                                            ),
+                                            obscureText: true,
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Cancel',
+                                              style: GoogleFonts.poppins()),
+                                        ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            model.toggleEditing();
+                                            if (newPasswordController.text.trim() == confirmPasswordController.text.trim()) {
+                                              List<String> names = fullNameController.text.split(' ');
+                                              String firstName = names.isNotEmpty ? names[0] : '';
+                                              String lastName = names.length > 1 ? names[1] : '';
+
+                                              model
+                                                  .changePassword(
+                                                    oldPasswordController.text,
+                                                    newPasswordController.text,
+                                                    confirmPasswordController.text,
+                                                    firstName,
+                                                    lastName,
+                                                    emailController.text,
+                                                    addressController.text,
+                                                  )
+                                                  .then((value) {
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Password changed successfully',
+                                                          style: GoogleFonts.poppins(),
+                                                        ),
+                                                        backgroundColor: Colors.green,
+                                                      ),
+                                                    );
+                                                  })
+                                                  .catchError((error) {
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Error changing password: $error',
+                                                          style: GoogleFonts.poppins(),
+                                                        ),
+                                                        backgroundColor: Colors.red,
+                                                      ),
+                                                    );
+                                                  });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'New password and confirm password do not match',
+                                                    style: GoogleFonts.poppins(),
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
                                           },
-                                          child: Text(
-                                            'Cancel',
-                                            style: GoogleFonts.poppins(),
-                                          ),
+                                          child: Text('Change Password',
+                                              style: GoogleFonts.poppins()),
                                         ),
                                       ],
-                                    )
-                                  : ElevatedButton(
-                                      onPressed: () {
-                                        model.toggleEditing();
-                                      },
-                                      child: Text(
-                                        'Edit',
-                                        style: GoogleFonts.poppins(),
-                                      ),
-                                    ),
+                                    );
+                                  },
+                                );
+                              },
+                              icon: Icon(Icons.lock),
+                              label: Text(
+                                'Change Password',
+                                style: GoogleFonts.poppins(),
+                              ),
                             ),
                           ],
                         ),
+                      ),
+                    ],
+                  ),
                 ),
         );
       },
