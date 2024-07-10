@@ -1,4 +1,5 @@
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/update_user.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 
 class ProfileViewModel extends AppBaseViewModel {
@@ -10,7 +11,12 @@ class ProfileViewModel extends AppBaseViewModel {
   String? firstName;
   String? lastName;
   String? email;
-  String address = 'Guadalupe, Carmen, Bohol';
+  String? address;
+  int? userId;
+  String? imageName;
+  String? imagePath;
+  String? oldPassword;
+  String? newPassword;
 
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
 
@@ -26,10 +32,16 @@ class ProfileViewModel extends AppBaseViewModel {
   Future<void> fetchUserData() async {
     try {
       setBusy(true);
+
       final authData = await _apiService.getCurrentAuthentication();
+      userId = authData.id;
       firstName = authData.firstName;
       lastName = authData.lastName;
       email = authData.email;
+      address = authData.address;
+      imageName = authData.imageName;
+      imagePath = authData.imagePath;
+
       notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
@@ -39,13 +51,82 @@ class ProfileViewModel extends AppBaseViewModel {
     }
   }
 
-  void saveUserData(String newFirstName, String newLastName, String newEmail,
-      String newAddress) {
-    firstName = newFirstName;
-    lastName = newLastName;
-    email = newEmail;
-    address = newAddress;
-    toggleEditing();
-    notifyListeners();
+  Future<void> saveUserData(
+    String newFirstName,
+    String newLastName,
+    String newEmail,
+    String newAddress,
+    String newImageName,
+    String newImagePath,
+  ) async {
+    try {
+      setBusy(true);
+
+      final updateUser = UpdateUser(
+        id: userId,
+        firstName: newFirstName,
+        lastName: newLastName,
+        email: newEmail,
+        address: newAddress,
+        imageName: newImageName,
+        imagePath: newImagePath,
+      );
+
+      final updatedUser = await _apiService.updateUser(updateUser);
+
+      firstName = updatedUser.firstName;
+      lastName = updatedUser.lastName;
+      email = updatedUser.email;
+      address = updatedUser.address;
+      imageName = updatedUser.imageName;
+      imagePath = updatedUser.imagePath;
+    } catch (e) {
+      print('Error saving user data: $e');
+      setError('Error saving user data: $e');
+    } finally {
+      setBusy(false);
+      toggleEditing();
+      notifyListeners();
+    }
+  }
+
+  Future<void> changePassword(
+    String newOldPassword,
+    String newNewPassword,
+    String newNewPasswordConfirmation,
+    String firstName,
+    String lastName,
+    String email,
+    String address,
+  ) async {
+    try {
+      setBusy(true);
+
+      final changePass = UpdatePassword(
+        id: userId,
+        oldPassword: newOldPassword,
+        newPassword: newNewPassword,
+        newPasswordConfirmation: newNewPasswordConfirmation,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        address: address,
+      );
+
+      final changedPass = await _apiService.updatePassword(changePass);
+
+      this.firstName = changedPass.firstName;
+      this.lastName = changedPass.lastName;
+      this.email = changedPass.email;
+      this.address = changedPass.address;
+      oldPassword = changedPass.oldPassword;
+      newPassword = changedPass.newPassword;
+    } catch (e) {
+      print('Error changing password: $e');
+      setError('Error changing password: $e');
+    } finally {
+      setBusy(false);
+      notifyListeners();
+    }
   }
 }
