@@ -180,7 +180,7 @@ class AddToCartView extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             if (viewModel.selectedIndices.isEmpty) {
-                              // Show snackbar if no items are selected
+                        
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Select products to checkout'),
@@ -188,7 +188,7 @@ class AddToCartView extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              // Navigate to checkout view if items are selected
+                              
                               final selectedCartItems = viewModel.getSelectedCartItems();
                               Navigator.push(
                                 context,

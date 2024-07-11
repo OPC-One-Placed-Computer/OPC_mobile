@@ -33,11 +33,11 @@ import 'package:stacked_services/stacked_services.dart' as _i16;
 class Routes {
   static const startupView = '/startup-view';
 
-  static const login = '/login-view';
+  static const login = '/';
 
   static const signup = '/signup-view';
 
-  static const products = '/';
+  static const products = '/home-view';
 
   static const homeView = '/home-view';
 
@@ -60,7 +60,7 @@ class Routes {
     login,
     signup,
     products,
-    homeView,
+    
     storeView,
     profileView,
     products_view,
@@ -132,7 +132,7 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i3.LoginView: (data) {
       return _i13.MaterialPageRoute<dynamic>(
-        builder: (context) => const _i3.LoginView(),
+        builder: (context) => _i3.LoginView(),
         settings: data,
       );
     },

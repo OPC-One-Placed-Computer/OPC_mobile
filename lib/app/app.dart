@@ -26,9 +26,9 @@ import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.d
 @StackedApp(
   routes: [
     MaterialRoute(page: StartupView),
-    MaterialRoute(page: LoginView, name: 'login'),
+    MaterialRoute(page: LoginView, name: 'login', initial: true),
     MaterialRoute(page: SignupView, name: 'signup'),
-    MaterialRoute(page: HomeView, name: 'products', initial: true),
+    MaterialRoute(page: HomeView, name: 'products'),
     MaterialRoute(page: HomeView),
     MaterialRoute(page: StoreView),
 

@@ -20,7 +20,7 @@ class AddToCartViewModel extends AppBaseViewModel {
   void init() async {
     await fetchCartItems();
     setBusy(true);
-    await _getProducts();
+   
     setBusy(false);
   }
 
@@ -34,10 +34,7 @@ class AddToCartViewModel extends AppBaseViewModel {
     return subtotal + shippingCost;
   }
 
-  Future<void> _getProducts() async {
-    products = await apiService.getProducts();
-   
-  }
+ 
 
   void toggleCheckbox(int index) {
     if (selectedIndices.contains(index)) {

@@ -1,12 +1,19 @@
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/update_user.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 class ProfileViewModel extends AppBaseViewModel {
   final ApiServiceService _apiService;
+  final ImagePicker _picker = ImagePicker();
 
   ProfileViewModel({required ApiServiceService apiService})
       : _apiService = apiService;
+
+  ProfileImage? _profileImage;
+
+  ProfileImage? get profileImage => _profileImage;
 
   String? firstName;
   String? lastName;
@@ -80,13 +87,14 @@ class ProfileViewModel extends AppBaseViewModel {
       address = updatedUser.address;
       imageName = updatedUser.imageName;
       imagePath = updatedUser.imagePath;
+
+      notifyListeners();
     } catch (e) {
       print('Error saving user data: $e');
       setError('Error saving user data: $e');
     } finally {
       setBusy(false);
       toggleEditing();
-      notifyListeners();
     }
   }
 
@@ -127,6 +135,40 @@ class ProfileViewModel extends AppBaseViewModel {
     } finally {
       setBusy(false);
       notifyListeners();
+    }
+  }
+
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      setBusy(true);
+
+      final pickedFile = await _picker.pickImage(source: source);
+
+      if (pickedFile != null) {
+        imagePath = pickedFile.path;
+        imageName = path.basename(pickedFile.path);
+        notifyListeners();
+      } else {
+        print('No image selected.');
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      setError('Error picking image: $e');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  Future<void> displayProfileImage(String filename) async {
+    try {
+      setBusy(true);
+      final downloadedImage = await _apiService.retrieveProfileImage(filename);
+      _profileImage = downloadedImage;
+      notifyListeners();
+    } catch (e) {
+      print('Error downloading profile image: $e');
+    } finally {
+      setBusy(false);
     }
   }
 }

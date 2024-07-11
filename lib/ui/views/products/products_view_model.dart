@@ -2,8 +2,11 @@ import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/product.dart';
 
 class ProductsViewModel extends AppBaseViewModel {
-  List<Product> products = [];
   List<Product> allProducts = [];
+  List<Product> products = [];
+  int currentPage = 1;
+  int lastPage = 1;
+  bool isLoadingMore = false;
 
   String? selectedCategory;
   String? selectedBrand;
@@ -18,14 +21,37 @@ class ProductsViewModel extends AppBaseViewModel {
     setBusy(false);
   }
 
-  Future<void> _getProducts() async {
-    allProducts = await apiService.getProducts();
-    products = allProducts;
+  Future<void> _getProducts({int page = 1}) async {
+    try {
+      final paginatedProducts = await apiService.getProducts(page: page);
+      if (page == 1) {
+        allProducts = paginatedProducts.data;
+      } else {
+        allProducts.addAll(paginatedProducts.data);
+      }
+      products = allProducts;
+      currentPage = paginatedProducts.currentPage;
+      lastPage = paginatedProducts.lastPage;
+    } catch (e) {
+      print('Error fetching products: $e');
+    } finally {
+      setBusy(false);
+    }
   }
 
   void _initializeFilters() {
     categories.addAll(allProducts.map((product) => product.category).toSet());
     brands.addAll(allProducts.map((product) => product.brand).toSet());
+  }
+
+  Future<void> loadMoreProducts() async {
+    if (isLoadingMore || currentPage >= lastPage) return;
+
+    isLoadingMore = true;
+    currentPage++;
+    await _getProducts(page: currentPage);
+    isLoadingMore = false;
+    notifyListeners();
   }
 
   void searchProducts(String query) {
@@ -68,6 +94,7 @@ class ProductsViewModel extends AppBaseViewModel {
           product.brand == selectedBrand;
       return categoryMatches && brandMatches;
     }).toList();
+    notifyListeners();
   }
 
   Future<void> addToCart(Product product) async {

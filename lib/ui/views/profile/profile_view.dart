@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_viewmodel.dart';
 import 'package:stacked/stacked.dart';
+import 'dart:io';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -29,12 +31,17 @@ class ProfileView extends StatelessWidget {
                       Center(
                         child: Stack(
                           children: [
-                            const CircleAvatar(
+                            CircleAvatar(
                               radius: 70,
-                              child: Icon(
-                                Icons.person,
-                                size: 90,
-                              ),
+                              backgroundImage: model.imagePath != null
+                                  ? FileImage(File(model.imagePath!))
+                                  : null,
+                              child: model.imagePath == null
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 90,
+                                    )
+                                  : null,
                             ),
                             if (model.isEditing)
                               Positioned(
@@ -46,7 +53,35 @@ class ProfileView extends StatelessWidget {
                                   child: IconButton(
                                     icon: const Icon(Icons.edit,
                                         color: Colors.white),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) => BottomSheet(
+                                          onClosing: () {},
+                                          builder: (context) => Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ListTile(
+                                                leading: const Icon(Icons.camera),
+                                                title: const Text('Capture Image'),
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                  model.pickImage(ImageSource.camera);
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading: const Icon(Icons.image),
+                                                title: const Text('Pick from Gallery'),
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                  model.pickImage(ImageSource.gallery);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -271,7 +306,8 @@ class ProfileView extends StatelessWidget {
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            if (newPasswordController.text.trim() == confirmPasswordController.text.trim()) {
+                                            if (newPasswordController.text.trim() ==
+                                                confirmPasswordController.text.trim()) {
                                               List<String> names = fullNameController.text.split(' ');
                                               String firstName = names.isNotEmpty ? names[0] : '';
                                               String lastName = names.length > 1 ? names[1] : '';
@@ -316,7 +352,7 @@ class ProfileView extends StatelessWidget {
                                                   .showSnackBar(
                                                 SnackBar(
                                                   content: Text(
-                                                    'New password and confirm password do not match',
+                                                    'Passwords do not match',
                                                     style: GoogleFonts.poppins(),
                                                   ),
                                                   backgroundColor: Colors.red,

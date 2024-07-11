@@ -31,3 +31,26 @@ class Product {
         imagePath: json['image_path'],
       );
 }
+
+class PaginatedProducts {
+  List<Product> data;
+  int currentPage;
+  int lastPage;
+
+  PaginatedProducts({
+    required this.data,
+    required this.currentPage,
+    required this.lastPage,
+  });
+
+  factory PaginatedProducts.fromJson(Map<String, dynamic> json) {
+    final dataJson = json['data']['data'] as List<dynamic>;
+    return PaginatedProducts(
+      data: dataJson.map((productJson) => Product.fromJson(productJson)).toList(),
+      currentPage: json['data']['current_page'] ?? 1,
+      lastPage: json['data']['last_page'] ?? 1,
+    );
+  }
+}
+
+

@@ -5,7 +5,7 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/models/update_user.dart';
 
 abstract class ApiServiceService {
-  Future<List<Product>> getProducts();
+  Future<PaginatedProducts> getProducts({int page = 1});
   Future<Product> getProduct(String id);
   Future<Cart> addToCart(int productId, int quantity);
   Future<List<Cart>> getAllCartItems();
@@ -16,4 +16,5 @@ abstract class ApiServiceService {
   Future<List<Checkout>> getOrdersDetails();
   Future<UpdateUser> updateUser(UpdateUser user);
   Future<UpdatePassword> updatePassword(UpdatePassword user);
+  Future<ProfileImage> retrieveProfileImage(String filename);
 }
