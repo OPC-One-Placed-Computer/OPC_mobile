@@ -17,21 +17,47 @@ class ApiServiceImpl implements ApiServiceService {
 
   @override
   Future<PaginatedProducts> getProducts({int page = 1}) async {
-  try {
-    final response = await _dio.get('/products', queryParameters: {'page': page});
-    if (response.statusCode == 200) {
-      final productsData = response.data as Map<String, dynamic>;
-      return PaginatedProducts.fromJson(productsData);
-    } else {
-      throw Exception('Failed to fetch products: ${response.statusCode}');
+    try {
+      final response =
+          await _dio.get('/products', queryParameters: {'page': page});
+      if (response.statusCode == 200) {
+        final productsData = response.data as Map<String, dynamic>;
+        return PaginatedProducts.fromJson(productsData);
+      } else {
+        throw Exception('Failed to fetch products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
+      rethrow;
     }
-  } catch (e) {
-    print('Error fetching products: $e');
-    rethrow;
   }
-}
+  Future<PaginatedProducts> getProductsByPriceRange({
+    required int minPrice,
+    required int maxPrice,
+    int page = 1,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/products',
+        queryParameters: {
+          'min_price': minPrice,
+          'max_price': maxPrice,
+          'page': page,
+        },
+      );
 
-
+      if (response.statusCode == 200) {
+        final productsData = response.data as Map<String, dynamic>;
+        return PaginatedProducts.fromJson(productsData);
+      } else {
+        throw Exception('Failed to fetch products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
+      rethrow;
+    }
+  }
+  
 
   @override
   Future<Product> getProduct(String id) async {
@@ -350,7 +376,7 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-@override
+  @override
   Future<ProfileImage> retrieveProfileImage(String filename) async {
     try {
       final token = await _sharedPreferenceService.getToken();
@@ -370,15 +396,16 @@ class ApiServiceImpl implements ApiServiceService {
 
       if (response.statusCode == 200) {
         final profileImageData = response.data as Map<String, dynamic>;
-        final ProfileImage profileImage = ProfileImage.fromJson(profileImageData);
+        final ProfileImage profileImage =
+            ProfileImage.fromJson(profileImageData);
         return profileImage;
       } else {
-        throw Exception('Failed to download profile image: ${response.statusCode}');
+        throw Exception(
+            'Failed to download profile image: ${response.statusCode}');
       }
     } catch (e) {
       print('Error downloading profile image: $e');
-      rethrow; 
+      rethrow;
     }
   }
-
 }

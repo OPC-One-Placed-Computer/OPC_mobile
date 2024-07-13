@@ -12,6 +12,8 @@ import 'package:opc_mobile_development/utils/constants.dart';
 class HomeViewModel extends AppBaseViewModel {
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
+  bool get isAuthenticated => user != null;
+
 
   User? user;
 
@@ -20,7 +22,7 @@ class HomeViewModel extends AppBaseViewModel {
   }
 
   void setIndex(int index) async {
-    if (index == 2 || index == 3) {
+    if (index == 2 || index == 1) {
       if (user == null) {
         await navigationService.navigateTo(Routes.login)!.then((value) {
           index = 0;

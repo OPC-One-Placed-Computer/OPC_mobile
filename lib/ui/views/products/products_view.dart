@@ -18,6 +18,31 @@ class ProductsView extends StatelessWidget {
       viewModelBuilder: () => ProductsViewModel(),
       onModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) => Scaffold(
+        appBar: AppBar(
+          title: Text('Products', style: GoogleFonts.poppins()),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: () {
+                showGeneralDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  barrierLabel: MaterialLocalizations.of(context)
+                      .modalBarrierDismissLabel,
+                  barrierColor: Colors.black54,
+                  transitionDuration: const Duration(milliseconds: 200),
+                  pageBuilder: (BuildContext context, Animation animation,
+                      Animation secondaryAnimation) {
+                    return Align(
+                      alignment: Alignment.topCenter,
+                      child: _FilterModalSheet(viewModel: viewModel),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
         body: viewModel.isBusy && viewModel.products.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : NotificationListener<ScrollNotification>(
@@ -33,10 +58,7 @@ class ProductsView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildHeader(),
-                       const SizedBox(height: 20), 
-                      _buildSearchBar(viewModel),
-                      _buildFilters(viewModel),
+                      const SizedBox(height: 20),
                       _buildProductList(viewModel),
                       if (viewModel.isLoadingMore)
                         const Center(child: CircularProgressIndicator()),
@@ -49,136 +71,9 @@ class ProductsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      height: 180,
-      color: const Color.fromARGB(255, 19, 7, 46),
-      alignment: Alignment.center,
-      child: Transform.translate(
-        offset: const Offset(0.0, -20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'lib/resources/images/logo.png',
-              height: 100,
-              width: 120,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Welcome to One Pc Store',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 0),
-            Text(
-              'Where high quality products are in one place',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar(ProductsViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.search),
-          hintText: 'Search products...',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        ),
-        onChanged: (value) {
-          viewModel.searchProducts(value);
-        },
-      ),
-    );
-  }
-
-  Widget _buildFilters(ProductsViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Filtered by:',
-            style: GoogleFonts.poppins(
-              color: const Color.fromARGB(255, 0, 0, 0),
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Opacity(
-                  opacity: 0.8,
-                  child: DropdownButton<String>(
-                    value: viewModel.selectedCategory,
-                    items: viewModel.categories
-                        .map((String category) => DropdownMenuItem<String>(
-                              value: category,
-                              child: Text(
-                                category,
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (String? newValue) {
-                      viewModel.setSelectedCategory(newValue);
-                    },
-                    hint: const Text('Select Category'),
-                    isExpanded: true,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Opacity(
-                  opacity: 0.8,
-                  child: DropdownButton<String>(
-                    value: viewModel.selectedBrand,
-                    items: viewModel.brands
-                        .map((String brand) => DropdownMenuItem<String>(
-                              value: brand,
-                              child: Text(
-                                brand,
-                                style: const TextStyle(color: Colors.black),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (String? newValue) {
-                      viewModel.setSelectedBrand(newValue);
-                    },
-                    hint: const Text('Select Brand'),
-                    isExpanded: true,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildProductList(ProductsViewModel viewModel) {
     return Wrap(
-      alignment: WrapAlignment.center, 
+      alignment: WrapAlignment.center,
       spacing: 20.0,
       runSpacing: 20.0,
       children: viewModel.products.map((product) {
@@ -200,6 +95,309 @@ class ProductsView extends StatelessWidget {
           },
         );
       }).toList(),
+    );
+  }
+}
+
+class _FilterModalSheet extends StatefulWidget {
+  final ProductsViewModel viewModel;
+
+  const _FilterModalSheet({Key? key, required this.viewModel})
+      : super(key: key);
+
+  @override
+  State<_FilterModalSheet> createState() => _FilterModalSheetState();
+}
+
+class _FilterModalSheetState extends State<_FilterModalSheet> {
+  late TextEditingController minPriceController;
+  late TextEditingController maxPriceController;
+
+  @override
+  void initState() {
+    super.initState();
+    minPriceController = TextEditingController(
+      text: widget.viewModel.minPrice?.toString() ?? '',
+    );
+    maxPriceController = TextEditingController(
+      text: widget.viewModel.maxPrice?.toString() ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    minPriceController.dispose();
+    maxPriceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8.0),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Filter Products',
+                    style: GoogleFonts.poppins(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+              _buildSearchBar(widget.viewModel),
+              _buildFilters(widget.viewModel),
+              _buildPriceRangeFilter(widget.viewModel),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ProductsViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Container(
+        height: 40,
+        child: TextField(
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search, size: 20),
+            hintText: 'Search products...',
+            hintStyle: GoogleFonts.poppins(fontSize: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            filled: true,
+            fillColor: const Color.fromARGB(255, 255, 249, 249),
+            contentPadding: const EdgeInsets.fromLTRB(12, 27, 12, 10),
+          ),
+          onChanged: (value) {
+            viewModel.searchProducts(value);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilters(ProductsViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Filtered by:',
+            style: GoogleFonts.poppins(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: DropdownButton<String>(
+                    value: viewModel.selectedCategory,
+                    items: viewModel.categories
+                        .map((String category) => DropdownMenuItem<String>(
+                              value: category,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  category,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.black,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        viewModel.setSelectedCategory(newValue);
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    hint: const Text(
+                      'Select Category',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    isExpanded: true,
+                    underline: Container(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Container(
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: DropdownButton<String>(
+                    value: viewModel.selectedBrand,
+                    items: viewModel.brands
+                        .map((String brand) => DropdownMenuItem<String>(
+                              value: brand,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  brand,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.black,
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        viewModel.setSelectedBrand(newValue);
+                      });
+                    },
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    hint: const Text(
+                      'Select Brand',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    isExpanded: true,
+                    underline: Container(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPriceRangeFilter(ProductsViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Price Range:',
+            style: GoogleFonts.poppins(
+              color: const Color.fromARGB(255, 0, 0, 0),
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: minPriceController,
+                      keyboardType: TextInputType.number,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Minimum Price',
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                        border: InputBorder.none,
+                        isCollapsed: true, 
+                        contentPadding: EdgeInsets.only(
+                            top:
+                                8.0),
+                      ),
+                      onChanged: (value) {
+                        double? minPrice =
+                            value.isNotEmpty ? double.tryParse(value) : null;
+                        setState(() {
+                          viewModel.setPriceRange(minPrice, viewModel.maxPrice);
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Container(
+                  height: 36.0,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: maxPriceController,
+                      keyboardType: TextInputType.number,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Maximum Price',
+                        hintStyle: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                        border: InputBorder.none,
+                        isCollapsed: true, 
+                        contentPadding: EdgeInsets.only(
+                            top:
+                                8.0),
+                      ),
+                      onChanged: (value) {
+                        double? maxPrice =
+                            value.isNotEmpty ? double.tryParse(value) : null;
+                        setState(() {
+                          viewModel.setPriceRange(viewModel.minPrice, maxPrice);
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -229,57 +427,78 @@ class ProductItem extends StatelessWidget {
         child: Stack(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(8.0)),
+                AspectRatio(
+                  aspectRatio: 1.0,
                   child: CachedNetworkImage(
-                    imageUrl: Constants.baseUrl + product.imagePath,
-                    height: 100,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                    imageUrl: '${Constants.baseUrl}${product.imagePath}',
                     placeholder: (context, url) => const Center(
                       child: CircularProgressIndicator(),
                     ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey.shade200,
+                      child: const Icon(
+                        Icons.broken_image,
+                        size: 50,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.productName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        product.brand,
-                        style: GoogleFonts.poppins(),
-                      ),
-                      Text(
-                        '\$ ${product.price.toString()}',
-                        style: GoogleFonts.poppins(
-                          color: const Color.fromARGB(255, 0, 0, 0),
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    product.productName,
+                    style: GoogleFonts.poppins(
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 12,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    product.brand,
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: GoogleFonts.poppins(
+                      color: const Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
             Positioned(
-              bottom: 0.0,
-              right: 0.0,
-              child: IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () => onAddToCartTapped(product),
+              top: 8.0,
+              right: 8.0,
+              child: GestureDetector(
+                onTap: () => onAddToCartTapped.call(product),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Icon(
+                    Icons.add_shopping_cart,
+                    color: Color.fromARGB(255, 183, 120, 24),
+                    size: 16.0,
+                  ),
+                ),
               ),
             ),
           ],

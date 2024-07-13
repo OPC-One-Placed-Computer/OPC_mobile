@@ -104,8 +104,6 @@ class UpdatePassword {
       );
 }
 
-
-
 class ProfileImage {
   final String path;
 
@@ -113,7 +111,7 @@ class ProfileImage {
 
   factory ProfileImage.fromJson(Map<String, dynamic> json) {
     return ProfileImage(
-      path: json['path'],
+      path: json['user_images'],
     );
   }
 }

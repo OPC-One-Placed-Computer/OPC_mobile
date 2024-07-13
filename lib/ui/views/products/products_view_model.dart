@@ -7,6 +7,8 @@ class ProductsViewModel extends AppBaseViewModel {
   int currentPage = 1;
   int lastPage = 1;
   bool isLoadingMore = false;
+  double? minPrice;
+  double? maxPrice;
 
   String? selectedCategory;
   String? selectedBrand;
@@ -58,16 +60,29 @@ class ProductsViewModel extends AppBaseViewModel {
     if (query.isEmpty) {
       filterProducts();
     } else {
-      products = allProducts
-          .where((product) =>
-              product.productName.toLowerCase().contains(query.toLowerCase()) &&
-              (selectedCategory == null ||
-                  selectedCategory == 'All' ||
-                  product.category == selectedCategory) &&
-              (selectedBrand == null ||
-                  selectedBrand == 'All' ||
-                  product.brand == selectedBrand))
-          .toList();
+      products = allProducts.where((product) {
+        final lowerCaseQuery = query.toLowerCase();
+        final matchesProductName =
+            product.productName.toLowerCase().contains(lowerCaseQuery);
+        final matchesDescription =
+            product.description.toLowerCase().contains(lowerCaseQuery);
+        final matchesCategory =
+            product.category.toLowerCase().contains(lowerCaseQuery);
+        final matchesBrand = product.brand.toLowerCase().contains(lowerCaseQuery);
+
+        return (matchesProductName ||
+                matchesDescription ||
+                matchesCategory ||
+                matchesBrand) &&
+            (selectedCategory == null ||
+                selectedCategory == 'All' ||
+                product.category == selectedCategory) &&
+            (selectedBrand == null ||
+                selectedBrand == 'All' ||
+                product.brand == selectedBrand) &&
+            (minPrice == null || product.price >= minPrice!) &&
+            (maxPrice == null || product.price <= maxPrice!);
+      }).toList();
     }
     notifyListeners();
   }
@@ -84,15 +99,22 @@ class ProductsViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
+  void setPriceRange(double? min, double? max) {
+    minPrice = min;
+    maxPrice = max;
+    filterProducts();
+    notifyListeners();
+  }
+
   void filterProducts() {
     products = allProducts.where((product) {
-      final categoryMatches = selectedCategory == null ||
-          selectedCategory == 'All' ||
-          product.category == selectedCategory;
-      final brandMatches = selectedBrand == null ||
-          selectedBrand == 'All' ||
-          product.brand == selectedBrand;
-      return categoryMatches && brandMatches;
+      final categoryMatches =
+          selectedCategory == null || selectedCategory == 'All' || product.category == selectedCategory;
+      final brandMatches =
+          selectedBrand == null || selectedBrand == 'All' || product.brand == selectedBrand;
+      final priceMatches = (minPrice == null || product.price >= minPrice!) &&
+          (maxPrice == null || product.price <= maxPrice!);
+      return categoryMatches && brandMatches && priceMatches;
     }).toList();
     notifyListeners();
   }

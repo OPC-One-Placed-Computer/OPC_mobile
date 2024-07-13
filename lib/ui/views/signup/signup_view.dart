@@ -45,7 +45,7 @@ class SignupView extends StackedView<SignupViewModel> {
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
-                            color: Color.fromARGB(255, 58, 66, 86),
+                            color: Color.fromARGB(255, 19, 7, 46),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -148,7 +148,7 @@ class SignupView extends StackedView<SignupViewModel> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor: const Color.fromARGB(255, 19, 7, 46),
                                 ),
                                 child: const Text(
                                   'Register',
