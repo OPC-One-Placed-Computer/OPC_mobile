@@ -103,3 +103,15 @@ class UpdatePassword {
         newPasswordConfirmation: newPassword ?? this.newPasswordConfirmation,
       );
 }
+
+class ProfileImage {
+  final String path;
+
+  ProfileImage({required this.path});
+
+  factory ProfileImage.fromJson(Map<String, dynamic> json) {
+    return ProfileImage(
+      path: json['user_images'],
+    );
+  }
+}

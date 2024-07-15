@@ -16,15 +16,13 @@ class ApiServiceImpl implements ApiServiceService {
       SharedPreferenceServiceImpl();
 
   @override
-  Future<List<Product>> getProducts() async {
+  Future<PaginatedProducts> getProducts({int page = 1}) async {
     try {
-      final response = await _dio.get('/products');
+      final response =
+          await _dio.get('/products', queryParameters: {'page': page});
       if (response.statusCode == 200) {
         final productsData = response.data as Map<String, dynamic>;
-        final List<Product> products = (productsData['data'] as List<dynamic>)
-            .map((product) => Product.fromJson(product as Map<String, dynamic>))
-            .toList();
-        return products;
+        return PaginatedProducts.fromJson(productsData);
       } else {
         throw Exception('Failed to fetch products: ${response.statusCode}');
       }
@@ -33,6 +31,33 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
+  Future<PaginatedProducts> getProductsByPriceRange({
+    required int minPrice,
+    required int maxPrice,
+    int page = 1,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '/products',
+        queryParameters: {
+          'min_price': minPrice,
+          'max_price': maxPrice,
+          'page': page,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final productsData = response.data as Map<String, dynamic>;
+        return PaginatedProducts.fromJson(productsData);
+      } else {
+        throw Exception('Failed to fetch products: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching products: $e');
+      rethrow;
+    }
+  }
+  
 
   @override
   Future<Product> getProduct(String id) async {
@@ -347,6 +372,39 @@ class ApiServiceImpl implements ApiServiceService {
       }
     } catch (e) {
       print('Error updating user: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ProfileImage> retrieveProfileImage(String filename) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.get(
+        '/download/file',
+        queryParameters: {'path': filename},
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final profileImageData = response.data as Map<String, dynamic>;
+        final ProfileImage profileImage =
+            ProfileImage.fromJson(profileImageData);
+        return profileImage;
+      } else {
+        throw Exception(
+            'Failed to download profile image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error downloading profile image: $e');
       rethrow;
     }
   }
