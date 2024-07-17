@@ -7,7 +7,6 @@ import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
 import 'add_to_cart_viewmodel.dart';
 
-
 class AddToCartView extends StatelessWidget {
   const AddToCartView({Key? key}) : super(key: key);
 
@@ -24,7 +23,8 @@ class AddToCartView extends StatelessWidget {
         }
 
         double selectedSubtotal = viewModel.cartItems.fold(0.0, (sum, item) {
-          if (viewModel.selectedIndices.contains(viewModel.cartItems.indexOf(item))) {
+          if (viewModel.selectedIndices
+              .contains(viewModel.cartItems.indexOf(item))) {
             return sum + (item.product.price * item.quantity);
           }
           return sum;
@@ -33,51 +33,54 @@ class AddToCartView extends StatelessWidget {
         double selectedTotal = selectedSubtotal;
 
         return Scaffold(
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 16.0,
-                  top: 15.0,
-                  right: 8.0,
-                  bottom: 8.0,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 4.0,
+            shadowColor: Colors.grey.withOpacity(0.5),
+            title: Row(
+              children: [
+                Text(
+                  'Shopping Cart',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Shopping Cart',
-                      style: GoogleFonts.poppins(
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '(${viewModel.cartItems.length})',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(
-                        viewModel.isAllSelected ? Icons.close : Icons.check_circle,
-                        color: viewModel.isAllSelected ? Colors.red : Colors.green,
-                      ),
-                      onPressed: () {
-                        viewModel.toggleSelectAllItems();
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
+                const SizedBox(width: 8),
+                Text(
+                  '(${viewModel.cartItems.length})',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  viewModel.isAllSelected ? Icons.close : Icons.check_circle,
+                  color: viewModel.isAllSelected ? Colors.red : Colors.green,
+                ),
+                onPressed: () {
+                  viewModel.toggleSelectAllItems();
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete,
+                    color: viewModel.selectedIndices.isEmpty
+                        ? Colors.grey
+                        : Colors.red),
+                onPressed: viewModel.selectedIndices.isEmpty
+                    ? null
+                    : () {
                         viewModel.deleteSelectedItems();
                       },
-                    ),
-                  ],
-                ),
               ),
+            ],
+          ),
+          body: Column(
+            children: [
               const SizedBox(height: 8),
               Expanded(
                 child: ListView.builder(
@@ -87,7 +90,8 @@ class AddToCartView extends StatelessWidget {
                     final product = item.product;
                     return ProductItem(
                       product: product,
-                      onProductTapped: (product) => viewModel.navigateToProductDetails(product),
+                      onProductTapped: (product) =>
+                          viewModel.navigateToProductDetails(product),
                       viewModel: viewModel,
                       index: index,
                     );
@@ -95,7 +99,7 @@ class AddToCartView extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 200,
+                height: 160,
                 width: double.infinity,
                 padding: const EdgeInsets.all(15.0),
                 decoration: const BoxDecoration(
@@ -122,34 +126,15 @@ class AddToCartView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Subtotal',
+                            'Cart Selected',
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                             ),
                           ),
                           Text(
-                            '\$${selectedSubtotal.toStringAsFixed(2)}',
+                            '${viewModel.selectedIndices.length}',
                             style: GoogleFonts.poppins(
                               fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Shipping Cost',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                            ),
-                          ),
-                          const Text(
-                            'Free',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.green,
                             ),
                           ),
                         ],
@@ -180,7 +165,6 @@ class AddToCartView extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             if (viewModel.selectedIndices.isEmpty) {
-                        
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Select products to checkout'),
@@ -188,8 +172,8 @@ class AddToCartView extends StatelessWidget {
                                 ),
                               );
                             } else {
-                              
-                              final selectedCartItems = viewModel.getSelectedCartItems();
+                              final selectedCartItems =
+                                  viewModel.getSelectedCartItems();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -202,7 +186,8 @@ class AddToCartView extends StatelessWidget {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            backgroundColor: const Color.fromARGB(255, 19, 7, 46),
+                            backgroundColor:
+                                const Color.fromARGB(255, 19, 7, 46),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
@@ -253,7 +238,7 @@ class ProductItem extends StatelessWidget {
           vertical: 8.0,
         ),
         padding: const EdgeInsets.all(10),
-        height: 150,
+        height: 145,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -285,9 +270,17 @@ class ProductItem extends StatelessWidget {
               ),
               child: CachedNetworkImage(
                 imageUrl: Constants.baseUrl + product.imagePath,
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(),
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -305,27 +298,25 @@ class ProductItem extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 5),
                   Text(
                     'Price: \$${product.price.toString()}',
                     style: GoogleFonts.poppins(
                       fontSize: 10,
                     ),
                   ),
-                  
                   Text(
                     'Quantity: ${viewModel.cartItems[index].quantity.toString()}',
                     style: GoogleFonts.poppins(
                       fontSize: 10,
                     ),
                   ),
-                
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.remove_circle),
-                        iconSize: 20,
+                        iconSize: 15,
                         onPressed: () {
                           viewModel.decrementQuantity(index);
                         },
@@ -333,12 +324,12 @@ class ProductItem extends StatelessWidget {
                       Text(
                         viewModel.cartItems[index].quantity.toString(),
                         style: GoogleFonts.poppins(
-                          fontSize: 15,
+                          fontSize: 12,
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.add_circle),
-                        iconSize: 20,
+                        iconSize: 15,
                         onPressed: () {
                           viewModel.incrementQuantity(index);
                         },

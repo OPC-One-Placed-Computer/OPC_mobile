@@ -7,9 +7,10 @@ class StartupViewModel extends BaseViewModel {
   final _navigationService = locator<NavigationService>();
 
   Future runStartupLogic() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 5));
 
-    // Navigate to LoginView after the delay
-    _navigationService.replaceWith(Routes.login);
+  
+    _navigationService.replaceWith(Routes.products);
   }
+  
 }

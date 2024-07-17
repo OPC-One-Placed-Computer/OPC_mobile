@@ -3,8 +3,9 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 
 class ProductdetailsViewModel extends AppBaseViewModel {
+  @override
   final ApiServiceImpl apiService = ApiServiceImpl();
-  late Product product; // Use late to delay initialization until after constructor
+  late Product product;
 
   int quantity = 1;
 
@@ -34,7 +35,6 @@ class ProductdetailsViewModel extends AppBaseViewModel {
       product = await apiService.getProduct(product.id!.toString());
     } catch (e) {
       print('Error fetching product: $e');
-      // Handle error as needed
     }
   }
 

@@ -1,19 +1,17 @@
-import 'dart:developer';
+  import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:opc_mobile_development/app/app.router.dart';
-import 'package:opc_mobile_development/app/app_base_view_model.dart';
-import 'package:opc_mobile_development/models/user.dart';
-import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
-import 'package:opc_mobile_development/ui/views/products/products_view.dart';
-import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
-import 'package:opc_mobile_development/utils/constants.dart';
+  import 'package:flutter/material.dart';
+  import 'package:opc_mobile_development/app/app.router.dart';
+  import 'package:opc_mobile_development/app/app_base_view_model.dart';
+  import 'package:opc_mobile_development/models/user.dart';
+  import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
+  import 'package:opc_mobile_development/ui/views/products/products_view.dart';
+  import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
+  import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
-  bool get isAuthenticated => user != null;
-
 
   User? user;
 
@@ -21,14 +19,7 @@ class HomeViewModel extends AppBaseViewModel {
     await _getCachedUser();
   }
 
-  void setIndex(int index) async {
-    if (index == 2 || index == 1) {
-      if (user == null) {
-        await navigationService.navigateTo(Routes.login)!.then((value) {
-          index = 0;
-        });
-      }
-    }
+  void setIndex(int index) {
     _currentIndex = index;
     notifyListeners();
   }
@@ -54,6 +45,14 @@ class HomeViewModel extends AppBaseViewModel {
     }
   }
 
+  Future<void> checkAuthenticationAndNavigate(VoidCallback action) async {
+    if (user != null) {
+      action();
+    } else {
+      navigationService.navigateTo(Routes.login);
+    }
+  }
+
   void logout() async {
     try {
       final loggedOut = await authService.logout(user!);
@@ -66,3 +65,4 @@ class HomeViewModel extends AppBaseViewModel {
     }
   }
 }
+

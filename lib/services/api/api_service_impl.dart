@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
@@ -31,6 +34,7 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
+
   Future<PaginatedProducts> getProductsByPriceRange({
     required int minPrice,
     required int maxPrice,
@@ -57,7 +61,6 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
-  
 
   @override
   Future<Product> getProduct(String id) async {
@@ -291,47 +294,58 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-  @override
-  Future<UpdateUser> updateUser(UpdateUser user) async {
-    try {
-      final token = await _sharedPreferenceService.getToken();
-      if (token == null) {
-        throw Exception('No authentication token found');
-      }
 
-      final response = await _dio.post(
-        '/update-user/${user.id}',
-        data: {
-          'email': user.email,
-          'first_name': user.firstName,
-          'last_name': user.lastName,
-          'address': user.address,
-          'image_name': user.imageName,
-          'image_path': user.imagePath,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        print('User updated successfully');
-        if (response.data is Map<String, dynamic>) {
-          return UpdateUser.fromJson(response.data);
-        } else {
-          throw Exception('Invalid response data format');
-        }
-      } else {
-        throw Exception(
-            'Failed to update user: ${response.statusCode} ${response.statusMessage}');
-      }
-    } catch (e) {
-      print('Error updating user: $e');
-      rethrow;
+@override
+Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes) async {
+  try {
+    final token = await _sharedPreferenceService.getToken();
+    if (token == null) {
+      throw Exception('No authentication token found');
     }
+
+    FormData formData = FormData.fromMap({
+      'email': user.email,
+      'first_name': user.firstName,
+      'last_name': user.lastName,
+      'address': user.address,
+      'image_name': user.imageName,
+    });
+
+    if (imageBytes != null) {
+      formData.files.add(MapEntry(
+        'image',
+    MultipartFile.fromBytes(imageBytes, filename: user.imageName),
+      ));
+    }
+
+    final response = await _dio.post(
+      '/update-user/${user.id}',
+      data: formData,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('User updated successfully');
+      if (response.data is Map<String, dynamic>) {
+        return UpdateUser.fromJson(response.data);
+      } else {
+        throw Exception('Invalid response data format');
+      }
+    } else {
+      throw Exception('Failed to update user: ${response.statusCode} ${response.statusMessage}');
+    }
+  } catch (e) {
+    print('Error updating user: $e');
+    rethrow;
   }
+}
+
+
+
 
   @override
   Future<UpdatePassword> updatePassword(UpdatePassword user) async {
@@ -377,7 +391,7 @@ class ApiServiceImpl implements ApiServiceService {
   }
 
   @override
-  Future<ProfileImage> retrieveProfileImage(String filename) async {
+  Future<Uint8List> retrieveProfileImage(String path) async {
     try {
       final token = await _sharedPreferenceService.getToken();
       if (token == null) {
@@ -386,19 +400,17 @@ class ApiServiceImpl implements ApiServiceService {
 
       final response = await _dio.get(
         '/download/file',
-        queryParameters: {'path': filename},
+        queryParameters: {'path': path},
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
           },
+          responseType: ResponseType.bytes,
         ),
       );
 
       if (response.statusCode == 200) {
-        final profileImageData = response.data as Map<String, dynamic>;
-        final ProfileImage profileImage =
-            ProfileImage.fromJson(profileImageData);
-        return profileImage;
+        return response.data;
       } else {
         throw Exception(
             'Failed to download profile image: ${response.statusCode}');

@@ -2,8 +2,7 @@ import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
-import 'package:opc_mobile_development/models/checkout.dart';
-
+  
 class CheckoutViewModel extends AppBaseViewModel {
   final ApiServiceService _apiService = ApiServiceImpl();
   List<Cart> selectedCartItems = [];
@@ -11,9 +10,12 @@ class CheckoutViewModel extends AppBaseViewModel {
   String? firstName;
   String? lastName;
   String? email;
-  String address = 'Guadalupe, Carmen, Bohol';
+  String? address;
 
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
+
+  bool isEditingAddress = false;
+  String? tempAddress;
 
   CheckoutViewModel(this.selectedCartItems);
 
@@ -23,6 +25,9 @@ class CheckoutViewModel extends AppBaseViewModel {
       final authData = await _apiService.getCurrentAuthentication();
       firstName = authData.firstName;
       lastName = authData.lastName;
+      address = authData.address;
+      tempAddress = authData.address;
+      print('Address fetched: $address');
       notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
@@ -44,6 +49,18 @@ class CheckoutViewModel extends AppBaseViewModel {
     return total;
   }
 
+  double getSubtotal(Cart item) {
+    return item.product.price * item.quantity;
+  }
+
+  void toggleEditMode() {
+    isEditingAddress = !isEditingAddress;
+    if (!isEditingAddress) {
+      tempAddress = address;
+    }
+    notifyListeners();
+  }
+
   Future<void> placeOrder() async {
     try {
       setBusy(true);
@@ -53,9 +70,14 @@ class CheckoutViewModel extends AppBaseViewModel {
         throw Exception('No cart items selected.');
       }
 
+      if (tempAddress == null || tempAddress!.isEmpty) {
+        setError('Address is required');
+        return;
+      }
+
       final checkout = await _apiService.checkOut(
         fullName ?? '',
-        address,
+        tempAddress!,
         totalAmount.toInt(),
         cartIds.map((id) => {'id': id}).toList(),
       );

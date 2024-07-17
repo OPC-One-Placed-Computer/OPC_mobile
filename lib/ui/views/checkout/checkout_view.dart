@@ -5,7 +5,6 @@ import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/ui/views/checkout/checkout_viewmodel.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 import 'package:stacked/stacked.dart';
-import 'package:opc_mobile_development/app/app.locator.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 
 class CheckoutView extends StatelessWidget {
@@ -22,67 +21,90 @@ class CheckoutView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          title: const Text('Checkout'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: Text(
+            'Checkout',
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: const Color.fromARGB(255, 19, 7, 46),
         ),
-        body: SingleChildScrollView(
+        body: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Customer Information',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Full Name',
+                      'Delivering To:',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 5.0),
-                    Text(
-                      '    ${viewModel.fullName ?? ''}',
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'Address',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 6.0),
-                    TextFormField(
-                      initialValue: viewModel.address,
-                      decoration: InputDecoration(
-                        hintText: 'Enter your address',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              'Fullname: ${viewModel.fullName ?? ''}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 16.0,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        viewModel.address = value;
-                      },
+                      ],
                     ),
-                    const SizedBox(height: 20.0),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: viewModel.isEditingAddress
+                                ? SizedBox(
+                                    height: 40,
+                                    child: TextFormField(
+                                      initialValue: viewModel.tempAddress ?? '',
+                                      onChanged: (value) {
+                                        viewModel.tempAddress = value;
+                                      },
+                                      decoration: const InputDecoration(
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    'Address: ${viewModel.address ?? ''}',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            viewModel.toggleEditMode();
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
                     const Text(
                       'Order Summary',
                       style: TextStyle(
@@ -93,89 +115,110 @@ class CheckoutView extends StatelessWidget {
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: viewModel.selectedCartItems.length,
-                itemBuilder: (context, index) {
-                  final item = viewModel.selectedCartItems[index];
-                  final product = item.product;
-                  return Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    height: 150,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          height: 130,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(8),
+       
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  itemCount: viewModel.selectedCartItems.length,
+                  itemBuilder: (context, index) {
+                    final item = viewModel.selectedCartItems[index];
+                    final product = item.product;
+                    return Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.all(10),
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: const Offset(0, 3),
                           ),
-                          child: CachedNetworkImage(
-                            imageUrl: Constants.baseUrl + product.imagePath,
-                            placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
+                        ],
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 140,
+                            height: 130,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: Constants.baseUrl + product.imagePath,
+                               fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  const Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                product.productName,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product.productName,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'Price: ${product.price.toString()}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Price: \$${product.price.toString()}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Quantity: ${item.quantity}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  color: Colors.grey,
+                                Text(
+                                  'Quantity: ${item.quantity}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 20),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    'Subtotal: \$${viewModel.getSubtotal(item).toStringAsFixed(2)}',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 5,
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -208,8 +251,7 @@ class CheckoutView extends StatelessWidget {
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: const Text('Confirm Order'),
-                                    content: const Text(
-                                        'Do you want to place the order?'),
+                                    content: const Text('Do you want to place the order?'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -251,8 +293,7 @@ class CheckoutView extends StatelessWidget {
                               ),
                             );
                             await Future.delayed(const Duration(seconds: 3));
-                            viewModel.navigationService
-                                .navigateTo(Routes.products);
+                            viewModel.navigationService.navigateTo(Routes.products);
                           }
                         },
                         style: ElevatedButton.styleFrom(

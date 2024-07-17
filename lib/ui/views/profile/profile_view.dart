@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_viewmodel.dart';
 import 'package:stacked/stacked.dart';
-import 'dart:io';
+
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -33,10 +33,10 @@ class ProfileView extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 70,
-                              backgroundImage: model.imagePath != null
-                                  ? FileImage(File(model.imagePath!))
+                              backgroundImage: model.profileImage != null
+                                  ? MemoryImage(model.profileImage!)
                                   : null,
-                              child: model.imagePath == null
+                              child: model.profileImage == null
                                   ? const Icon(
                                       Icons.person,
                                       size: 90,
@@ -62,19 +62,25 @@ class ProfileView extends StatelessWidget {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               ListTile(
-                                                leading: const Icon(Icons.camera),
-                                                title: const Text('Capture Image'),
+                                                leading:
+                                                    const Icon(Icons.camera),
+                                                title:
+                                                    const Text('Capture Image'),
                                                 onTap: () {
                                                   Navigator.of(context).pop();
-                                                  model.pickImage(ImageSource.camera);
+                                                  model.pickImage(
+                                                      ImageSource.camera);
                                                 },
                                               ),
                                               ListTile(
-                                                leading: const Icon(Icons.image),
-                                                title: const Text('Pick from Gallery'),
+                                                leading:
+                                                    const Icon(Icons.image),
+                                                title: const Text(
+                                                    'Pick from Gallery'),
                                                 onTap: () {
                                                   Navigator.of(context).pop();
-                                                  model.pickImage(ImageSource.gallery);
+                                                  model.pickImage(
+                                                      ImageSource.gallery);
                                                 },
                                               ),
                                             ],
@@ -173,25 +179,22 @@ class ProfileView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       ElevatedButton.icon(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           List<String> names =
-                                              fullNameController.text.split(' ');
-                                          String firstName = names.isNotEmpty
-                                              ? names[0]
-                                              : '';
-                                          String lastName = names.length > 1
-                                              ? names[1]
-                                              : '';
+                                              fullNameController.text
+                                                  .split(' ');
+                                          String firstName =
+                                              names.isNotEmpty ? names[0] : '';
+                                          String lastName =
+                                              names.length > 1 ? names[1] : '';
 
-                                          model
+                                          await model
                                               .saveUserData(
-                                                firstName,
-                                                lastName,
-                                                emailController.text,
-                                                addressController.text,
-                                                model.imageName ?? '',
-                                                model.imagePath ?? '',
-                                              )
+                                            firstName,
+                                            lastName,
+                                            emailController.text,
+                                            addressController.text,
+                                          )
                                               .then((value) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
@@ -268,8 +271,7 @@ class ProfileView extends StatelessWidget {
                                             controller: oldPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'Old Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -278,8 +280,7 @@ class ProfileView extends StatelessWidget {
                                             controller: newPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'New Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -289,8 +290,7 @@ class ProfileView extends StatelessWidget {
                                                 confirmPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'Confirm Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -306,54 +306,66 @@ class ProfileView extends StatelessWidget {
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            if (newPasswordController.text.trim() ==
-                                                confirmPasswordController.text.trim()) {
-                                              List<String> names = fullNameController.text.split(' ');
-                                              String firstName = names.isNotEmpty ? names[0] : '';
-                                              String lastName = names.length > 1 ? names[1] : '';
+                                            if (newPasswordController.text
+                                                    .trim() ==
+                                                confirmPasswordController.text
+                                                    .trim()) {
+                                              List<String> names =
+                                                  fullNameController.text
+                                                      .split(' ');
+                                              String firstName =
+                                                  names.isNotEmpty
+                                                      ? names[0]
+                                                      : '';
+                                              String lastName = names.length > 1
+                                                  ? names[1]
+                                                  : '';
 
                                               model
                                                   .changePassword(
-                                                    oldPasswordController.text,
-                                                    newPasswordController.text,
-                                                    confirmPasswordController.text,
-                                                    firstName,
-                                                    lastName,
-                                                    emailController.text,
-                                                    addressController.text,
-                                                  )
+                                                oldPasswordController.text,
+                                                newPasswordController.text,
+                                                confirmPasswordController.text,
+                                                firstName,
+                                                lastName,
+                                                emailController.text,
+                                                addressController.text,
+                                              )
                                                   .then((value) {
-                                                    Navigator.of(context).pop();
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Password changed successfully',
-                                                          style: GoogleFonts.poppins(),
-                                                        ),
-                                                        backgroundColor: Colors.green,
-                                                      ),
-                                                    );
-                                                  })
-                                                  .catchError((error) {
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Error changing password: $error',
-                                                          style: GoogleFonts.poppins(),
-                                                        ),
-                                                        backgroundColor: Colors.red,
-                                                      ),
-                                                    );
-                                                  });
+                                                Navigator.of(context).pop();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Password changed successfully',
+                                                      style:
+                                                          GoogleFonts.poppins(),
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              }).catchError((error) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Error changing password: $error',
+                                                      style:
+                                                          GoogleFonts.poppins(),
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                              });
                                             } else {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 SnackBar(
                                                   content: Text(
                                                     'Passwords do not match',
-                                                    style: GoogleFonts.poppins(),
+                                                    style:
+                                                        GoogleFonts.poppins(),
                                                   ),
                                                   backgroundColor: Colors.red,
                                                 ),

@@ -16,12 +16,18 @@ class OrderPlacedView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white), // Set the color of the back arrow icon
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           title: const Text(
             'Orders Placed',
             style: TextStyle(color: Colors.white),
           ),
           backgroundColor: const Color.fromARGB(255, 19, 7, 46),
-          iconTheme: const IconThemeData(color: Colors.white),
+          
         ),
         body: viewModel.isBusy
             ? const Center(child: CircularProgressIndicator())

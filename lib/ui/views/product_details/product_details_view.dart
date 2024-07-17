@@ -21,165 +21,236 @@ class ProductdetailsView extends StatelessWidget {
       builder: (context, viewModel, child) {
         return Scaffold(
           appBar: AppBar(
+              leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white), // Set the color of the back arrow icon
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
             title: Text(
               'Product Details',
               style: GoogleFonts.poppins(
                 color: Colors.white,
+                 fontSize: 20.0,
               ),
             ),
             backgroundColor: const Color.fromARGB(255, 19, 7, 46),
-            iconTheme: const IconThemeData(color: Colors.white),
+            
           ),
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: viewModel.isBusy
               ? const MyCircleLoading()
               : SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 40),
-                        Text(
-                          viewModel.product.productName,
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        clipBehavior: Clip.hardEdge,
+                        child: CachedNetworkImage(
+                          imageUrl:
+                              Constants.baseUrl + viewModel.product.imagePath,
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        viewModel.product.productName,
+                        style: GoogleFonts.poppins(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      RichText(
+                        text: TextSpan(
                           style: GoogleFonts.poppins(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 21,
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          clipBehavior: Clip.hardEdge,
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                Constants.baseUrl + viewModel.product.imagePath,
-                            fit: BoxFit.contain,
-                            placeholder: (context, url) => const Center(
-                                child: CircularProgressIndicator()),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Brand Name : ${viewModel.product.brand}',
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        const Text(
-                          'Product details:',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          viewModel.product.description,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        RichText(
-                          text: TextSpan(
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                          children: [
+                            const TextSpan(
+                              text: 'Price: ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            children: [
-                              const TextSpan(
-                                text: 'Product price:',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text:
-                                    ' \$ ${viewModel.product.price.toString()}',
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0)),
-                              ),
-                            ],
-                          ),
+                            TextSpan(
+                              text: '\$ ${viewModel.product.price.toString()}',
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Available Quantity: ${viewModel.product.quantity.toString()}',
+                      ),
+                      const SizedBox(height: 40),
+                      Text(
+                        'PRODUCT DETAILS',
+                        style: GoogleFonts.poppins(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      RichText(
+                        text: TextSpan(
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                           ),
+                          children: [
+                            const TextSpan(
+                              text: 'Brand: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: viewModel.product.brand,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
                         ),
-                        Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment
-                                .center,
-                            children: [
-                              IconButton(
-                                iconSize: 25,
-                                icon: const Icon(Icons.remove_circle),
-                                onPressed: viewModel.decrementQuantity,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                          ),
+                          children: [
+                            const TextSpan(
+                              text: 'Category: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
-                              Text(
-                                '${viewModel.quantity}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                ),
+                            ),
+                            TextSpan(
+                              text: viewModel.product.category,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Text(
+                        'Details',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        viewModel.product.description,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                          ),
+                          children: [
+                            const TextSpan(
+                              text: 'Available Quantity: ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
                               ),
-                              IconButton(
-                                iconSize: 25,
-                                icon: const Icon(Icons.add_circle),
-                                onPressed: viewModel.incrementQuantity,
-                              ),
-                            ],
+                            ),
+                            TextSpan(
+                              text: viewModel.product.quantity.toString(),
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Text(
+                            'Quantity: ',
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                              //   fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          IconButton(
+                            iconSize: 25,
+                            icon: const Icon(Icons.remove_circle),
+                            color: Colors.red,
+                            onPressed: viewModel.decrementQuantity,
+                          ),
+                          Text(
+                            '${viewModel.quantity}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 15,
+                            ),
+                          ),
+                          IconButton(
+                            iconSize: 25,
+                            icon: const Icon(Icons.add_circle),
+                            color: Colors.blue,
+                            onPressed: viewModel.incrementQuantity,
+                          ),
+                        ],
+                      ),
+                      Center(
+                        child: SizedBox(
+                          width: 400,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(
+                              Icons.shopping_cart,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              'Add to Cart',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 19, 7, 46),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15), 
+                            ),
+                            onPressed: () async {
+                              viewModel.setBusy(true);
+                              try {
+                                await viewModel.addToCart();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Product added to cart'),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error: $e'),
+                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              } finally {
+                                viewModel.setBusy(false);
+                              }
+                            },
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Center(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton.icon(
-                                  icon: const Icon(Icons.shopping_cart),
-                                  label: const Text('Add to Cart'),
-                                  onPressed: () async {
-                                    viewModel.setBusy(true);
-                                    try {
-                                      await viewModel.addToCart();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content:
-                                              Text('Product added to cart'),
-                                          duration: Duration(seconds: 2),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error: $e'),
-                                          duration: const Duration(seconds: 2),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    } finally {
-                                      viewModel.setBusy(false);
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              const SizedBox(height: 30),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
         );
