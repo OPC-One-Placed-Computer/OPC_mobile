@@ -20,7 +20,7 @@ class AddToCartViewModel extends AppBaseViewModel {
   void init() async {
     await fetchCartItems();
     setBusy(true);
-   
+
     setBusy(false);
   }
 
@@ -33,8 +33,6 @@ class AddToCartViewModel extends AppBaseViewModel {
     const double shippingCost = 0;
     return subtotal + shippingCost;
   }
-
- 
 
   void toggleCheckbox(int index) {
     if (selectedIndices.contains(index)) {
@@ -92,11 +90,13 @@ class AddToCartViewModel extends AppBaseViewModel {
     setBusy(false);
     notifyListeners();
   }
-void toggleSelectAllItems() {
+
+  void toggleSelectAllItems() {
     if (selectedIndices.length == cartItems.length) {
       selectedIndices.clear();
     } else {
-      selectedIndices = Set<int>.from(List.generate(cartItems.length, (index) => index));
+      selectedIndices =
+          Set<int>.from(List.generate(cartItems.length, (index) => index));
     }
     notifyListeners();
   }
@@ -104,7 +104,8 @@ void toggleSelectAllItems() {
   List<Cart> getSelectedCartItems() {
     return selectedIndices.map((index) => cartItems[index]).toList();
   }
-   void navigateToProductDetails(Product product) {
+
+  void navigateToProductDetails(Product product) {
     navigationService.navigateTo(
       Routes.products_view,
       arguments: ProductdetailsViewArguments(product: product),

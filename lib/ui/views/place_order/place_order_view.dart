@@ -221,7 +221,6 @@ class PlaceOrderView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Total Price and Quantity Section
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

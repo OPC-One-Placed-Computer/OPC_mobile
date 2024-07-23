@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:stacked/stacked.dart';
 
@@ -13,11 +14,14 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
       viewModelBuilder: () => LoginViewModel(),
-      onModelReady: (model) {
-      },
+      onModelReady: (model) {},
       builder: (context, model, child) => Scaffold(
         body: model.isBusy
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+              )
             : Container(
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
@@ -48,27 +52,35 @@ class LoginView extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Sign In',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.poppins(
                                       fontSize: 24.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 19, 7, 46),
+                                      color:
+                                          const Color.fromARGB(255, 19, 7, 46),
                                     ),
                                   ),
                                   const SizedBox(height: 20),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
                                     child: TextFormField(
                                       decoration: InputDecoration(
                                         labelText: 'Email',
-                                        labelStyle: const TextStyle(fontSize: 14),
-                                        prefixIcon: const Icon(Icons.email, size: 20),
+                                        labelStyle:
+                                            GoogleFonts.poppins(fontSize: 14),
+                                        prefixIcon:
+                                            const Icon(Icons.email, size: 20),
                                         border: const OutlineInputBorder(),
                                         filled: true,
-                                        fillColor: const Color.fromARGB(255, 255, 255, 255),
-                                        errorText: model.emailError != null && model.submitted ? model.emailError : null,
+                                        fillColor: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                        errorText: model.emailError != null &&
+                                                model.submitted
+                                            ? model.emailError
+                                            : null,
                                       ),
                                       onChanged: (value) {
                                         model.setEmail(value);
@@ -77,25 +89,35 @@ class LoginView extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 10),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
                                     child: TextFormField(
                                       decoration: InputDecoration(
                                         labelText: 'Password',
-                                        labelStyle: const TextStyle(fontSize: 14),
-                                        prefixIcon: const Icon(Icons.lock, size: 20),
+                                        labelStyle:
+                                            GoogleFonts.poppins(fontSize: 14),
+                                        prefixIcon:
+                                            const Icon(Icons.lock, size: 20),
                                         border: const OutlineInputBorder(),
                                         filled: true,
-                                        fillColor: const Color.fromARGB(255, 255, 255, 255),
+                                        fillColor: const Color.fromARGB(
+                                            255, 255, 255, 255),
                                         suffixIcon: GestureDetector(
                                           onTap: () {
                                             model.togglePasswordVisibility();
                                           },
                                           child: Icon(
-                                            model.obscureText ? Icons.visibility_off : Icons.visibility,
+                                            model.obscureText
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
                                             size: 20,
                                           ),
                                         ),
-                                        errorText: model.passwordError != null && model.submitted ? model.passwordError : null,
+                                        errorText:
+                                            model.passwordError != null &&
+                                                    model.submitted
+                                                ? model.passwordError
+                                                : null,
                                       ),
                                       obscureText: model.obscureText,
                                       onChanged: (value) {
@@ -104,42 +126,58 @@ class LoginView extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 20),
-                                  model.isBusy
-                                      ? const Center(child: CircularProgressIndicator())
-                                      : ElevatedButton(
-                                          onPressed: () async {
-                                            model.login();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8.0),
-                                            ),
-                                            backgroundColor: const Color.fromARGB(255, 19, 7, 46),
-                                          ),
-                                          child: const Text(
-                                            'Login',
-                                            style: TextStyle(fontSize: 16, color: Colors.white),
-                                          ),
+                                  SizedBox(
+                                    width: 200,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 19, 7, 46),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
                                         ),
+                                        textStyle:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                      onPressed: model.isBusy
+                                          ? null
+                                          : () async {
+                                              bool loginSuccess =
+                                                  await model.login();
+                                              if (loginSuccess) {
+                                                model.navigationService
+                                                    .navigateTo(
+                                                        Routes.products);
+                                              }
+                                            },
+                                      child: Text('Login'),
+                                    ),
+                                  ),
                                   const SizedBox(height: 30),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         "Don't have an account? ",
-                                        style: TextStyle(
+                                        style: GoogleFonts.poppins(
                                           fontSize: 14,
                                           color: Colors.grey[600],
                                         ),
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          model.navigationService.navigateTo(Routes.signup);
+                                          model.navigationService
+                                              .navigateTo(Routes.signup);
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           "Register here",
-                                          style: TextStyle(fontSize: 14, color: Colors.blue),
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            color: Colors.blue,
+                                          ),
                                         ),
                                       ),
                                     ],

@@ -1,28 +1,41 @@
+import 'dart:typed_data';
+
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
-import 'package:opc_mobile_development/models/checkout.dart';
+
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
 
 class CheckoutViewModel extends AppBaseViewModel {
-  final ApiServiceService _apiService = ApiServiceImpl();
   List<Cart> selectedCartItems = [];
+  Map<String, Future<Uint8List>> _imageFutures = {};
+  bool _loading = true;
+  bool get loading => _loading;
 
   String? firstName;
   String? lastName;
   String? email;
-  String address = 'Guadalupe, Carmen, Bohol';
+  String? address;
+  String? selectedPaymentMethod = 'cod';
 
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
+
+  bool isEditingAddress = false;
+  String? tempAddress;
 
   CheckoutViewModel(this.selectedCartItems);
 
   Future<void> fetchUserData() async {
     try {
       setBusy(true);
-      final authData = await _apiService.getCurrentAuthentication();
+      final authData = await apiService.getCurrentAuthentication();
       firstName = authData.firstName;
       lastName = authData.lastName;
+      address = authData.address;
+      tempAddress = authData.address;
+      print('Address fetched: $address');
       notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
@@ -34,6 +47,21 @@ class CheckoutViewModel extends AppBaseViewModel {
 
   void init() async {
     await fetchUserData();
+    _loading = true;
+    notifyListeners();
+    await Future.wait(selectedCartItems
+        .map((item) => fetchImageData(item.product.imagePath)));
+
+    _loading = false;
+    notifyListeners();
+  }
+
+  int get totalItems {
+    int total = 0;
+    for (var cart in selectedCartItems) {
+      total += cart.quantity;
+    }
+    return total;
   }
 
   double get totalAmount {
@@ -44,27 +72,82 @@ class CheckoutViewModel extends AppBaseViewModel {
     return total;
   }
 
+  double getSubtotal(Cart item) {
+    return item.product.price * item.quantity;
+  }
+
+  void toggleEditMode() {
+    isEditingAddress = !isEditingAddress;
+    if (!isEditingAddress) {
+      tempAddress = address;
+    }
+    notifyListeners();
+  }
+
+  void updatePaymentMethod(String? paymentMethod) {
+    selectedPaymentMethod = paymentMethod;
+    notifyListeners();
+  }
+
   Future<void> placeOrder() async {
     try {
       setBusy(true);
 
-      final cartIds = selectedCartItems.map((cart) => cart.id).toList();
-      if (cartIds.isEmpty) {
+      final cartItems =
+          selectedCartItems.map((cart) => cart.id.toString()).toList();
+
+      if (cartItems.isEmpty) {
         throw Exception('No cart items selected.');
       }
 
-      final checkout = await _apiService.checkOut(
-        fullName ?? '',
-        address,
-        totalAmount.toInt(),
-        cartIds.map((id) => {'id': id}).toList(),
-      );
-      print('Order placed successfully: $checkout');
+      if (tempAddress == null || tempAddress!.isEmpty) {
+        setError('Address is required');
+        return;
+      }
+
+      if (selectedPaymentMethod == 'cod') {
+        final checkout = await apiService.checkOut(
+          fullName ?? '',
+          tempAddress!,
+          selectedPaymentMethod ?? 'cod',
+          totalAmount.toInt(),
+          cartItems.cast<String>(),
+        );
+        print('Order placed successfully: $checkout');
+      }
+      if (selectedPaymentMethod == 'stripe') {
+        final link = await apiService.getPaymentLink(
+          fullName ?? '',
+          tempAddress!,
+          selectedPaymentMethod ?? 'cod',
+          totalAmount.toInt(),
+          cartItems.cast<String>(),
+        );
+        navigationService.navigateTo(Routes.payment,
+            arguments: WebviewScreenViewArguments(url: link));
+      }
+      
+      setBusy(false);
     } catch (e) {
       print('Error placing order: $e');
-      setError('Error placing order: $e');
+      setError('Error placing order: ${e.toString()}');
     } finally {
       setBusy(false);
     }
+  }
+
+  Future<Uint8List> fetchImageData(String imagePath) {
+    if (_imageFutures.containsKey(imagePath)) {
+      return _imageFutures[imagePath]!;
+    }
+
+    final imageFuture =
+        ApiServiceImpl().retrieveProductImage(imagePath).then((imageData) {
+      imageCacheService.setImage(imagePath, imageData);
+      return imageData;
+    });
+
+    _imageFutures[imagePath] = imageFuture;
+    return imageFuture;
   }
 }

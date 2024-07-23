@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:typed_data';
+
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/update_user.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
@@ -11,10 +15,6 @@ class ProfileViewModel extends AppBaseViewModel {
   ProfileViewModel({required ApiServiceService apiService})
       : _apiService = apiService;
 
-  ProfileImage? _profileImage;
-
-  ProfileImage? get profileImage => _profileImage;
-
   String? firstName;
   String? lastName;
   String? email;
@@ -25,10 +25,12 @@ class ProfileViewModel extends AppBaseViewModel {
   String? oldPassword;
   String? newPassword;
 
+  Uint8List? _profileImage;
+  Uint8List? get profileImage => _profileImage;
+
   String? get fullName => '${firstName ?? ''} ${lastName ?? ''}';
 
   bool _isEditing = false;
-
   bool get isEditing => _isEditing;
 
   void toggleEditing() {
@@ -49,6 +51,10 @@ class ProfileViewModel extends AppBaseViewModel {
       imageName = authData.imageName;
       imagePath = authData.imagePath;
 
+      if (imagePath != null && imagePath!.isNotEmpty) {
+        await displayProfileImage(imagePath!);
+      }
+
       notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
@@ -63,23 +69,28 @@ class ProfileViewModel extends AppBaseViewModel {
     String newLastName,
     String newEmail,
     String newAddress,
-    String newImageName,
-    String newImagePath,
   ) async {
     try {
       setBusy(true);
 
+      Uint8List? imageData;
+      if (_profileImage != null) {
+        imageData = _profileImage;
+      }
+
+      log((imageData == null).toString());
       final updateUser = UpdateUser(
         id: userId,
         firstName: newFirstName,
         lastName: newLastName,
         email: newEmail,
         address: newAddress,
-        imageName: newImageName,
-        imagePath: newImagePath,
+        imageName: imageName ?? '',
+        imagePath: imagePath ?? '',
+        imageUrl: imageData != null ? base64Encode(imageData) : null,
       );
 
-      final updatedUser = await _apiService.updateUser(updateUser);
+      final updatedUser = await _apiService.updateUser(updateUser, imageData);
 
       firstName = updatedUser.firstName;
       lastName = updatedUser.lastName;
@@ -142,11 +153,12 @@ class ProfileViewModel extends AppBaseViewModel {
     try {
       setBusy(true);
 
-      final pickedFile = await _picker.pickImage(source: source);
+      final pickedFile = await _picker.pickImage(
+          source: source, preferredCameraDevice: CameraDevice.front);
 
       if (pickedFile != null) {
-        imagePath = pickedFile.path;
         imageName = path.basename(pickedFile.path);
+        _profileImage = await pickedFile.readAsBytes();
         notifyListeners();
       } else {
         print('No image selected.');
@@ -159,10 +171,10 @@ class ProfileViewModel extends AppBaseViewModel {
     }
   }
 
-  Future<void> displayProfileImage(String filename) async {
+  Future<void> displayProfileImage(String path) async {
     try {
       setBusy(true);
-      final downloadedImage = await _apiService.retrieveProfileImage(filename);
+      final downloadedImage = await _apiService.retrieveProfileImage(path);
       _profileImage = downloadedImage;
       notifyListeners();
     } catch (e) {

@@ -1,19 +1,24 @@
+import 'dart:typed_data';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
 
 class ProductdetailsViewModel extends AppBaseViewModel {
+  @override
   final ApiServiceImpl apiService = ApiServiceImpl();
-  late Product product; // Use late to delay initialization until after constructor
+  late Product product;
 
   int quantity = 1;
+  Uint8List? imageData;
 
   ProductdetailsViewModel(this.product);
 
   void init() async {
     setBusy(true);
     await _getProduct();
-    print(product);
+    await fetchImageData();
     setBusy(false);
   }
 
@@ -34,7 +39,22 @@ class ProductdetailsViewModel extends AppBaseViewModel {
       product = await apiService.getProduct(product.id!.toString());
     } catch (e) {
       print('Error fetching product: $e');
-      // Handle error as needed
+    }
+  }
+
+  Future<void> fetchImageData() async {
+    try {
+      final cachedImage = imageCacheService.getImage(product.imagePath);
+      if (cachedImage != null) {
+        imageData = cachedImage;
+      } else {
+        final data = await apiService.retrieveProductImage(product.imagePath);
+        imageCacheService.setImage(product.imagePath, data);
+        imageData = data;
+      }
+      notifyListeners();
+    } catch (e) {
+      print('Error fetching image: $e');
     }
   }
 

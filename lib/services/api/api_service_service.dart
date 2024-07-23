@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/current_authentication.dart';
@@ -11,10 +13,26 @@ abstract class ApiServiceService {
   Future<List<Cart>> getAllCartItems();
   Future<void> deleteFromCart(int cartId);
   Future<CurrentAuthentication> getCurrentAuthentication();
-  Future<Checkout> checkOut(String fullName, String address, int total,
-      List<Map<String, dynamic>> cartItems);
-  Future<List<Checkout>> getOrdersDetails();
-  Future<UpdateUser> updateUser(UpdateUser user);
+  Future<Checkout> checkOut(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  );
+  Future<List<Checkout>> getOrdersDetails(
+      {required int page, required int pageSize});
+  Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes);
   Future<UpdatePassword> updatePassword(UpdatePassword user);
-  Future<ProfileImage> retrieveProfileImage(String filename);
+  Future<Uint8List> retrieveProfileImage(String filename);
+  Future<Uint8List> retrieveProductImage(String path);
+  Future<Uint8List> retrieveProductImages(String path);
+  Future<void> canceledOrder(int orderId);
+  Future<String> getPaymentLink(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  );
 }

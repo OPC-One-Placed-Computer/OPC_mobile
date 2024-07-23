@@ -111,7 +111,10 @@ class SignupViewModel extends AppBaseViewModel {
         passwordError = 'Password must be at least 8 characters';
       }
 
-      if (firstNameError || lastNameError || emailError != null || passwordError != null) {
+      if (firstNameError ||
+          lastNameError ||
+          emailError != null ||
+          passwordError != null) {
         setBusy(false);
         return;
       }

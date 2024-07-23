@@ -9,6 +9,7 @@ class Checkout {
     required this.fullName,
     required this.shippingAddress,
     required this.total,
+    required this.selectedPaymentMethod,
     required this.status,
     required this.createdAt,
   });
@@ -19,6 +20,7 @@ class Checkout {
   final List<OrderItem> orderItems;
   final String fullName;
   final String status;
+  final String selectedPaymentMethod;
   final String shippingAddress;
   final double total;
   final DateTime createdAt;
@@ -35,6 +37,7 @@ class Checkout {
           .toList(),
       fullName: json['full_name'],
       status: json['status'],
+      selectedPaymentMethod: json['payment_method'],
       shippingAddress: json['shipping_address'],
       total: double.parse(json['total'].toString()),
       createdAt: parsedDate,

@@ -1,8 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:opc_mobile_development/utils/constants.dart';
+import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_placed_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'order_placed_viewmodel.dart';
 
 class OrderPlacedView extends StatelessWidget {
@@ -16,145 +17,160 @@ class OrderPlacedView extends StatelessWidget {
       builder: (context, viewModel, child) => Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
-          title: const Text(
-            'Orders Placed',
-            style: TextStyle(color: Colors.white),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          title: Text(
+            'Placed Orders',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+            ),
           ),
           backgroundColor: const Color.fromARGB(255, 19, 7, 46),
-          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: viewModel.isBusy
+        body: viewModel.isBusy && viewModel.orders.isEmpty
             ? const Center(child: CircularProgressIndicator())
             : viewModel.orders.isEmpty
-                ? const Center(
-                    child: Text('No orders found.'),
+                ? Center(
+                    child: Text(
+                      'No orders found.',
+                      style: GoogleFonts.poppins(),
+                    ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    itemCount: viewModel.orders.length,
-                    itemBuilder: (context, index) {
-                      final order = viewModel.orders[index];
-                      final createdAt = order.createdAt;
-                      final orderId = order.orderId;
-                      final isExpanded =
-                          viewModel.expandedOrders[orderId] ?? false;
+                : NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (!viewModel.isBusy &&
+                          scrollInfo.metrics.pixels ==
+                              scrollInfo.metrics.maxScrollExtent) {
+                        viewModel.fetchOrders(loadMore: true);
+                      }
+                      return false;
+                    },
+                    child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      itemCount: viewModel.orders.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == viewModel.orders.length) {
+                          return viewModel.isBusy
+                              ? const Center(child: CircularProgressIndicator())
+                              : const SizedBox.shrink();
+                        }
 
-                    
-                      final totalProducts = order.orderItems.length;
-                      final totalPrice = order.orderItems.fold<double>(
-                          0.0, (sum, item) => sum + item.subtotal);
+                        final order = viewModel.orders[index];
+                        final createdAt = order.createdAt;
+                        final orderId = order.orderId;
+                        final status = order.status;
 
-                      return GestureDetector(
-                        onTap: () => orderId != null
-                            ? viewModel.toggleOrderExpansion(orderId)
-                            : null,
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text('Order ID: $orderId'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Full Name: ${order.fullName}'),
-                                    Text('Address: ${order.shippingAddress}'),
-                                    Text(
-                                        'Placed: ${DateFormat.yMMMMd().format(createdAt)}'),
-                                    Text('Status: ${order.status}'),
-                                  ],
+                        Color dotColor;
+                        Color textColor;
+
+                        switch (status) {
+                          case 'paid':
+                            dotColor = Colors.green;
+                            textColor = Colors.green;
+                            break;
+                          case 'pending':
+                            dotColor = Colors.orange;
+                            textColor = Colors.orange;
+                            break;
+                          case 'cancelled':
+                            dotColor = Colors.red;
+                            textColor = Colors.red;
+                            break;
+                          default:
+                            dotColor = Colors.grey;
+                            textColor = Colors.black;
+                        }
+
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ViewOrderPlacedView(
+                                  orderItems: order.orderItems,
+                                  checkout: order,
                                 ),
                               ),
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                height: isExpanded ? null : 0.0,
-                                child: isExpanded
-                                    ? Container(
-                                        padding: const EdgeInsets.all(10.0),
-                                        color: Colors.grey[200],
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ...order.orderItems.map((item) {
-                                              return Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.0),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:
-                                                            Constants.baseUrl +
-                                                                item.product
-                                                                    .imagePath,
-                                                        fit: BoxFit.contain,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            const Center(
-                                                                child:
-                                                                    CircularProgressIndicator()),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            const Icon(
-                                                                Icons.error),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8.0),
-                                                    Text(
-                                                      item.product.productName,
-                                                      style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                        'Quantity: ${item.quantity}'),
-                                                    Text(
-                                                        'Subtotal: ${item.subtotal}'),
-                                                  ],
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(7.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 75.0),
+                                            child: Text(
+                                              'Order ID: $orderId',
+                                              style: GoogleFonts.poppins(),
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    right: 8.0),
+                                                width: 10,
+                                                height: 10,
+                                                decoration: BoxDecoration(
+                                                  color: dotColor,
+                                                  shape: BoxShape.circle,
                                                 ),
-                                              );
-                                            }).toList(),
-                                            const SizedBox(height: 16.0),
-                                            const Text(
-                                              'Order Summary',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.0,
                                               ),
-                                            ),
-                                            Text(
-                                                'Total Products: $totalProducts'),
-                                            Text('Total Price: \$$totalPrice'),
-                                            const SizedBox(height: 16.0),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                               
-                                                // viewModel.cancelOrder(orderId);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red,
-                                                foregroundColor: Colors.white,
+                                              Text(
+                                                status,
+                                                style: GoogleFonts.poppins(
+                                                  color: textColor,
+                                                  fontSize: 10,
+                                                  //     fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              child: const Text('Cancel'),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20.0),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          DateFormat.yMMMMd().format(createdAt),
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.black54,
+                                            fontSize: 10,
+                                          ),
                                         ),
-                                      )
-                                    : null,
-                              ),
-                            ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Positioned(
+                                  top: 3.0,
+                                  left: 16.0,
+                                  child: Icon(
+                                    Icons.shopping_bag_sharp,
+                                    color: Colors.blue,
+                                    size: 60.0,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
       ),
     );

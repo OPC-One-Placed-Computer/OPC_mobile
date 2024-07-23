@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/profile/profile_viewmodel.dart';
 import 'package:stacked/stacked.dart';
-import 'dart:io';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -20,6 +19,7 @@ class ProfileView extends StatelessWidget {
         final addressController = TextEditingController(text: model.address);
 
         return Scaffold(
+          backgroundColor: Colors.white,
           body: model.isBusy
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
@@ -31,17 +31,26 @@ class ProfileView extends StatelessWidget {
                       Center(
                         child: Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 70,
-                              backgroundImage: model.imagePath != null
-                                  ? FileImage(File(model.imagePath!))
-                                  : null,
-                              child: model.imagePath == null
-                                  ? const Icon(
-                                      Icons.person,
-                                      size: 90,
-                                    )
-                                  : null,
+                            Container(
+                              width: 160,
+                              height: 160,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.black, width: 1.0),
+                              ),
+                              child: CircleAvatar(
+                                radius: 90,
+                                backgroundImage: model.profileImage != null
+                                    ? MemoryImage(model.profileImage!)
+                                    : null,
+                                child: model.profileImage == null
+                                    ? const Icon(
+                                        Icons.person,
+                                        size: 90,
+                                      )
+                                    : null,
+                              ),
                             ),
                             if (model.isEditing)
                               Positioned(
@@ -62,19 +71,25 @@ class ProfileView extends StatelessWidget {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               ListTile(
-                                                leading: const Icon(Icons.camera),
-                                                title: const Text('Capture Image'),
+                                                leading:
+                                                    const Icon(Icons.camera),
+                                                title:
+                                                    const Text('Capture Image'),
                                                 onTap: () {
                                                   Navigator.of(context).pop();
-                                                  model.pickImage(ImageSource.camera);
+                                                  model.pickImage(
+                                                      ImageSource.camera);
                                                 },
                                               ),
                                               ListTile(
-                                                leading: const Icon(Icons.image),
-                                                title: const Text('Pick from Gallery'),
+                                                leading:
+                                                    const Icon(Icons.image),
+                                                title: const Text(
+                                                    'Pick from Gallery'),
                                                 onTap: () {
                                                   Navigator.of(context).pop();
-                                                  model.pickImage(ImageSource.gallery);
+                                                  model.pickImage(
+                                                      ImageSource.gallery);
                                                 },
                                               ),
                                             ],
@@ -112,9 +127,13 @@ class ProfileView extends StatelessWidget {
                             controller: fullNameController,
                             style: GoogleFonts.poppins(),
                             decoration: InputDecoration(
-                              labelText: 'Full Name',
+                              prefixIcon: const Icon(Icons.person),
                               labelStyle: GoogleFonts.poppins(),
-                              border: InputBorder.none,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
                             ),
                             readOnly: !model.isEditing,
                           ),
@@ -134,9 +153,13 @@ class ProfileView extends StatelessWidget {
                             controller: emailController,
                             style: GoogleFonts.poppins(),
                             decoration: InputDecoration(
-                              labelText: 'Email',
+                              prefixIcon: const Icon(Icons.email),
                               labelStyle: GoogleFonts.poppins(),
-                              border: InputBorder.none,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
                             ),
                             readOnly: !model.isEditing,
                           ),
@@ -156,9 +179,13 @@ class ProfileView extends StatelessWidget {
                             controller: addressController,
                             style: GoogleFonts.poppins(),
                             decoration: InputDecoration(
-                              labelText: 'Address',
+                              prefixIcon: const Icon(Icons.home),
                               labelStyle: GoogleFonts.poppins(),
-                              border: InputBorder.none,
+                              border: const OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
                             ),
                             readOnly: !model.isEditing,
                           ),
@@ -173,25 +200,22 @@ class ProfileView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       ElevatedButton.icon(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           List<String> names =
-                                              fullNameController.text.split(' ');
-                                          String firstName = names.isNotEmpty
-                                              ? names[0]
-                                              : '';
-                                          String lastName = names.length > 1
-                                              ? names[1]
-                                              : '';
+                                              fullNameController.text
+                                                  .split(' ');
+                                          String firstName =
+                                              names.isNotEmpty ? names[0] : '';
+                                          String lastName =
+                                              names.length > 1 ? names[1] : '';
 
-                                          model
+                                          await model
                                               .saveUserData(
-                                                firstName,
-                                                lastName,
-                                                emailController.text,
-                                                addressController.text,
-                                                model.imageName ?? '',
-                                                model.imagePath ?? '',
-                                              )
+                                            firstName,
+                                            lastName,
+                                            emailController.text,
+                                            addressController.text,
+                                          )
                                               .then((value) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
@@ -217,20 +241,31 @@ class ProfileView extends StatelessWidget {
                                             );
                                           });
                                         },
-                                        icon: Icon(Icons.save),
+                                        icon: const Icon(Icons.save,
+                                            color: Colors.white),
                                         label: Text(
                                           'Save',
-                                          style: GoogleFonts.poppins(),
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      ElevatedButton(
+                                      ElevatedButton.icon(
                                         onPressed: () {
                                           model.toggleEditing();
                                         },
-                                        child: Text(
+                                        icon: const Icon(Icons.cancel,
+                                            color: Colors.white),
+                                        label: Text(
                                           'Cancel',
-                                          style: GoogleFonts.poppins(),
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
                                         ),
                                       ),
                                     ],
@@ -239,13 +274,19 @@ class ProfileView extends StatelessWidget {
                                     onPressed: () {
                                       model.toggleEditing();
                                     },
-                                    icon: Icon(Icons.edit),
+                                    icon: const Icon(Icons.edit,
+                                        color: Colors.white),
                                     label: Text(
                                       'Edit',
-                                      style: GoogleFonts.poppins(),
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.white),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      minimumSize: const Size(324, 40),
                                     ),
                                   ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 5),
                             ElevatedButton.icon(
                               onPressed: () {
                                 final oldPasswordController =
@@ -268,8 +309,7 @@ class ProfileView extends StatelessWidget {
                                             controller: oldPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'Old Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -278,8 +318,7 @@ class ProfileView extends StatelessWidget {
                                             controller: newPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'New Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -289,8 +328,7 @@ class ProfileView extends StatelessWidget {
                                                 confirmPasswordController,
                                             decoration: InputDecoration(
                                               labelText: 'Confirm Password',
-                                              labelStyle:
-                                                  GoogleFonts.poppins(),
+                                              labelStyle: GoogleFonts.poppins(),
                                             ),
                                             obscureText: true,
                                           ),
@@ -302,64 +340,82 @@ class ProfileView extends StatelessWidget {
                                             Navigator.of(context).pop();
                                           },
                                           child: Text('Cancel',
-                                              style: GoogleFonts.poppins()),
+                                              style: GoogleFonts.poppins(
+                                                  color: Colors.black)),
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
-                                            if (newPasswordController.text.trim() ==
-                                                confirmPasswordController.text.trim()) {
-                                              List<String> names = fullNameController.text.split(' ');
-                                              String firstName = names.isNotEmpty ? names[0] : '';
-                                              String lastName = names.length > 1 ? names[1] : '';
+                                            if (newPasswordController.text
+                                                    .trim() ==
+                                                confirmPasswordController.text
+                                                    .trim()) {
+                                              List<String> names =
+                                                  fullNameController.text
+                                                      .split(' ');
+                                              String firstName =
+                                                  names.isNotEmpty
+                                                      ? names[0]
+                                                      : '';
+                                              String lastName = names.length > 1
+                                                  ? names[1]
+                                                  : '';
 
                                               model
                                                   .changePassword(
-                                                    oldPasswordController.text,
-                                                    newPasswordController.text,
-                                                    confirmPasswordController.text,
-                                                    firstName,
-                                                    lastName,
-                                                    emailController.text,
-                                                    addressController.text,
-                                                  )
+                                                oldPasswordController.text,
+                                                newPasswordController.text,
+                                                confirmPasswordController.text,
+                                                firstName,
+                                                lastName,
+                                                emailController.text,
+                                                addressController.text,
+                                              )
                                                   .then((value) {
-                                                    Navigator.of(context).pop();
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Password changed successfully',
-                                                          style: GoogleFonts.poppins(),
-                                                        ),
-                                                        backgroundColor: Colors.green,
-                                                      ),
-                                                    );
-                                                  })
-                                                  .catchError((error) {
-                                                    ScaffoldMessenger.of(context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Error changing password: $error',
-                                                          style: GoogleFonts.poppins(),
-                                                        ),
-                                                        backgroundColor: Colors.red,
-                                                      ),
-                                                    );
-                                                  });
+                                                Navigator.of(context).pop();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Password changed successfully',
+                                                      style:
+                                                          GoogleFonts.poppins(),
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                  ),
+                                                );
+                                              }).catchError((error) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Error changing password: $error',
+                                                      style:
+                                                          GoogleFonts.poppins(),
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                              });
                                             } else {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 SnackBar(
                                                   content: Text(
                                                     'Passwords do not match',
-                                                    style: GoogleFonts.poppins(),
+                                                    style:
+                                                        GoogleFonts.poppins(),
                                                   ),
                                                   backgroundColor: Colors.red,
                                                 ),
                                               );
                                             }
                                           },
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor: Colors.blue,
+                                            minimumSize: const Size(200, 40),
+                                          ),
                                           child: Text('Change Password',
                                               style: GoogleFonts.poppins()),
                                         ),
@@ -368,10 +424,14 @@ class ProfileView extends StatelessWidget {
                                   },
                                 );
                               },
-                              icon: Icon(Icons.lock),
+                              icon: const Icon(Icons.lock, color: Colors.white),
                               label: Text(
                                 'Change Password',
-                                style: GoogleFonts.poppins(),
+                                style: GoogleFonts.poppins(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                minimumSize: const Size(324, 40),
                               ),
                             ),
                           ],

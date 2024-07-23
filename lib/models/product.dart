@@ -46,13 +46,10 @@ class PaginatedProducts {
   factory PaginatedProducts.fromJson(Map<String, dynamic> json) {
     final dataJson = json['data']['data'] as List<dynamic>;
     return PaginatedProducts(
-      data: dataJson.map((productJson) => Product.fromJson(productJson)).toList(),
-      currentPage: json['data']['current_page'] ?? 1,
-      lastPage: json['data']['last_page'] ?? 1,
+      data:
+          dataJson.map((productJson) => Product.fromJson(productJson)).toList(),
+      currentPage: json['data']['meta']['current_page'] ?? 1,
+      lastPage: json['data']['meta']['last_page'] ?? 1,
     );
   }
 }
-
-
-
-

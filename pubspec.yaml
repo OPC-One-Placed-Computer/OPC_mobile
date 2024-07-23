@@ -18,6 +18,9 @@ dependencies:
   image_picker: ^1.1.2
   path: ^1.9.0
   visibility_detector: ^0.4.0+2
+  lottie: ^3.1.2
+  webview_flutter: ^4.8.0
+  logger: ^2.4.0
   
 
 
@@ -45,3 +48,4 @@ flutter:
   
   assets:
     - lib/resources/images/
+    - lib/resources/images/ani.json

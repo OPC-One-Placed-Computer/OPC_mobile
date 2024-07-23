@@ -4,6 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i10;
+import 'dart:typed_data' as _i13;
 import 'dart:ui' as _i11;
 
 import 'package:flutter/material.dart' as _i9;
@@ -105,8 +106,8 @@ class _FakeUpdatePassword_6 extends _i1.SmartFake
         );
 }
 
-class _FakeProfileImage_7 extends _i1.SmartFake implements _i6.ProfileImage {
-  _FakeProfileImage_7(
+class _FakeOrderItem_7 extends _i1.SmartFake implements _i5.OrderItem {
+  _FakeOrderItem_7(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -902,8 +903,9 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
   _i10.Future<_i5.Checkout> checkOut(
     String? fullName,
     String? address,
+    String? selectedPaymentMethod,
     int? total,
-    List<Map<String, dynamic>>? cartItems,
+    List<String>? cartItems,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -911,6 +913,7 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
           [
             fullName,
             address,
+            selectedPaymentMethod,
             total,
             cartItems,
           ],
@@ -922,6 +925,7 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
             [
               fullName,
               address,
+              selectedPaymentMethod,
               total,
               cartItems,
             ],
@@ -935,6 +939,7 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
             [
               fullName,
               address,
+              selectedPaymentMethod,
               total,
               cartItems,
             ],
@@ -943,10 +948,18 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i5.Checkout>);
 
   @override
-  _i10.Future<List<_i5.Checkout>> getOrdersDetails() => (super.noSuchMethod(
+  _i10.Future<List<_i5.Checkout>> getOrdersDetails({
+    required int? page,
+    required int? pageSize,
+  }) =>
+      (super.noSuchMethod(
         Invocation.method(
           #getOrdersDetails,
           [],
+          {
+            #page: page,
+            #pageSize: pageSize,
+          },
         ),
         returnValue: _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
         returnValueForMissingStub:
@@ -954,17 +967,26 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<List<_i5.Checkout>>);
 
   @override
-  _i10.Future<_i6.UpdateUser> updateUser(_i6.UpdateUser? user) =>
+  _i10.Future<_i6.UpdateUser> updateUser(
+    _i6.UpdateUser? user,
+    _i13.Uint8List? imageBytes,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateUser,
-          [user],
+          [
+            user,
+            imageBytes,
+          ],
         ),
         returnValue: _i10.Future<_i6.UpdateUser>.value(_FakeUpdateUser_5(
           this,
           Invocation.method(
             #updateUser,
-            [user],
+            [
+              user,
+              imageBytes,
+            ],
           ),
         )),
         returnValueForMissingStub:
@@ -972,7 +994,10 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
           this,
           Invocation.method(
             #updateUser,
-            [user],
+            [
+              user,
+              imageBytes,
+            ],
           ),
         )),
       ) as _i10.Future<_i6.UpdateUser>);
@@ -1003,26 +1028,61 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i6.UpdatePassword>);
 
   @override
-  _i10.Future<_i6.ProfileImage> retrieveProfileImage(String? filename) =>
+  _i10.Future<_i13.Uint8List> retrieveProfileImage(String? filename) =>
       (super.noSuchMethod(
         Invocation.method(
           #retrieveProfileImage,
           [filename],
         ),
-        returnValue: _i10.Future<_i6.ProfileImage>.value(_FakeProfileImage_7(
+        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+        returnValueForMissingStub:
+            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+      ) as _i10.Future<_i13.Uint8List>);
+
+  @override
+  _i10.Future<_i13.Uint8List> retrieveProductImage(String? path) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #retrieveProductImage,
+          [path],
+        ),
+        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+        returnValueForMissingStub:
+            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+      ) as _i10.Future<_i13.Uint8List>);
+
+  @override
+  _i10.Future<_i13.Uint8List> retrieveProductImages(String? path) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #retrieveProductImages,
+          [path],
+        ),
+        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+        returnValueForMissingStub:
+            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+      ) as _i10.Future<_i13.Uint8List>);
+
+  @override
+  _i10.Future<_i5.OrderItem> canceledOrder(int? orderId) => (super.noSuchMethod(
+        Invocation.method(
+          #canceledOrder,
+          [orderId],
+        ),
+        returnValue: _i10.Future<_i5.OrderItem>.value(_FakeOrderItem_7(
           this,
           Invocation.method(
-            #retrieveProfileImage,
-            [filename],
+            #canceledOrder,
+            [orderId],
           ),
         )),
         returnValueForMissingStub:
-            _i10.Future<_i6.ProfileImage>.value(_FakeProfileImage_7(
+            _i10.Future<_i5.OrderItem>.value(_FakeOrderItem_7(
           this,
           Invocation.method(
-            #retrieveProfileImage,
-            [filename],
+            #canceledOrder,
+            [orderId],
           ),
         )),
-      ) as _i10.Future<_i6.ProfileImage>);
+      ) as _i10.Future<_i5.OrderItem>);
 }
