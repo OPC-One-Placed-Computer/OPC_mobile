@@ -191,7 +191,7 @@ class ApiServiceImpl implements ApiServiceService {
       }
 
       final response = await _dio.get(
-        '/current-authentication',
+        '/current/authentication',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -216,8 +216,13 @@ class ApiServiceImpl implements ApiServiceService {
   }
 
   @override
-  Future<Checkout> checkOut(String fullName, String address, int total,
-      List<Map<String, dynamic>> cartItems) async {
+  Future<Checkout> checkOut(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  ) async {
     try {
       final token = await _sharedPreferenceService.getToken();
       if (token == null) {
@@ -229,8 +234,11 @@ class ApiServiceImpl implements ApiServiceService {
         data: {
           'full_name': fullName,
           'shipping_address': address,
-          'total': total,
-          'cart_items': cartItems,
+          'total': total.toString(),
+          'payment_method': selectedPaymentMethod,
+          'cart_items': {
+            'id': cartItems,
+          },
         },
         options: Options(
           headers: {
@@ -244,23 +252,24 @@ class ApiServiceImpl implements ApiServiceService {
           final cartData = response.data as Map<String, dynamic>;
           final checkout =
               Checkout.fromJson(cartData['data'] as Map<String, dynamic>);
-          print('Product added to cart successfully: $checkout');
+          print('Order placed successfully: $checkout');
           return checkout;
         } else {
           throw Exception('Unexpected response format');
         }
       } else {
         throw Exception(
-            'Failed to add product to cart: ${response.statusCode}');
+            'Failed to place order: ${response.statusCode} - ${response.statusMessage}');
       }
     } catch (e) {
-      print('Error adding to cart: $e');
-      throw Exception('Error adding to cart: $e');
+      print('Error placing order: $e');
+      throw Exception('Error placing order: $e');
     }
   }
 
   @override
-  Future<List<Checkout>> getOrdersDetails() async {
+  Future<List<Checkout>> getOrdersDetails(
+      {int page = 1, int pageSize = 10}) async {
     try {
       final token = await _sharedPreferenceService.getToken();
       if (token == null) {
@@ -269,6 +278,10 @@ class ApiServiceImpl implements ApiServiceService {
 
       final response = await _dio.get(
         '/orders',
+        queryParameters: {
+          'page': page,
+          'page_size': pageSize,
+        },
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -277,7 +290,7 @@ class ApiServiceImpl implements ApiServiceService {
       );
 
       if (response.statusCode == 200) {
-        final responseData = response.data['data'] as List<dynamic>;
+        final responseData = response.data['data']['data'] as List<dynamic>;
         print('Response Data: $responseData');
 
         final List<Checkout> orders =
@@ -294,58 +307,55 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-
-@override
-Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes) async {
-  try {
-    final token = await _sharedPreferenceService.getToken();
-    if (token == null) {
-      throw Exception('No authentication token found');
-    }
-
-    FormData formData = FormData.fromMap({
-      'email': user.email,
-      'first_name': user.firstName,
-      'last_name': user.lastName,
-      'address': user.address,
-      'image_name': user.imageName,
-    });
-
-    if (imageBytes != null) {
-      formData.files.add(MapEntry(
-        'image',
-    MultipartFile.fromBytes(imageBytes, filename: user.imageName),
-      ));
-    }
-
-    final response = await _dio.post(
-      '/update-user/${user.id}',
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    );
-
-    if (response.statusCode == 200) {
-      print('User updated successfully');
-      if (response.data is Map<String, dynamic>) {
-        return UpdateUser.fromJson(response.data);
-      } else {
-        throw Exception('Invalid response data format');
+  @override
+  Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
       }
-    } else {
-      throw Exception('Failed to update user: ${response.statusCode} ${response.statusMessage}');
+
+      FormData formData = FormData.fromMap({
+        'email': user.email,
+        'first_name': user.firstName,
+        'last_name': user.lastName,
+        'address': user.address,
+        'image_name': user.imageName,
+      });
+
+      if (imageBytes != null) {
+        formData.files.add(MapEntry(
+          'image',
+          MultipartFile.fromBytes(imageBytes, filename: user.imageName),
+        ));
+      }
+
+      final response = await _dio.post(
+        '/user/update/${user.id}',
+        data: formData,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('User updated successfully');
+        if (response.data is Map<String, dynamic>) {
+          return UpdateUser.fromJson(response.data);
+        } else {
+          throw Exception('Invalid response data format');
+        }
+      } else {
+        throw Exception(
+            'Failed to update user: ${response.statusCode} ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Error updating user: $e');
+      rethrow;
     }
-  } catch (e) {
-    print('Error updating user: $e');
-    rethrow;
   }
-}
-
-
-
 
   @override
   Future<UpdatePassword> updatePassword(UpdatePassword user) async {
@@ -356,7 +366,7 @@ Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes) async {
       }
 
       final response = await _dio.post(
-        '/update-user/${user.id}',
+        '/user/update/${user.id}',
         data: {
           'email': user.email,
           'first_name': user.firstName,
@@ -417,6 +427,151 @@ Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes) async {
       }
     } catch (e) {
       print('Error downloading profile image: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Uint8List> retrieveProductImage(String path) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.get(
+        '/download/file',
+        queryParameters: {'path': path},
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception(
+            'Failed to download product image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error downloading product image: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Uint8List> retrieveProductImages(String path) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.get(
+        '/download/file',
+        queryParameters: {'path': path},
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+          responseType: ResponseType.bytes,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data as Uint8List;
+      } else {
+        throw Exception(
+            'Failed to download product image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error downloading product image: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> canceledOrder(int orderId) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/orders/cancel',
+        data: {
+          'order_id': orderId,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        print('Order canceled successfully');
+      } else {
+        throw Exception('Failed to cancel order: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error canceling order: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> getPaymentLink(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  ) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/orders',
+        data: {
+          'full_name': fullName,
+          'shipping_address': address,
+          'total': total.toString(),
+          'payment_method': selectedPaymentMethod,
+          'cart_items': {
+            'id': cartItems,
+          },
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.data is Map<String, dynamic>) {
+          final data = response.data as Map<String, dynamic>;
+          final link = data['data']['url'];
+          return link;
+        } else {
+          throw Exception('Unexpected response format');
+        }
+      } else {
+        throw Exception(
+            'Failed to place order: ${response.statusCode} - ${response.statusMessage}');
+      }
+    } catch (_) {
       rethrow;
     }
   }

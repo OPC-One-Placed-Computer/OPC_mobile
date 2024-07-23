@@ -1,13 +1,13 @@
-  import 'dart:developer';
-
-  import 'package:flutter/material.dart';
-  import 'package:opc_mobile_development/app/app.router.dart';
-  import 'package:opc_mobile_development/app/app_base_view_model.dart';
-  import 'package:opc_mobile_development/models/user.dart';
-  import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
-  import 'package:opc_mobile_development/ui/views/products/products_view.dart';
-  import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
-  import 'package:opc_mobile_development/utils/constants.dart';
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
+import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/user.dart';
+import 'package:opc_mobile_development/services/api/api_service_impl.dart';
+import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
+import 'package:opc_mobile_development/ui/views/products/products_view.dart';
+import 'package:opc_mobile_development/ui/views/profile/profile_view.dart';
+import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {
   int _currentIndex = 0;
@@ -15,8 +15,8 @@ class HomeViewModel extends AppBaseViewModel {
 
   User? user;
 
-  void init() async {
-    await _getCachedUser();
+  HomeViewModel() {
+    _checkAuthentication();
   }
 
   void setIndex(int index) {
@@ -24,12 +24,18 @@ class HomeViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  Future<void> _getCachedUser() async {
+  Future<void> _checkAuthentication() async {
     try {
-      final user = await sharedPrefService.getUser();
-      print('user $user');
-      this.user = user;
-    } catch (_) {}
+      final cachedUser = await sharedPrefService.getUser();
+      if (cachedUser != null) {
+        user = cachedUser;
+      } else {
+        navigationService.navigateTo(Routes.login);
+      }
+    } catch (e) {
+      log(e.toString());
+      navigationService.navigateTo(Routes.login);
+    }
   }
 
   Widget getViewForIndex(int index) {
@@ -65,4 +71,3 @@ class HomeViewModel extends AppBaseViewModel {
     }
   }
 }
-

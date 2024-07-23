@@ -13,10 +13,26 @@ abstract class ApiServiceService {
   Future<List<Cart>> getAllCartItems();
   Future<void> deleteFromCart(int cartId);
   Future<CurrentAuthentication> getCurrentAuthentication();
-  Future<Checkout> checkOut(String fullName, String address, int total,
-      List<Map<String, dynamic>> cartItems);
-  Future<List<Checkout>> getOrdersDetails();
+  Future<Checkout> checkOut(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  );
+  Future<List<Checkout>> getOrdersDetails(
+      {required int page, required int pageSize});
   Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes);
   Future<UpdatePassword> updatePassword(UpdatePassword user);
   Future<Uint8List> retrieveProfileImage(String filename);
+  Future<Uint8List> retrieveProductImage(String path);
+  Future<Uint8List> retrieveProductImages(String path);
+  Future<void> canceledOrder(int orderId);
+  Future<String> getPaymentLink(
+    String fullName,
+    String address,
+    String selectedPaymentMethod,
+    int total,
+    List<String> cartItems,
+  );
 }

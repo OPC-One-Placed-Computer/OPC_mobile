@@ -10,7 +10,8 @@ class SignupView extends StackedView<SignupViewModel> {
   SignupViewModel viewModelBuilder(BuildContext context) => SignupViewModel();
 
   @override
-  Widget builder(BuildContext context, SignupViewModel viewModel, Widget? child) {
+  Widget builder(
+      BuildContext context, SignupViewModel viewModel, Widget? child) {
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -58,10 +59,13 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person, size: 20),
                               border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
                               filled: true,
-                              fillColor: const Color.fromARGB(255, 255, 255, 255),
-                              errorText: viewModel.firstNameError && viewModel.submitted
+                              fillColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              errorText: viewModel.firstNameError &&
+                                      viewModel.submitted
                                   ? 'First Name is required'
                                   : null,
                             ),
@@ -80,12 +84,15 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person, size: 20),
                               border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
                               filled: true,
-                              fillColor: const Color.fromARGB(255, 255, 255, 255),
-                              errorText: viewModel.lastNameError && viewModel.submitted
-                                  ? 'Last Name is required'
-                                  : null,
+                              fillColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              errorText:
+                                  viewModel.lastNameError && viewModel.submitted
+                                      ? 'Last Name is required'
+                                      : null,
                             ),
                             controller: viewModel.lastNameController,
                             onChanged: (value) {
@@ -102,10 +109,13 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.email, size: 20),
                               border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
                               filled: true,
-                              fillColor: const Color.fromARGB(255, 255, 255, 255),
-                              errorText: viewModel.emailError != null && viewModel.submitted
+                              fillColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
+                              errorText: viewModel.emailError != null &&
+                                      viewModel.submitted
                                   ? viewModel.emailError
                                   : null,
                             ),
@@ -123,19 +133,24 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.lock, size: 20),
                               border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
                               filled: true,
-                              fillColor: const Color.fromARGB(255, 255, 255, 255),
+                              fillColor:
+                                  const Color.fromARGB(255, 255, 255, 255),
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   viewModel.togglePasswordVisibility();
                                 },
                                 child: Icon(
-                                  viewModel.obscureText ? Icons.visibility_off : Icons.visibility,
+                                  viewModel.obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                   size: 20,
                                 ),
                               ),
-                              errorText: viewModel.passwordError != null && viewModel.submitted
+                              errorText: viewModel.passwordError != null &&
+                                      viewModel.submitted
                                   ? viewModel.passwordError
                                   : null,
                             ),
@@ -153,11 +168,13 @@ class SignupView extends StackedView<SignupViewModel> {
                                   await viewModel.register();
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                  backgroundColor: const Color.fromARGB(255, 19, 7, 46),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 19, 7, 46),
                                 ),
                                 child: Text(
                                   'Register',

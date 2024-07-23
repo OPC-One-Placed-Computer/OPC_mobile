@@ -12,7 +12,6 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
-      onModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: Row(
@@ -143,7 +142,10 @@ class HomeView extends StatelessWidget {
                             ),
                           ),
                           TextButton(
-                            onPressed: viewModel.logout,
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                              viewModel.logout();
+                            },
                             child: Text(
                               'Yes',
                               style: GoogleFonts.poppins(),

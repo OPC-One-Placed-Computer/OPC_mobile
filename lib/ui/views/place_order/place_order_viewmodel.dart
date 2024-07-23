@@ -38,15 +38,12 @@ class PlaceOrderViewModel extends AppBaseViewModel {
   void init() async {
     await fetchUserData();
     await fetchCartItems();
-   
   }
 
   double get subtotal {
     return cartItems.fold(
         0, (sum, item) => sum + (item.product.price * item.quantity));
   }
-
- 
 
   Future<void> fetchCartItems() async {
     setBusy(true);

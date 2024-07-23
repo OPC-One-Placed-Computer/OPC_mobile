@@ -1,3 +1,4 @@
+import 'package:logger/logger.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_api_service.dart';
 import 'package:opc_mobile_development/services/api/auth/auth_service_impl.dart';
@@ -21,6 +22,8 @@ import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dar
 import 'package:opc_mobile_development/ui/views/checkout/checkout_view.dart';
 
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
+import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_placed_view.dart';
+import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -39,6 +42,8 @@ import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.d
     MaterialRoute(page: CheckoutView, name: 'checkout'),
 
     MaterialRoute(page: OrderPlacedView, name: 'order_placed'),
+    MaterialRoute(page: ViewOrderPlacedView, name: 'view_order_placed'),
+    MaterialRoute(page: WebviewScreenView, name: 'payment'),
 // @stacked-route
   ],
   dependencies: [
@@ -63,3 +68,5 @@ import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.d
   ],
 )
 class App {}
+
+var logger = Logger(printer: PrettyPrinter(), level: Level.debug);

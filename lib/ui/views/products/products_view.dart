@@ -1,9 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
-import 'package:opc_mobile_development/utils/constants.dart';
+import 'package:opc_mobile_development/services/api/api_service_impl.dart';
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
+import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
 import 'package:stacked/stacked.dart';
 
 import 'products_view_model.dart';
@@ -17,43 +20,63 @@ class ProductsView extends StatelessWidget {
       viewModelBuilder: () => ProductsViewModel(),
       onViewModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) => Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
-          elevation: 4.0,
-          shadowColor: Colors.grey.withOpacity(0.5),
-          title: Row(
-            children: [
-              Expanded(
-                child: _buildSearchBar(viewModel),
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight + 10),
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 19, 7, 46),
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(10),
               ),
-            ],
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: () {
-                showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: MaterialLocalizations.of(context)
-                      .modalBarrierDismissLabel,
-                  barrierColor: Colors.black54,
-                  transitionDuration: const Duration(milliseconds: 200),
-                  pageBuilder: (BuildContext context, Animation animation,
-                      Animation secondaryAnimation) {
-                    return Align(
-                      alignment: Alignment.topCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 80),
-                        child: _FilterModalSheet(viewModel: viewModel),
-                      ),
-                    );
-                  },
-                );
-              },
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(255, 8, 8, 8).withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
+            child: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Row(
+                children: [
+                  Expanded(
+                    child: _buildSearchBar(viewModel),
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      showGeneralDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierLabel: MaterialLocalizations.of(context)
+                            .modalBarrierDismissLabel,
+                        barrierColor: Colors.black54,
+                        transitionDuration: const Duration(milliseconds: 200),
+                        pageBuilder: (BuildContext context, Animation animation,
+                            Animation secondaryAnimation) {
+                          return Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 80),
+                              child: _FilterModalSheet(viewModel: viewModel),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         body: viewModel.isBusy && viewModel.products.isEmpty
             ? const Center(child: CircularProgressIndicator())
@@ -62,6 +85,7 @@ class ProductsView extends StatelessWidget {
                   if (!viewModel.isLoadingMore &&
                       scrollInfo.metrics.pixels ==
                           scrollInfo.metrics.maxScrollExtent) {
+                    print('Reached end of the list');
                     viewModel.loadMoreProducts();
                   }
                   return false;
@@ -70,7 +94,7 @@ class ProductsView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       _buildProductList(context, viewModel),
                       if (viewModel.isLoadingMore)
                         const Center(child: CircularProgressIndicator()),
@@ -80,33 +104,6 @@ class ProductsView extends StatelessWidget {
                 ),
               ),
       ),
-    );
-  }
-
-  Widget _buildProductList(BuildContext context, ProductsViewModel viewModel) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 20.0,
-      runSpacing: 20.0,
-      children: viewModel.products.map((product) {
-        return ProductItem(
-          key: Key(product.id.toString()),
-          product: product,
-          onProductTapped: (product) => viewModel.navigationService.navigateTo(
-            Routes.products_view,
-            arguments: ProductdetailsViewArguments(product: product),
-          ),
-          onAddToCartTapped: (product) async {
-            await viewModel.addToCart(product);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${product.productName} added to cart'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          },
-        );
-      }).toList(),
     );
   }
 
@@ -131,6 +128,34 @@ class ProductsView extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildProductList(BuildContext context, ProductsViewModel viewModel) {
+  return Wrap(
+    alignment: WrapAlignment.center,
+    spacing: 20.0,
+    runSpacing: 20.0,
+    children: List.generate(viewModel.products.length, (index) {
+      final product = viewModel.products[index];
+      return ProductItem(
+        key: Key('${product.id}_$index'),
+        product: product,
+        onProductTapped: (product) => viewModel.navigationService.navigateTo(
+          Routes.products_view,
+          arguments: ProductdetailsViewArguments(product: product),
+        ),
+        onAddToCartTapped: (product) async {
+          await viewModel.addToCart(product);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${product.productName} added to cart'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        },
+      );
+    }),
+  );
 }
 
 class _FilterModalSheet extends StatefulWidget {
@@ -228,14 +253,15 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
                   child: ElevatedButton(
                     onPressed: _clearFilters,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white, backgroundColor: const Color.fromARGB(255, 19, 7, 46),
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color.fromARGB(255, 19, 7, 46),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12.0, vertical: 4.0),
                       textStyle: GoogleFonts.poppins(fontSize: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                      minimumSize: const Size(64, 32), 
+                      minimumSize: const Size(64, 32),
                     ),
                     child: const Text('Clear'),
                   ),
@@ -247,6 +273,7 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
       ),
     );
   }
+
   Widget _buildFilters(ProductsViewModel viewModel) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -432,7 +459,6 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
   }
 }
 
-
 class ProductItem extends StatelessWidget {
   final Product product;
   final ValueChanged<Product> onProductTapped;
@@ -444,6 +470,19 @@ class ProductItem extends StatelessWidget {
     required this.onProductTapped,
     required this.onAddToCartTapped,
   }) : super(key: key);
+
+  Future<Uint8List> fetchImageData(String imagePath) async {
+    final cachedImage = imageCacheService.getImage(imagePath);
+    if (cachedImage != null) {
+      return cachedImage;
+    }
+
+    final imageData = await ApiServiceImpl().retrieveProductImage(imagePath);
+
+    imageCacheService.setImage(imagePath, imageData);
+
+    return imageData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -462,20 +501,38 @@ class ProductItem extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 1.0,
-                  child: CachedNetworkImage(
-                    imageUrl: '${Constants.baseUrl}${product.imagePath}',
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey.shade200,
-                      child: const Icon(
-                        Icons.broken_image,
-                        size: 50,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    fit: BoxFit.cover,
+                  child: FutureBuilder<Uint8List>(
+                    future: fetchImageData(product.imagePath),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        );
+                      } else if (snapshot.hasData) {
+                        return ProductImage(
+                          imagePath: product.imagePath,
+                          imageData: snapshot.data!,
+                        );
+                      } else {
+                        return Container(
+                          color: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
                 Padding(
@@ -485,7 +542,7 @@ class ProductItem extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       color: const Color.fromARGB(255, 0, 0, 0),
                       fontSize: 12,
-                       fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -496,7 +553,7 @@ class ProductItem extends StatelessWidget {
                   child: Text(
                     product.brand,
                     style: GoogleFonts.poppins(
-                      color: Color.fromARGB(255, 85, 85, 85),
+                      color: const Color.fromARGB(255, 85, 85, 85),
                       fontSize: 10,
                     ),
                   ),
@@ -504,9 +561,9 @@ class ProductItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '\$ ${product.price.toStringAsFixed(2)}',
+                    '\₱ ${product.price.toStringAsFixed(2)}',
                     style: GoogleFonts.poppins(
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                      color: Colors.red,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -521,12 +578,13 @@ class ProductItem extends StatelessWidget {
                 onTap: () => onAddToCartTapped.call(product),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.7),
+                    color: const Color.fromARGB(255, 255, 255, 255)
+                        .withOpacity(0.7),
                     borderRadius: BorderRadius.circular(50.0),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3), 
-                        spreadRadius: 1, 
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 1,
                         blurRadius: 2,
                         offset: const Offset(0, 1),
                       ),

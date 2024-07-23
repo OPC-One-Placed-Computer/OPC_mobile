@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:stacked/stacked.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/product.dart';
 
@@ -25,6 +27,7 @@ class ProductsViewModel extends AppBaseViewModel {
 
   Future<void> _getProducts({int page = 1}) async {
     try {
+      print('Fetching products for page: $page');
       final paginatedProducts = await apiService.getProducts(page: page);
       if (page == 1) {
         allProducts = paginatedProducts.data;
@@ -34,26 +37,33 @@ class ProductsViewModel extends AppBaseViewModel {
       products = allProducts;
       currentPage = paginatedProducts.currentPage;
       lastPage = paginatedProducts.lastPage;
+      print('Current Page: $currentPage, Last Page: $lastPage');
     } catch (e) {
       print('Error fetching products: $e');
     } finally {
-      setBusy(false);
+      isLoadingMore = false;
+      notifyListeners();
+    }
+  }
+
+  void loadMoreProducts() async {
+    if (currentPage < lastPage && !isLoadingMore) {
+      print('Loading more products...');
+      isLoadingMore = true;
+      currentPage += 1;
+      await _getProducts(page: currentPage);
+    }
+  }
+
+  void debugPrintKeys(List<Product> products) {
+    for (var product in products) {
+      print('Product key: ${product.id}');
     }
   }
 
   void _initializeFilters() {
     categories.addAll(allProducts.map((product) => product.category).toSet());
     brands.addAll(allProducts.map((product) => product.brand).toSet());
-  }
-
-  Future<void> loadMoreProducts() async {
-    if (isLoadingMore || currentPage >= lastPage) return;
-
-    isLoadingMore = true;
-    currentPage++;
-    await _getProducts(page: currentPage);
-    isLoadingMore = false;
-    notifyListeners();
   }
 
   void searchProducts(String query) {
@@ -68,7 +78,8 @@ class ProductsViewModel extends AppBaseViewModel {
             product.description.toLowerCase().contains(lowerCaseQuery);
         final matchesCategory =
             product.category.toLowerCase().contains(lowerCaseQuery);
-        final matchesBrand = product.brand.toLowerCase().contains(lowerCaseQuery);
+        final matchesBrand =
+            product.brand.toLowerCase().contains(lowerCaseQuery);
 
         return (matchesProductName ||
                 matchesDescription ||
@@ -108,10 +119,12 @@ class ProductsViewModel extends AppBaseViewModel {
 
   void filterProducts() {
     products = allProducts.where((product) {
-      final categoryMatches =
-          selectedCategory == null || selectedCategory == 'All' || product.category == selectedCategory;
-      final brandMatches =
-          selectedBrand == null || selectedBrand == 'All' || product.brand == selectedBrand;
+      final categoryMatches = selectedCategory == null ||
+          selectedCategory == 'All' ||
+          product.category == selectedCategory;
+      final brandMatches = selectedBrand == null ||
+          selectedBrand == 'All' ||
+          product.brand == selectedBrand;
       final priceMatches = (minPrice == null || product.price >= minPrice!) &&
           (maxPrice == null || product.price <= maxPrice!);
       return categoryMatches && brandMatches && priceMatches;

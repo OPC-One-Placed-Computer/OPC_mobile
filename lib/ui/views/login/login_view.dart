@@ -17,7 +17,11 @@ class LoginView extends StatelessWidget {
       onModelReady: (model) {},
       builder: (context, model, child) => Scaffold(
         body: model.isBusy
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+              )
             : Container(
                 color: Colors.white,
                 height: MediaQuery.of(context).size.height,
@@ -122,14 +126,25 @@ class LoginView extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 20),
-                                  model.isBusy
-                                      ? const Center(
-                                          child: CircularProgressIndicator())
-                                      : Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16.0),
-                                          child: ElevatedButton(
-                                            onPressed: () async {
+                                  SizedBox(
+                                    width: 200,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: const Color.fromARGB(
+                                            255, 19, 7, 46),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12.0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                        ),
+                                        textStyle:
+                                            GoogleFonts.poppins(fontSize: 16),
+                                      ),
+                                      onPressed: model.isBusy
+                                          ? null
+                                          : () async {
                                               bool loginSuccess =
                                                   await model.login();
                                               if (loginSuccess) {
@@ -138,9 +153,9 @@ class LoginView extends StatelessWidget {
                                                         Routes.products);
                                               }
                                             },
-                                            child: const Text('Login'),
-                                          ),
-                                        ),
+                                      child: Text('Login'),
+                                    ),
+                                  ),
                                   const SizedBox(height: 30),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
