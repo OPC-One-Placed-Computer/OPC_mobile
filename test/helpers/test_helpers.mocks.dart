@@ -106,16 +106,6 @@ class _FakeUpdatePassword_6 extends _i1.SmartFake
         );
 }
 
-class _FakeOrderItem_7 extends _i1.SmartFake implements _i5.OrderItem {
-  _FakeOrderItem_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [NavigationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -948,9 +938,9 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i5.Checkout>);
 
   @override
-  _i10.Future<List<_i5.Checkout>> getOrdersDetails({
-    required int? page,
-    required int? pageSize,
+  _i10.Future<Map<String, dynamic>> getOrdersDetails({
+    int? page = 1,
+    int? pageSize = 10,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -961,10 +951,11 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
             #pageSize: pageSize,
           },
         ),
-        returnValue: _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
+        returnValue:
+            _i10.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
         returnValueForMissingStub:
-            _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
-      ) as _i10.Future<List<_i5.Checkout>>);
+            _i10.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+      ) as _i10.Future<Map<String, dynamic>>);
 
   @override
   _i10.Future<_i6.UpdateUser> updateUser(
@@ -1052,37 +1043,77 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i13.Uint8List>);
 
   @override
-  _i10.Future<_i13.Uint8List> retrieveProductImages(String? path) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #retrieveProductImages,
-          [path],
-        ),
-        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-        returnValueForMissingStub:
-            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-      ) as _i10.Future<_i13.Uint8List>);
-
-  @override
-  _i10.Future<_i5.OrderItem> canceledOrder(int? orderId) => (super.noSuchMethod(
+  _i10.Future<void> canceledOrder(int? orderId) => (super.noSuchMethod(
         Invocation.method(
           #canceledOrder,
           [orderId],
         ),
-        returnValue: _i10.Future<_i5.OrderItem>.value(_FakeOrderItem_7(
+        returnValue: _i10.Future<void>.value(),
+        returnValueForMissingStub: _i10.Future<void>.value(),
+      ) as _i10.Future<void>);
+
+  @override
+  _i10.Future<String> getPaymentLink(
+    String? fullName,
+    String? address,
+    String? selectedPaymentMethod,
+    int? total,
+    List<String>? cartItems,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getPaymentLink,
+          [
+            fullName,
+            address,
+            selectedPaymentMethod,
+            total,
+            cartItems,
+          ],
+        ),
+        returnValue: _i10.Future<String>.value(_i8.dummyValue<String>(
           this,
           Invocation.method(
-            #canceledOrder,
-            [orderId],
+            #getPaymentLink,
+            [
+              fullName,
+              address,
+              selectedPaymentMethod,
+              total,
+              cartItems,
+            ],
           ),
         )),
         returnValueForMissingStub:
-            _i10.Future<_i5.OrderItem>.value(_FakeOrderItem_7(
+            _i10.Future<String>.value(_i8.dummyValue<String>(
           this,
           Invocation.method(
-            #canceledOrder,
-            [orderId],
+            #getPaymentLink,
+            [
+              fullName,
+              address,
+              selectedPaymentMethod,
+              total,
+              cartItems,
+            ],
           ),
         )),
-      ) as _i10.Future<_i5.OrderItem>);
+      ) as _i10.Future<String>);
+
+  @override
+  _i10.Future<void> updateQuantity(
+    int? productId,
+    int? quantity,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateQuantity,
+          [
+            productId,
+            quantity,
+          ],
+        ),
+        returnValue: _i10.Future<void>.value(),
+        returnValueForMissingStub: _i10.Future<void>.value(),
+      ) as _i10.Future<void>);
 }

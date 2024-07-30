@@ -1,21 +1,23 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
 import 'package:stacked/stacked.dart';
 
-import 'productdetails_viewmodel.dart';
+import 'detailed_product_viewmodel.dart';
 
-class ProductdetailsView extends StatelessWidget {
-  const ProductdetailsView({Key? key, required this.product}) : super(key: key);
+class DetailedProductView extends StatelessWidget {
+  const DetailedProductView({Key? key, required this.product})
+      : super(key: key);
 
   final Product product;
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ProductdetailsViewModel>.reactive(
-      viewModelBuilder: () => ProductdetailsViewModel(product),
+    return ViewModelBuilder<DetailedProductViewModel>.reactive(
+      viewModelBuilder: () => DetailedProductViewModel(product),
       onViewModelReady: (model) => model.init(),
       builder: (context, viewModel, child) {
         return Scaffold(
@@ -165,91 +167,6 @@ class ProductdetailsView extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Quantity: ',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              IconButton(
-                                iconSize: 25,
-                                icon: const Icon(Icons.remove_circle),
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                                onPressed: viewModel.decrementQuantity,
-                              ),
-                              Text(
-                                '${viewModel.quantity}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 15,
-                                ),
-                              ),
-                              IconButton(
-                                iconSize: 25,
-                                icon: const Icon(Icons.add_circle),
-                                color: const Color.fromARGB(255, 0, 0, 0),
-                                onPressed: viewModel.incrementQuantity,
-                              ),
-                            ],
-                          ),
-                          Transform(
-                            transform:
-                                Matrix4.translationValues(-0.0, 0.0, 0.0),
-                            child: SizedBox(
-                              width: 125,
-                              child: ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                label: const Text(
-                                  'Add to Cart',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 0, 0, 153),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                ),
-                                onPressed: () async {
-                                  viewModel.setBusy(true);
-                                  try {
-                                    await viewModel.addToCart();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Product added to cart'),
-                                        duration: Duration(seconds: 2),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error: $e'),
-                                        duration: const Duration(seconds: 2),
-                                        backgroundColor: Color(0xFFD22630),
-                                      ),
-                                    );
-                                  } finally {
-                                    viewModel.setBusy(false);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
                       ),
                       const SizedBox(height: 20),
                     ],

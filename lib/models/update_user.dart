@@ -19,7 +19,6 @@ class UpdateUser {
   final String? token;
   final String imageName;
   final String imagePath;
-
   final String? imageUrl;
 
   factory UpdateUser.fromJson(Map<String, dynamic> json) => UpdateUser(
@@ -34,18 +33,18 @@ class UpdateUser {
         imageUrl: json['image'] != null ? json['image']['url'] : null,
       );
 
-  UpdateUser copyWith({
-    int? id,
-    String? email,
-    String? firstName,
-    String? lastName,
-    String? address,
-    String? imageName,
-    String? imagePath,
-    String? token,
-    String? imageFileName,
-    String? imageUrl,
-  }) {
+  UpdateUser copyWith(
+      {int? id,
+      String? email,
+      String? firstName,
+      String? lastName,
+      String? address,
+      String? imageName,
+      String? imagePath,
+      String? token,
+      String? imageFileName,
+      String? imageUrl,
+      k}) {
     return UpdateUser(
       id: id ?? this.id,
       email: email ?? this.email,
@@ -83,13 +82,13 @@ class UpdatePassword {
 
   factory UpdatePassword.fromJson(Map<String, dynamic> json) => UpdatePassword(
         id: json['user_id'],
-        email: json['email'],
-        firstName: json['first_name'],
-        lastName: json['last_name'],
-        address: json['address'],
-        oldPassword: json['old_password'],
-        newPassword: json['new_password'],
-        newPasswordConfirmation: json['new_password_confirmation'],
+        email: json['email'] ?? '',
+        firstName: json['first_name'] ?? '',
+        lastName: json['last_name'] ?? '',
+        address: json['address'] ?? '',
+        oldPassword: json['old_password'] ?? '',
+        newPassword: json['new_password'] ?? '',
+        newPasswordConfirmation: json['new_password_confirmation'] ?? '',
       );
 
   UpdatePassword copyWith({

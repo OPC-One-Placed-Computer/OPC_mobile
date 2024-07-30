@@ -12,7 +12,7 @@ class Cart {
 
   final int? id;
   final int? userId;
-  final int? productId;
+  final int productId;
   final Product product;
   int quantity;
   final double subTotal;
@@ -20,9 +20,9 @@ class Cart {
   factory Cart.fromJson(Map<String, dynamic> json) => Cart(
         id: json['cart_id'] as int?,
         userId: json['user_id'] as int?,
-        productId: json['product_id'] as int?,
+        productId: json['product_id'] as int,
         product: Product.fromJson(json['product'] as Map<String, dynamic>),
-        quantity: json['quantity'] as int? ?? 0,
+        quantity: json['quantity'] as int,
         subTotal: double.parse(json['subtotal'].toString()),
       );
 }

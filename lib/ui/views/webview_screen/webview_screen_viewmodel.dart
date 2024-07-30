@@ -1,24 +1,37 @@
+import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
-import 'package:stacked/stacked.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebviewScreenViewModel extends AppBaseViewModel {
-  final controller = WebViewController();
+  late WebViewController controller;
 
-  init(String url) {
-    controller
+  void init(String url) {
+    controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(onUrlChange: (url) {
-        logger.i(url.url);
-        final link = url.url ?? '';
-        if (link.contains('cancel?session')) {
-          navigationService.back();
-        }
-        if (link.contains('success?session')) {
-          //route orders
-        }
-      }))
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageStarted: (String url) {
+          logger.i('Page started loading: $url');
+        },
+        onPageFinished: (String url) {
+          logger.i('Page finished loading: $url');
+          if (url.contains('cancel')) {
+            logger.i('Detected cancel session. Navigating back.');
+            Future.delayed(const Duration(seconds: 4), () {
+              navigationService.back();
+            });
+          }
+          if (url.contains('success')) {
+            logger.i('Detected success session. Navigating to order_placed.');
+            Future.delayed(const Duration(seconds: 4), () {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                navigationService.navigateTo(Routes.homeView);
+              });
+            });
+          }
+        },
+      ))
       ..loadRequest(Uri.parse(url));
   }
 }

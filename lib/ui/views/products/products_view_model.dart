@@ -9,6 +9,9 @@ class ProductsViewModel extends AppBaseViewModel {
   int currentPage = 1;
   int lastPage = 1;
   bool isLoadingMore = false;
+  bool canLoadMore = true;
+  bool get isLastPage => currentPage == lastPage;
+
   double? minPrice;
   double? maxPrice;
 
@@ -17,6 +20,13 @@ class ProductsViewModel extends AppBaseViewModel {
   List<String> categories = ['All'];
   List<String> brands = ['All'];
   int quantity = 1;
+  bool _isButtonVisible = false;
+  bool get isButtonVisible => _isButtonVisible;
+
+  void toggleButtonVisibility(bool isVisible) {
+    _isButtonVisible = isVisible;
+    notifyListeners();
+  }
 
   void init() async {
     setBusy(true);
@@ -37,6 +47,7 @@ class ProductsViewModel extends AppBaseViewModel {
       products = allProducts;
       currentPage = paginatedProducts.currentPage;
       lastPage = paginatedProducts.lastPage;
+      canLoadMore = currentPage < lastPage;
       print('Current Page: $currentPage, Last Page: $lastPage');
     } catch (e) {
       print('Error fetching products: $e');

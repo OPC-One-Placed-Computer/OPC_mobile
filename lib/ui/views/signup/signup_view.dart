@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:stacked/stacked.dart';
 import 'signup_viewmodel.dart';
 
@@ -21,13 +22,6 @@ class SignupView extends StackedView<SignupViewModel> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 60),
-              Image.asset(
-                'lib/resources/images/register.png',
-                height: 200,
-                width: 200,
-                fit: BoxFit.contain,
-              ),
               const SizedBox(height: 20),
               Center(
                 child: Card(
@@ -41,8 +35,16 @@ class SignupView extends StackedView<SignupViewModel> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        SizedBox(
+                          height: 150,
+                          child: Lottie.asset(
+                            'lib/resources/images/registerAnimated.json',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(height: 110),
                         Text(
-                          'Sign Up',
+                          'Register',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 24.0,
@@ -58,9 +60,8 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelText: 'First Name',
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person, size: 20),
-                              border: const OutlineInputBorder(),
                               contentPadding:
-                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                                  const EdgeInsets.fromLTRB(0, 0, 64, 0),
                               filled: true,
                               fillColor:
                                   const Color.fromARGB(255, 255, 255, 255),
@@ -83,9 +84,8 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelText: 'Last Name',
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person, size: 20),
-                              border: const OutlineInputBorder(),
                               contentPadding:
-                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                                  const EdgeInsets.fromLTRB(12, 0, 64, 12),
                               filled: true,
                               fillColor:
                                   const Color.fromARGB(255, 255, 255, 255),
@@ -108,9 +108,8 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelText: 'Email',
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.email, size: 20),
-                              border: const OutlineInputBorder(),
                               contentPadding:
-                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                                  const EdgeInsets.fromLTRB(12, 0, 64, 12),
                               filled: true,
                               fillColor:
                                   const Color.fromARGB(255, 255, 255, 255),
@@ -132,9 +131,8 @@ class SignupView extends StackedView<SignupViewModel> {
                               labelText: 'Password',
                               labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.lock, size: 20),
-                              border: const OutlineInputBorder(),
                               contentPadding:
-                                  const EdgeInsets.fromLTRB(12, 12, 64, 12),
+                                  const EdgeInsets.fromLTRB(12, 0, 64, 12),
                               filled: true,
                               fillColor:
                                   const Color.fromARGB(255, 255, 255, 255),
@@ -173,8 +171,7 @@ class SignupView extends StackedView<SignupViewModel> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25.0),
                                   ),
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 19, 7, 46),
+                                  backgroundColor: Colors.blue,
                                 ),
                                 child: Text(
                                   'Register',
@@ -184,7 +181,7 @@ class SignupView extends StackedView<SignupViewModel> {
                                   ),
                                 ),
                               ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 27),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -214,7 +211,6 @@ class SignupView extends StackedView<SignupViewModel> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
             ],
           ),
         ),

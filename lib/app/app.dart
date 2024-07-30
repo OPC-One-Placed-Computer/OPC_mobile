@@ -24,6 +24,9 @@ import 'package:opc_mobile_development/ui/views/checkout/checkout_view.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
 import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_placed_view.dart';
 import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_view.dart';
+import 'package:opc_mobile_development/ui/views/success_message/success_message_view.dart';
+import 'package:opc_mobile_development/ui/views/detailed_product/detailed_product_view.dart';
+import 'package:opc_mobile_development/ui/views/cancelled_message/cancelled_message_view.dart';
 // @stacked-import
 
 @StackedApp(
@@ -35,7 +38,7 @@ import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_vi
     MaterialRoute(page: HomeView),
     MaterialRoute(page: StoreView),
 
-    MaterialRoute(page: ProfileView),
+    MaterialRoute(page: ProfileView, name: 'profile'),
     MaterialRoute(page: ProductdetailsView, name: 'products_view'),
     MaterialRoute(page: PlaceOrderView, name: 'place_order'),
     MaterialRoute(page: AddToCartView, name: 'add_cart'),
@@ -44,6 +47,9 @@ import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_vi
     MaterialRoute(page: OrderPlacedView, name: 'order_placed'),
     MaterialRoute(page: ViewOrderPlacedView, name: 'view_order_placed'),
     MaterialRoute(page: WebviewScreenView, name: 'payment'),
+    MaterialRoute(page: SuccessMessageView, name: 'success_message'),
+    MaterialRoute(page: DetailedProductView, name: 'detailed_product'),
+    MaterialRoute(page: CancelledMessageView, name: 'cancelled_message'),
 // @stacked-route
   ],
   dependencies: [

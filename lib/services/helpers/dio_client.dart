@@ -17,7 +17,7 @@ class DioClient {
         sendTimeout: const Duration(seconds: 15),
         headers: {
           Headers.acceptHeader: 'application/json',
-          Headers.contentTypeHeader: 'application/json'
+          Headers.contentTypeHeader: 'application/json',
         }))
       ..options
           .headers

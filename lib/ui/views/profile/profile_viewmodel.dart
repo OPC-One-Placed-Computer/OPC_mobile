@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/update_user.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
@@ -49,10 +50,10 @@ class ProfileViewModel extends AppBaseViewModel {
       email = authData.email;
       address = authData.address;
       imageName = authData.imageName;
-      imagePath = authData.imagePath;
+      imageName = authData.imageName;
 
-      if (imagePath != null && imagePath!.isNotEmpty) {
-        await displayProfileImage(imagePath!);
+      if (imageName != null && imageName!.isNotEmpty) {
+        await displayProfileImage(imageName!);
       }
 
       notifyListeners();
@@ -140,9 +141,19 @@ class ProfileViewModel extends AppBaseViewModel {
       this.address = changedPass.address;
       oldPassword = changedPass.oldPassword;
       newPassword = changedPass.newPassword;
+    } on DioException catch (e) {
+      if (e.response != null && e.response!.data is Map<String, dynamic>) {
+        final errorMessage =
+            e.response!.data['message'] ?? 'Incorrect old password';
+        setError(errorMessage);
+      } else {
+        setError('Unknown error occurred');
+      }
+      throw e;
     } catch (e) {
       print('Error changing password: $e');
       setError('Error changing password: $e');
+      rethrow;
     } finally {
       setBusy(false);
       notifyListeners();

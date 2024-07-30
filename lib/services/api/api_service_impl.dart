@@ -121,6 +121,37 @@ class ApiServiceImpl implements ApiServiceService {
   }
 
   @override
+  Future<void> updateQuantity(int productId, int quantity) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final response = await _dio.post(
+        '/cart/$productId',
+        data: {
+          'quantity': quantity,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        print('Quantity updated successfully.');
+      } else {
+        throw Exception('Failed to update quantity: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating quantity: $e');
+      throw Exception('Error updating quantity: $e');
+    }
+  }
+
+  @override
   Future<List<Cart>> getAllCartItems() async {
     try {
       final token = await _sharedPreferenceService.getToken();
@@ -394,6 +425,14 @@ class ApiServiceImpl implements ApiServiceService {
         throw Exception(
             'Failed to update user: ${response.statusCode} ${response.statusMessage}');
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 422) {
+        final errorMessage =
+            e.response?.data['message'] ?? 'Unknown error occurred';
+        throw Exception(errorMessage);
+      } else {
+        throw Exception('Error updating user: ${e.message}');
+      }
     } catch (e) {
       print('Error updating user: $e');
       rethrow;
@@ -409,8 +448,8 @@ class ApiServiceImpl implements ApiServiceService {
       }
 
       final response = await _dio.get(
-        '/download/file',
-        queryParameters: {'path': path},
+        '/download/user-image',
+        queryParameters: {'image_name': path},
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -440,8 +479,8 @@ class ApiServiceImpl implements ApiServiceService {
       }
 
       final response = await _dio.get(
-        '/download/file',
-        queryParameters: {'path': path},
+        '/download/product-image',
+        queryParameters: {'image_name': path},
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -462,36 +501,7 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
-  @override
-  Future<Uint8List> retrieveProductImages(String path) async {
-    try {
-      final token = await _sharedPreferenceService.getToken();
-      if (token == null) {
-        throw Exception('No authentication token found');
-      }
 
-      final response = await _dio.get(
-        '/download/file',
-        queryParameters: {'path': path},
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
-          responseType: ResponseType.bytes,
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        return response.data as Uint8List;
-      } else {
-        throw Exception(
-            'Failed to download product image: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error downloading product image: $e');
-      rethrow;
-    }
-  }
 
   @override
   Future<void> canceledOrder(int orderId) async {
@@ -575,4 +585,6 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
+
+
 }

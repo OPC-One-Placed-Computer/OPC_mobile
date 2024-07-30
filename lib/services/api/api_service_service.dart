@@ -26,7 +26,7 @@ abstract class ApiServiceService {
   Future<UpdatePassword> updatePassword(UpdatePassword user);
   Future<Uint8List> retrieveProfileImage(String filename);
   Future<Uint8List> retrieveProductImage(String path);
-  Future<Uint8List> retrieveProductImages(String path);
+
   Future<void> canceledOrder(int orderId);
   Future<String> getPaymentLink(
     String fullName,
@@ -35,4 +35,5 @@ abstract class ApiServiceService {
     int total,
     List<String> cartItems,
   );
+  Future<void> updateQuantity(int productId, int quantity);
 }

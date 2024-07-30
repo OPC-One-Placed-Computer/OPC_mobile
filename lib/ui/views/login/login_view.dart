@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:stacked/stacked.dart';
 
@@ -33,13 +34,6 @@ class LoginView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const SizedBox(height: 60),
-                        Image.asset(
-                          'lib/resources/images/login.png',
-                          height: 230,
-                          width: 230,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 20),
                         Center(
                           child: Card(
                             elevation: 8.0,
@@ -52,8 +46,16 @@ class LoginView extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  SizedBox(
+                                    height: 200,
+                                    child: Lottie.asset(
+                                      'lib/resources/images/loginAnimated.json',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 100),
                                   Text(
-                                    'Sign In',
+                                    'Login',
                                     textAlign: TextAlign.center,
                                     style: GoogleFonts.poppins(
                                       fontSize: 24.0,
@@ -73,7 +75,9 @@ class LoginView extends StatelessWidget {
                                             GoogleFonts.poppins(fontSize: 14),
                                         prefixIcon:
                                             const Icon(Icons.email, size: 20),
-                                        border: const OutlineInputBorder(),
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                0, 0, 64, 12),
                                         filled: true,
                                         fillColor: const Color.fromARGB(
                                             255, 255, 255, 255),
@@ -98,7 +102,9 @@ class LoginView extends StatelessWidget {
                                             GoogleFonts.poppins(fontSize: 14),
                                         prefixIcon:
                                             const Icon(Icons.lock, size: 20),
-                                        border: const OutlineInputBorder(),
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                0, 0, 64, 12),
                                         filled: true,
                                         fillColor: const Color.fromARGB(
                                             255, 255, 255, 255),
@@ -131,8 +137,7 @@ class LoginView extends StatelessWidget {
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         foregroundColor: Colors.white,
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 19, 7, 46),
+                                        backgroundColor: Colors.blue,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 12.0),
                                         shape: RoundedRectangleBorder(
@@ -153,7 +158,7 @@ class LoginView extends StatelessWidget {
                                                         Routes.products);
                                               }
                                             },
-                                      child: Text('Login'),
+                                      child: Text('Sign In'),
                                     ),
                                   ),
                                   const SizedBox(height: 30),
@@ -161,7 +166,7 @@ class LoginView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Don't have an account? ",
+                                        "New Customer ? ",
                                         style: GoogleFonts.poppins(
                                           fontSize: 14,
                                           color: Colors.grey[600],
@@ -173,7 +178,7 @@ class LoginView extends StatelessWidget {
                                               .navigateTo(Routes.signup);
                                         },
                                         child: Text(
-                                          "Register here",
+                                          "Create your account",
                                           style: GoogleFonts.poppins(
                                             fontSize: 14,
                                             color: Colors.blue,
