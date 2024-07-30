@@ -3,12 +3,13 @@ import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
+import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
 
 class ViewOrderPlacedViewModel extends AppBaseViewModel {
   final ApiServiceService _orderService = ApiServiceImpl();
   final ImageCacheService imageCacheService = ImageCacheService();
 
-  bool _isProductsVisible = false;
+  bool _isProductsVisible = true;
 
   bool get isProductsVisible => _isProductsVisible;
 
@@ -25,14 +26,14 @@ class ViewOrderPlacedViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  Future<Uint8List> fetchImageData(String imagePath) async {
-    final cachedImage = imageCacheService.getImage(imagePath);
+  Future<Uint8List> fetchImageData(String imageName) async {
+    final cachedImage = imageCacheService.getImage(imageName);
     if (cachedImage != null) {
       return cachedImage;
     }
 
-    final imageData = await _orderService.retrieveProductImage(imagePath);
-    imageCacheService.setImage(imagePath, imageData);
+    final imageData = await _orderService.retrieveProductImage(imageName);
+    imageCacheService.setImage(imageName, imageData);
 
     return imageData;
   }
@@ -49,15 +50,5 @@ class ViewOrderPlacedViewModel extends AppBaseViewModel {
     } finally {
       setBusy(false);
     }
-  }
-}
-
-class ImageCacheService {
-  final Map<String, Uint8List> _cache = {};
-
-  Uint8List? getImage(String path) => _cache[path];
-
-  void setImage(String path, Uint8List imageData) {
-    _cache[path] = imageData;
   }
 }

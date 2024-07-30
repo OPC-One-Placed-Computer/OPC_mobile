@@ -3,22 +3,22 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:opc_mobile_development/models/cart.dart';
-import 'package:opc_mobile_development/services/api/api_service_impl.dart';
-import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
-import 'package:opc_mobile_development/ui/views/checkout/checkout_viewmodel.dart';
-import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
-import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
-import 'package:opc_mobile_development/ui/views/products/products_view.dart';
-import 'package:opc_mobile_development/utils/constants.dart';
-import 'package:stacked/stacked.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
+import 'package:opc_mobile_development/models/cart.dart';
+import 'package:opc_mobile_development/models/product.dart';
+import 'package:opc_mobile_development/ui/views/checkout/checkout_viewmodel.dart';
+import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
+import 'package:stacked/stacked.dart';
 
 class CheckoutView extends StatelessWidget {
   final List<Cart> selectedCartItems;
+  final ValueChanged<Product> onProductTapped;
 
-  const CheckoutView({Key? key, required this.selectedCartItems})
-      : super(key: key);
+  const CheckoutView({
+    Key? key,
+    required this.selectedCartItems,
+    required this.onProductTapped,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class CheckoutView extends StatelessWidget {
         }
 
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Colors.white,
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -123,7 +123,7 @@ class CheckoutView extends StatelessWidget {
                               Expanded(
                                 child: viewModel.isEditingAddress
                                     ? SizedBox(
-                                        height: 28,
+                                        height: 26,
                                         child: TextFormField(
                                           initialValue:
                                               viewModel.tempAddress ?? '',
@@ -132,6 +132,10 @@ class CheckoutView extends StatelessWidget {
                                           },
                                           decoration: const InputDecoration(
                                             border: OutlineInputBorder(),
+                                            contentPadding: EdgeInsets.only(
+                                              top: 8,
+                                              left: 5,
+                                            ),
                                           ),
                                           style: GoogleFonts.poppins(
                                             fontSize: 13,
@@ -168,7 +172,6 @@ class CheckoutView extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -183,7 +186,7 @@ class CheckoutView extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 8.0),
                                 Text(
-                                  'Current Payment',
+                                  'Current Payment :',
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
                                   ),
@@ -191,53 +194,90 @@ class CheckoutView extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 10.0),
-                          Container(
-                            width: 100.0,
-                            height: 27.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(color: Colors.grey),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: viewModel.selectedPaymentMethod,
-                                onChanged: (String? newValue) {
-                                  viewModel.updatePaymentMethod(newValue);
-                                },
-                                items: <String>[
-                                  'cod',
-                                  'stripe'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        value,
-                                        style:
-                                            GoogleFonts.poppins(fontSize: 12.0),
+                          const SizedBox(width: 4.0),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 0.0),
+                                  child: Row(
+                                    children: [
+                                      Transform.scale(
+                                        scale: 0.7,
+                                        child: Radio<String>(
+                                          value: 'cod',
+                                          groupValue:
+                                              viewModel.selectedPaymentMethod,
+                                          onChanged: (String? value) {
+                                            viewModel
+                                                .updatePaymentMethod(value);
+                                          },
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }).toList(),
-                                icon: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Colors.black,
+                                      Expanded(
+                                        child: Text(
+                                          'Cash on Delivery',
+                                          style: GoogleFonts.poppins(
+                                              fontSize: 13.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Order Summary',
-                        style: GoogleFonts.poppins(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Transform.translate(
+                            offset: const Offset(0.0, 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Order Summary',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Transform.translate(
+                            offset: const Offset(-14.0, -20.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Transform.scale(
+                                  scale: 0.7,
+                                  child: Radio<String>(
+                                    value: 'stripe',
+                                    groupValue: viewModel.selectedPaymentMethod,
+                                    onChanged: (String? value) {
+                                      viewModel.updatePaymentMethod(value);
+                                    },
+                                  ),
+                                ),
+                                Transform.translate(
+                                  offset: const Offset(-4.0, 0.0),
+                                  child: Text(
+                                    'Online Payment',
+                                    style: GoogleFonts.poppins(fontSize: 13.0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -248,128 +288,150 @@ class CheckoutView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = viewModel.selectedCartItems[index];
                       final product = item.product;
-                      return Container(
-                        width: 140,
-                        margin: const EdgeInsets.symmetric(vertical: 4.0),
-                        padding: const EdgeInsets.all(10),
-                        height: 137,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
+                      return InkWell(
+                        onTap: () => viewModel.navigationService.navigateTo(
+                          Routes.detailed_product,
+                          arguments:
+                              DetailedProductViewArguments(product: product),
                         ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 140,
-                              height: 130,
-                              child: FutureBuilder<Uint8List>(
-                                future:
-                                    viewModel.fetchImageData(product.imagePath),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Container(
-                                      color: Colors.grey.shade200,
-                                      child: const Icon(
-                                        Icons.broken_image,
-                                        size: 50,
-                                        color: Colors.grey,
-                                      ),
-                                    );
-                                  } else if (snapshot.hasData) {
-                                    return ProductImage(
-                                      imagePath: product.imagePath,
-                                      imageData: snapshot.data!,
-                                    );
-                                  } else {
-                                    return Container(
-                                      color: Colors.grey.shade200,
-                                      child: const Icon(
-                                        Icons.broken_image,
-                                        size: 50,
-                                        color: Colors.grey,
-                                      ),
-                                    );
-                                  }
-                                },
+                        child: Container(
+                          width: 140,
+                          margin: const EdgeInsets.symmetric(vertical: 4.0),
+                          padding: const EdgeInsets.all(10),
+                          height: 137,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 3),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product.productName,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 27),
-                                  Text(
-                                    'Price: \$${product.price.toString()}',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Quantity: ${item.quantity}',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: 'Subtotal: ',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                            ],
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 140,
+                                height: 130,
+                                child: FutureBuilder<Uint8List>(
+                                  future: viewModel
+                                      .fetchImageData(product.imageName),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (snapshot.hasError) {
+                                      return Container(
+                                        color: Colors.grey.shade200,
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          size: 50,
+                                          color: Colors.grey,
                                         ),
+                                      );
+                                    } else if (snapshot.hasData) {
+                                      return ProductImage(
+                                        imageName: product.imageName,
+                                        imageData: snapshot.data!,
+                                      );
+                                    } else {
+                                      return Container(
+                                        color: Colors.grey.shade200,
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          size: 50,
+                                          color: Colors.grey,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.productName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 29),
+                                    RichText(
+                                      text: TextSpan(
                                         children: <TextSpan>[
                                           TextSpan(
-                                            text:
-                                                ' \₱ ${viewModel.getSubtotal(item).toStringAsFixed(2)}',
+                                            text: 'Price: ',
                                             style: GoogleFonts.poppins(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold,
+                                              fontSize: 10,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                '₱ ${product.price.toString()}',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 10,
                                               color: Colors.red,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Text(
+                                      'Quantity: ${item.quantity}',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 1),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: 'Subtotal: ',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  ' \₱ ${viewModel.getSubtotal(item).toStringAsFixed(2)}',
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
                   ),
                 ),
                 Container(
-                  height: 144,
+                  height: 133,
                   padding: const EdgeInsets.all(20.0),
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -385,113 +447,129 @@ class CheckoutView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Total Items',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                              // fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '${viewModel.totalItems}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 13,
-                              //   fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 3),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Total Amount',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '\$ ${viewModel.totalAmount.toStringAsFixed(2)}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red, // Set text color to red
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            bool confirm = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                        'Confirm Order',
-                                        style: GoogleFonts.poppins(),
-                                      ),
-                                      content: Text(
-                                        'Do you want to place the order?',
-                                        style: GoogleFonts.poppins(),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: Text(
-                                            'No',
-                                            style: GoogleFonts.poppins(),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(true);
-                                          },
-                                          child: Text(
-                                            'Yes',
-                                            style: GoogleFonts.poppins(),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ) ??
-                                false;
-
-                            if (confirm) {
-                              await viewModel.placeOrder();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            backgroundColor:
-                                const Color.fromARGB(255, 0, 0, 153),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                          ),
-                          child: Text(
-                            'Place Order',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Transform.translate(
+                            offset: const Offset(0, -10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total Items',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    // fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${viewModel.totalItems}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    // fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 3),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Transform.translate(
+                            offset: const Offset(0, -10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total Amount',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '\$ ${viewModel.totalAmount.toStringAsFixed(2)}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              bool confirm = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Confirm Order',
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                        content: Text(
+                                          'Do you want to place the order?',
+                                          style: GoogleFonts.poppins(),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: Text(
+                                              'No',
+                                              style: GoogleFonts.poppins(),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                            },
+                                            child: Text(
+                                              'Yes',
+                                              style: GoogleFonts.poppins(),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ) ??
+                                  false;
+
+                              if (confirm) {
+                                await viewModel.placeOrder();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              backgroundColor:
+                                  const Color.fromARGB(255, 19, 7, 46),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                            ),
+                            child: Flexible(
+                              child: Text(
+                                'Place Order',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],

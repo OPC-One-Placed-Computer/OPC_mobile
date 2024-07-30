@@ -4,7 +4,7 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
 
-class ProductdetailsViewModel extends AppBaseViewModel {
+class DetailedProductViewModel extends AppBaseViewModel {
   @override
   final ApiServiceImpl apiService = ApiServiceImpl();
   late Product product;
@@ -12,25 +12,13 @@ class ProductdetailsViewModel extends AppBaseViewModel {
   int quantity = 1;
   Uint8List? imageData;
 
-  ProductdetailsViewModel(this.product);
+  DetailedProductViewModel(this.product);
 
   void init() async {
     setBusy(true);
     await _getProduct();
     await fetchImageData();
     setBusy(false);
-  }
-
-  void incrementQuantity() {
-    quantity++;
-    notifyListeners();
-  }
-
-  void decrementQuantity() {
-    if (quantity > 1) {
-      quantity--;
-      notifyListeners();
-    }
   }
 
   Future<void> _getProduct() async {

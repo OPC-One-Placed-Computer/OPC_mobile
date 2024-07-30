@@ -10,6 +10,9 @@ class AddToCartViewModel extends AppBaseViewModel {
   Set<int> selectedIndices = {};
   List<Cart> cartItems = [];
   List<Product> products = [];
+  late Product product;
+
+  int quantity = 1;
 
   bool get isAllSelected => selectedIndices.length == cartItems.length;
 
@@ -19,9 +22,6 @@ class AddToCartViewModel extends AppBaseViewModel {
 
   void init() async {
     await fetchCartItems();
-    setBusy(true);
-
-    setBusy(false);
   }
 
   double get subtotal {
@@ -43,18 +43,22 @@ class AddToCartViewModel extends AppBaseViewModel {
     notifyListeners();
   }
 
-  void incrementQuantity(int index) {
+  void incrementQuantity(int index) async {
     if (index >= 0 && index < cartItems.length) {
       cartItems[index].quantity++;
+      await modifyQuantity(cartItems[index].id!, cartItems[index].quantity);
+      await fetchCartItems();
       notifyListeners();
     }
   }
 
-  void decrementQuantity(int index) {
+  void decrementQuantity(int index) async {
     if (index >= 0 &&
         index < cartItems.length &&
         cartItems[index].quantity > 1) {
       cartItems[index].quantity--;
+      await modifyQuantity(cartItems[index].id!, cartItems[index].quantity);
+      await fetchCartItems();
       notifyListeners();
     }
   }
@@ -69,8 +73,8 @@ class AddToCartViewModel extends AppBaseViewModel {
       cartItems.clear();
     } finally {
       setBusy(false);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> deleteSelectedItems() async {
@@ -81,7 +85,11 @@ class AddToCartViewModel extends AppBaseViewModel {
       int index = indices[i];
       if (index >= 0 && index < cartItems.length) {
         int cartId = cartItems[index].id ?? 0;
-        await _apiService.deleteFromCart(cartId);
+        try {
+          await _apiService.deleteFromCart(cartId);
+        } catch (e) {
+          print('Error deleting cart item with id $cartId: $e');
+        }
       }
     }
 
@@ -110,5 +118,14 @@ class AddToCartViewModel extends AppBaseViewModel {
       Routes.products_view,
       arguments: ProductdetailsViewArguments(product: product),
     );
+  }
+
+  Future<void> modifyQuantity(int cartId, int quantity) async {
+    try {
+      await _apiService.updateQuantity(cartId, quantity);
+      print('Product quantity updated successfully: $quantity');
+    } catch (e) {
+      print('Error updating product quantity: $e');
+    }
   }
 }

@@ -5,15 +5,19 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter/material.dart' as _i15;
+import 'package:flutter/material.dart' as _i18;
 import 'package:flutter/material.dart';
-import 'package:opc_mobile_development/models/cart.dart' as _i17;
-import 'package:opc_mobile_development/models/checkout.dart' as _i18;
-import 'package:opc_mobile_development/models/product.dart' as _i16;
+import 'package:opc_mobile_development/models/cart.dart' as _i20;
+import 'package:opc_mobile_development/models/checkout.dart' as _i21;
+import 'package:opc_mobile_development/models/product.dart' as _i19;
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart'
     as _i10;
+import 'package:opc_mobile_development/ui/views/cancelled_message/cancelled_message_view.dart'
+    as _i17;
 import 'package:opc_mobile_development/ui/views/checkout/checkout_view.dart'
     as _i11;
+import 'package:opc_mobile_development/ui/views/detailed_product/detailed_product_view.dart'
+    as _i16;
 import 'package:opc_mobile_development/ui/views/home/home_view.dart' as _i5;
 import 'package:opc_mobile_development/ui/views/login/login_view.dart' as _i3;
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart'
@@ -28,12 +32,14 @@ import 'package:opc_mobile_development/ui/views/signup/signup_view.dart' as _i4;
 import 'package:opc_mobile_development/ui/views/startup/startup_view.dart'
     as _i2;
 import 'package:opc_mobile_development/ui/views/store/store_view.dart' as _i6;
+import 'package:opc_mobile_development/ui/views/success_message/success_message_view.dart'
+    as _i15;
 import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_placed_view.dart'
     as _i13;
 import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_view.dart'
     as _i14;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i19;
+import 'package:stacked_services/stacked_services.dart' as _i22;
 
 class Routes {
   static const startupView = '/startup-view';
@@ -48,7 +54,7 @@ class Routes {
 
   static const storeView = '/store-view';
 
-  static const profileView = '/profile-view';
+  static const profile = '/profile-view';
 
   static const products_view = '/productdetails-view';
 
@@ -64,6 +70,12 @@ class Routes {
 
   static const payment = '/webview-screen-view';
 
+  static const success_message = '/success-message-view';
+
+  static const detailed_product = '/detailed-product-view';
+
+  static const cancelled_message = '/cancelled-message-view';
+
   static const all = <String>{
     startupView,
     login,
@@ -71,7 +83,7 @@ class Routes {
     products,
     homeView,
     storeView,
-    profileView,
+    profile,
     products_view,
     place_order,
     add_cart,
@@ -79,6 +91,9 @@ class Routes {
     order_placed,
     view_order_placed,
     payment,
+    success_message,
+    detailed_product,
+    cancelled_message,
   };
 }
 
@@ -109,7 +124,7 @@ class StackedRouter extends _i1.RouterBase {
       page: _i6.StoreView,
     ),
     _i1.RouteDef(
-      Routes.profileView,
+      Routes.profile,
       page: _i7.ProfileView,
     ),
     _i1.RouteDef(
@@ -140,11 +155,23 @@ class StackedRouter extends _i1.RouterBase {
       Routes.payment,
       page: _i14.WebviewScreenView,
     ),
+    _i1.RouteDef(
+      Routes.success_message,
+      page: _i15.SuccessMessageView,
+    ),
+    _i1.RouteDef(
+      Routes.detailed_product,
+      page: _i16.DetailedProductView,
+    ),
+    _i1.RouteDef(
+      Routes.cancelled_message,
+      page: _i17.CancelledMessageView,
+    ),
   ];
 
   final _pagesMap = <Type, _i1.StackedRouteFactory>{
     _i2.StartupView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i2.StartupView(),
         settings: data,
       );
@@ -153,84 +180,107 @@ class StackedRouter extends _i1.RouterBase {
       final args = data.getArgs<LoginViewArguments>(
         orElse: () => const LoginViewArguments(),
       );
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => _i3.LoginView(key: args.key),
         settings: data,
       );
     },
     _i4.SignupView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i4.SignupView(),
         settings: data,
       );
     },
     _i5.HomeView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i5.HomeView(),
         settings: data,
       );
     },
     _i6.StoreView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i6.StoreView(),
         settings: data,
       );
     },
     _i7.ProfileView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i7.ProfileView(),
         settings: data,
       );
     },
     _i8.ProductdetailsView: (data) {
       final args = data.getArgs<ProductdetailsViewArguments>(nullOk: false);
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) =>
             _i8.ProductdetailsView(key: args.key, product: args.product),
         settings: data,
       );
     },
     _i9.PlaceOrderView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i9.PlaceOrderView(),
         settings: data,
       );
     },
     _i10.AddToCartView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i10.AddToCartView(),
         settings: data,
       );
     },
     _i11.CheckoutView: (data) {
       final args = data.getArgs<CheckoutViewArguments>(nullOk: false);
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => _i11.CheckoutView(
-            key: args.key, selectedCartItems: args.selectedCartItems),
+            key: args.key,
+            selectedCartItems: args.selectedCartItems,
+            onProductTapped: args.onProductTapped),
         settings: data,
       );
     },
     _i12.OrderPlacedView: (data) {
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => const _i12.OrderPlacedView(),
         settings: data,
       );
     },
     _i13.ViewOrderPlacedView: (data) {
       final args = data.getArgs<ViewOrderPlacedViewArguments>(nullOk: false);
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) => _i13.ViewOrderPlacedView(
             key: args.key,
             orderItems: args.orderItems,
-            checkout: args.checkout),
+            checkout: args.checkout,
+            onProductTapped: args.onProductTapped),
         settings: data,
       );
     },
     _i14.WebviewScreenView: (data) {
       final args = data.getArgs<WebviewScreenViewArguments>(nullOk: false);
-      return _i15.MaterialPageRoute<dynamic>(
+      return _i18.MaterialPageRoute<dynamic>(
         builder: (context) =>
             _i14.WebviewScreenView(key: args.key, url: args.url),
+        settings: data,
+      );
+    },
+    _i15.SuccessMessageView: (data) {
+      return _i18.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i15.SuccessMessageView(),
+        settings: data,
+      );
+    },
+    _i16.DetailedProductView: (data) {
+      final args = data.getArgs<DetailedProductViewArguments>(nullOk: false);
+      return _i18.MaterialPageRoute<dynamic>(
+        builder: (context) =>
+            _i16.DetailedProductView(key: args.key, product: args.product),
+        settings: data,
+      );
+    },
+    _i17.CancelledMessageView: (data) {
+      return _i18.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i17.CancelledMessageView(),
         settings: data,
       );
     },
@@ -246,7 +296,7 @@ class StackedRouter extends _i1.RouterBase {
 class LoginViewArguments {
   const LoginViewArguments({this.key});
 
-  final _i15.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -271,9 +321,9 @@ class ProductdetailsViewArguments {
     required this.product,
   });
 
-  final _i15.Key? key;
+  final _i18.Key? key;
 
-  final _i16.Product product;
+  final _i19.Product product;
 
   @override
   String toString() {
@@ -296,26 +346,31 @@ class CheckoutViewArguments {
   const CheckoutViewArguments({
     this.key,
     required this.selectedCartItems,
+    required this.onProductTapped,
   });
 
-  final _i15.Key? key;
+  final _i18.Key? key;
 
-  final List<_i17.Cart> selectedCartItems;
+  final List<_i20.Cart> selectedCartItems;
+
+  final void Function(_i19.Product) onProductTapped;
 
   @override
   String toString() {
-    return '{"key": "$key", "selectedCartItems": "$selectedCartItems"}';
+    return '{"key": "$key", "selectedCartItems": "$selectedCartItems", "onProductTapped": "$onProductTapped"}';
   }
 
   @override
   bool operator ==(covariant CheckoutViewArguments other) {
     if (identical(this, other)) return true;
-    return other.key == key && other.selectedCartItems == selectedCartItems;
+    return other.key == key &&
+        other.selectedCartItems == selectedCartItems &&
+        other.onProductTapped == onProductTapped;
   }
 
   @override
   int get hashCode {
-    return key.hashCode ^ selectedCartItems.hashCode;
+    return key.hashCode ^ selectedCartItems.hashCode ^ onProductTapped.hashCode;
   }
 }
 
@@ -324,17 +379,20 @@ class ViewOrderPlacedViewArguments {
     this.key,
     required this.orderItems,
     required this.checkout,
+    required this.onProductTapped,
   });
 
-  final _i15.Key? key;
+  final _i18.Key? key;
 
-  final List<_i18.OrderItem> orderItems;
+  final List<_i21.OrderItem> orderItems;
 
-  final _i18.Checkout checkout;
+  final _i21.Checkout checkout;
+
+  final void Function(_i19.Product) onProductTapped;
 
   @override
   String toString() {
-    return '{"key": "$key", "orderItems": "$orderItems", "checkout": "$checkout"}';
+    return '{"key": "$key", "orderItems": "$orderItems", "checkout": "$checkout", "onProductTapped": "$onProductTapped"}';
   }
 
   @override
@@ -342,12 +400,16 @@ class ViewOrderPlacedViewArguments {
     if (identical(this, other)) return true;
     return other.key == key &&
         other.orderItems == orderItems &&
-        other.checkout == checkout;
+        other.checkout == checkout &&
+        other.onProductTapped == onProductTapped;
   }
 
   @override
   int get hashCode {
-    return key.hashCode ^ orderItems.hashCode ^ checkout.hashCode;
+    return key.hashCode ^
+        orderItems.hashCode ^
+        checkout.hashCode ^
+        onProductTapped.hashCode;
   }
 }
 
@@ -357,7 +419,7 @@ class WebviewScreenViewArguments {
     required this.url,
   });
 
-  final _i15.Key? key;
+  final _i18.Key? key;
 
   final String url;
 
@@ -378,7 +440,34 @@ class WebviewScreenViewArguments {
   }
 }
 
-extension NavigatorStateExtension on _i19.NavigationService {
+class DetailedProductViewArguments {
+  const DetailedProductViewArguments({
+    this.key,
+    required this.product,
+  });
+
+  final _i18.Key? key;
+
+  final _i19.Product product;
+
+  @override
+  String toString() {
+    return '{"key": "$key", "product": "$product"}';
+  }
+
+  @override
+  bool operator ==(covariant DetailedProductViewArguments other) {
+    if (identical(this, other)) return true;
+    return other.key == key && other.product == product;
+  }
+
+  @override
+  int get hashCode {
+    return key.hashCode ^ product.hashCode;
+  }
+}
+
+extension NavigatorStateExtension on _i22.NavigationService {
   Future<dynamic> navigateToStartupView([
     int? routerId,
     bool preventDuplicates = true,
@@ -394,7 +483,7 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> navigateToLogin({
-    _i15.Key? key,
+    _i18.Key? key,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -465,14 +554,14 @@ extension NavigatorStateExtension on _i19.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToProfileView([
+  Future<dynamic> navigateToProfile([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return navigateTo<dynamic>(Routes.profileView,
+    return navigateTo<dynamic>(Routes.profile,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -480,8 +569,8 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> navigateToProducts_view({
-    _i15.Key? key,
-    required _i16.Product product,
+    _i18.Key? key,
+    required _i19.Product product,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -525,8 +614,9 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> navigateToCheckout({
-    _i15.Key? key,
-    required List<_i17.Cart> selectedCartItems,
+    _i18.Key? key,
+    required List<_i20.Cart> selectedCartItems,
+    required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -535,7 +625,9 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return navigateTo<dynamic>(Routes.checkout,
         arguments: CheckoutViewArguments(
-            key: key, selectedCartItems: selectedCartItems),
+            key: key,
+            selectedCartItems: selectedCartItems,
+            onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -557,9 +649,10 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> navigateToView_order_placed({
-    _i15.Key? key,
-    required List<_i18.OrderItem> orderItems,
-    required _i18.Checkout checkout,
+    _i18.Key? key,
+    required List<_i21.OrderItem> orderItems,
+    required _i21.Checkout checkout,
+    required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -568,7 +661,10 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return navigateTo<dynamic>(Routes.view_order_placed,
         arguments: ViewOrderPlacedViewArguments(
-            key: key, orderItems: orderItems, checkout: checkout),
+            key: key,
+            orderItems: orderItems,
+            checkout: checkout,
+            onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -576,7 +672,7 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> navigateToPayment({
-    _i15.Key? key,
+    _i18.Key? key,
     required String url,
     int? routerId,
     bool preventDuplicates = true,
@@ -586,6 +682,51 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return navigateTo<dynamic>(Routes.payment,
         arguments: WebviewScreenViewArguments(key: key, url: url),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToSuccess_message([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return navigateTo<dynamic>(Routes.success_message,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToDetailed_product({
+    _i18.Key? key,
+    required _i19.Product product,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo<dynamic>(Routes.detailed_product,
+        arguments: DetailedProductViewArguments(key: key, product: product),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToCancelled_message([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return navigateTo<dynamic>(Routes.cancelled_message,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -607,7 +748,7 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> replaceWithLogin({
-    _i15.Key? key,
+    _i18.Key? key,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -678,14 +819,14 @@ extension NavigatorStateExtension on _i19.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithProfileView([
+  Future<dynamic> replaceWithProfile([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   ]) async {
-    return replaceWith<dynamic>(Routes.profileView,
+    return replaceWith<dynamic>(Routes.profile,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -693,8 +834,8 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> replaceWithProducts_view({
-    _i15.Key? key,
-    required _i16.Product product,
+    _i18.Key? key,
+    required _i19.Product product,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -738,8 +879,9 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> replaceWithCheckout({
-    _i15.Key? key,
-    required List<_i17.Cart> selectedCartItems,
+    _i18.Key? key,
+    required List<_i20.Cart> selectedCartItems,
+    required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -748,7 +890,9 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return replaceWith<dynamic>(Routes.checkout,
         arguments: CheckoutViewArguments(
-            key: key, selectedCartItems: selectedCartItems),
+            key: key,
+            selectedCartItems: selectedCartItems,
+            onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -770,9 +914,10 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> replaceWithView_order_placed({
-    _i15.Key? key,
-    required List<_i18.OrderItem> orderItems,
-    required _i18.Checkout checkout,
+    _i18.Key? key,
+    required List<_i21.OrderItem> orderItems,
+    required _i21.Checkout checkout,
+    required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -781,7 +926,10 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return replaceWith<dynamic>(Routes.view_order_placed,
         arguments: ViewOrderPlacedViewArguments(
-            key: key, orderItems: orderItems, checkout: checkout),
+            key: key,
+            orderItems: orderItems,
+            checkout: checkout,
+            onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -789,7 +937,7 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }
 
   Future<dynamic> replaceWithPayment({
-    _i15.Key? key,
+    _i18.Key? key,
     required String url,
     int? routerId,
     bool preventDuplicates = true,
@@ -799,6 +947,51 @@ extension NavigatorStateExtension on _i19.NavigationService {
   }) async {
     return replaceWith<dynamic>(Routes.payment,
         arguments: WebviewScreenViewArguments(key: key, url: url),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithSuccess_message([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return replaceWith<dynamic>(Routes.success_message,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithDetailed_product({
+    _i18.Key? key,
+    required _i19.Product product,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.detailed_product,
+        arguments: DetailedProductViewArguments(key: key, product: product),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithCancelled_message([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return replaceWith<dynamic>(Routes.cancelled_message,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

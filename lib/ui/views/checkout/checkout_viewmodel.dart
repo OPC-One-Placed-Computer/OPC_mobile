@@ -50,18 +50,14 @@ class CheckoutViewModel extends AppBaseViewModel {
     _loading = true;
     notifyListeners();
     await Future.wait(selectedCartItems
-        .map((item) => fetchImageData(item.product.imagePath)));
+        .map((item) => fetchImageData(item.product.imageName)));
 
     _loading = false;
     notifyListeners();
   }
 
   int get totalItems {
-    int total = 0;
-    for (var cart in selectedCartItems) {
-      total += cart.quantity;
-    }
-    return total;
+    return selectedCartItems.length;
   }
 
   double get totalAmount {
@@ -114,6 +110,8 @@ class CheckoutViewModel extends AppBaseViewModel {
           cartItems.cast<String>(),
         );
         print('Order placed successfully: $checkout');
+
+        navigationService.navigateTo(Routes.success_message);
       }
       if (selectedPaymentMethod == 'stripe') {
         final link = await apiService.getPaymentLink(
@@ -126,7 +124,7 @@ class CheckoutViewModel extends AppBaseViewModel {
         navigationService.navigateTo(Routes.payment,
             arguments: WebviewScreenViewArguments(url: link));
       }
-      
+
       setBusy(false);
     } catch (e) {
       print('Error placing order: $e');
@@ -136,18 +134,18 @@ class CheckoutViewModel extends AppBaseViewModel {
     }
   }
 
-  Future<Uint8List> fetchImageData(String imagePath) {
-    if (_imageFutures.containsKey(imagePath)) {
-      return _imageFutures[imagePath]!;
+  Future<Uint8List> fetchImageData(String imageName) {
+    if (_imageFutures.containsKey(imageName)) {
+      return _imageFutures[imageName]!;
     }
 
     final imageFuture =
-        ApiServiceImpl().retrieveProductImage(imagePath).then((imageData) {
-      imageCacheService.setImage(imagePath, imageData);
+        ApiServiceImpl().retrieveProductImage(imageName).then((imageData) {
+      imageCacheService.setImage(imageName, imageData);
       return imageData;
     });
 
-    _imageFutures[imagePath] = imageFuture;
+    _imageFutures[imageName] = imageFuture;
     return imageFuture;
   }
 }

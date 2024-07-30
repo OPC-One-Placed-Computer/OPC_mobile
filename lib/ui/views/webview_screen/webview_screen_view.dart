@@ -15,18 +15,18 @@ class WebviewScreenView extends StackedView<WebviewScreenViewModel> {
     Widget? child,
   ) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Payment'),
-        ),
-        body: WebViewWidget(
-          controller: viewModel.controller,
-        ));
+      appBar: AppBar(
+        title: const Text('Online Payment'),
+        automaticallyImplyLeading: false,
+      ),
+      body: WebViewWidget(
+        controller: viewModel.controller,
+      ),
+    );
   }
 
   @override
-  WebviewScreenViewModel viewModelBuilder(
-    BuildContext context,
-  ) =>
+  WebviewScreenViewModel viewModelBuilder(BuildContext context) =>
       WebviewScreenViewModel();
 
   @override

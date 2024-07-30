@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/checkout/checkout_view.dart';
@@ -133,7 +135,7 @@ class AddToCartView extends StatelessWidget {
                           ? Icons.close
                           : Icons.check_circle,
                       color: viewModel.isAllSelected
-                          ? Colors.red
+                          ? const Color.fromARGB(255, 255, 255, 255)
                           : const Color.fromARGB(255, 255, 255, 255),
                     ),
                     onPressed: () {
@@ -162,12 +164,13 @@ class AddToCartView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.shopping_cart_outlined,
-                        size: 60,
-                        color: Colors.grey[300],
+                      SizedBox(
+                        height: 200,
+                        child: Lottie.asset(
+                          'lib/resources/images/animation_3.json',
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      const SizedBox(height: 5),
                       Text(
                         'No items in the cart',
                         style: GoogleFonts.poppins(
@@ -190,7 +193,11 @@ class AddToCartView extends StatelessWidget {
                           return ProductItem(
                             product: product,
                             onProductTapped: (product) =>
-                                viewModel.navigateToProductDetails(product),
+                                viewModel.navigationService.navigateTo(
+                              Routes.detailed_product,
+                              arguments: DetailedProductViewArguments(
+                                  product: product),
+                            ),
                             viewModel: viewModel,
                             index: index,
                           );
@@ -279,6 +286,7 @@ class AddToCartView extends StatelessWidget {
                                       MaterialPageRoute(
                                         builder: (context) => CheckoutView(
                                           selectedCartItems: selectedCartItems,
+                                          onProductTapped: (Product value) {},
                                         ),
                                       ),
                                     );
@@ -288,7 +296,9 @@ class AddToCartView extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 14),
                                   backgroundColor:
-                                      const Color.fromARGB(255, 0, 0, 153),
+                                      const Color.fromARGB(255, 19, 7, 46),
+                                  // backgroundColor:
+                                  //     const Color.fromARGB(255, 0, 0, 153),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25),
                                   ),
@@ -338,18 +348,18 @@ class _ProductItemState extends State<ProductItem> {
   @override
   void initState() {
     super.initState();
-    imageDataFuture = fetchImageData(widget.product.imagePath);
+    imageDataFuture = fetchImageData(widget.product.imageName);
   }
 
-  Future<Uint8List> fetchImageData(String imagePath) async {
-    final cachedImage = imageCacheService.getImage(imagePath);
+  Future<Uint8List> fetchImageData(String imageName) async {
+    final cachedImage = imageCacheService.getImage(imageName);
     if (cachedImage != null) {
       return cachedImage;
     }
 
-    final imageData = await ApiServiceImpl().retrieveProductImage(imagePath);
+    final imageData = await ApiServiceImpl().retrieveProductImage(imageName);
 
-    imageCacheService.setImage(imagePath, imageData);
+    imageCacheService.setImage(imageName, imageData);
 
     return imageData;
   }
@@ -409,7 +419,7 @@ class _ProductItemState extends State<ProductItem> {
                       );
                     } else if (snapshot.hasData) {
                       return ProductImage(
-                        imagePath: widget.product.imagePath,
+                        imageName: widget.product.imageName,
                         imageData: snapshot.data!,
                       );
                     } else {
@@ -443,8 +453,14 @@ class _ProductItemState extends State<ProductItem> {
                       ),
                     ),
                     const SizedBox(height: 6),
+                    Text(
+                      widget.product.brand,
+                      style: GoogleFonts.poppins(
+                        fontSize: 11,
+                      ),
+                    ),
                     Transform.translate(
-                      offset: const Offset(0, 5),
+                      offset: const Offset(0, 0),
                       child: RichText(
                         text: TextSpan(
                           style: GoogleFonts.poppins(
@@ -471,56 +487,64 @@ class _ProductItemState extends State<ProductItem> {
                         ),
                       ),
                     ),
-                    Transform.translate(
-                      offset: const Offset(0, 37),
-                      child: Text(
-                        'Quantity',
-                        style: GoogleFonts.poppins(
-                          fontSize: 11,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Transform.translate(
+                        offset: const Offset(0, 8),
+                        child: Row(
+                          children: [
+                            Transform.translate(
+                              offset: const Offset(0, -1),
+                              child: Text(
+                                'Quantity',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle),
+                              iconSize: 15,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              onPressed: () {
+                                setState(() {
+                                  widget.viewModel
+                                      .decrementQuantity(widget.index);
+                                });
+                              },
+                            ),
+                            Transform.translate(
+                              offset: const Offset(-6, 0),
+                              child: Text(
+                                widget
+                                    .viewModel.cartItems[widget.index].quantity
+                                    .toString(),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            Transform.translate(
+                              offset: const Offset(-10, 0),
+                              child: IconButton(
+                                icon: const Icon(Icons.add_circle),
+                                iconSize: 15,
+                                color: const Color.fromARGB(255, 0, 0, 0),
+                                onPressed: () {
+                                  setState(() {
+                                    widget.viewModel
+                                        .incrementQuantity(widget.index);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const Spacer(),
-                    Transform.translate(
-                      offset: const Offset(46, 6),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle),
-                            iconSize: 15,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            onPressed: () {
-                              setState(() {
-                                widget.viewModel
-                                    .decrementQuantity(widget.index);
-                              });
-                            },
-                          ),
-                          Text(
-                            widget.viewModel.cartItems[widget.index].quantity
-                                .toString(),
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add_circle),
-                            iconSize: 15,
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            onPressed: () {
-                              setState(() {
-                                widget.viewModel
-                                    .incrementQuantity(widget.index);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                    )
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),

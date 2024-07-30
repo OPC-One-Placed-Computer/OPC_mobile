@@ -12,7 +12,8 @@ import 'package:stacked/stacked.dart';
 import 'products_view_model.dart';
 
 class ProductsView extends StatelessWidget {
-  const ProductsView({Key? key}) : super(key: key);
+  ProductsView({Key? key}) : super(key: key);
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,17 +91,45 @@ class ProductsView extends StatelessWidget {
                   }
                   return false;
                 },
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 10),
-                      _buildProductList(context, viewModel),
-                      if (viewModel.isLoadingMore)
-                        const Center(child: CircularProgressIndicator()),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const SizedBox(height: 10),
+                          _buildProductList(context, viewModel),
+                          if (viewModel.isLoadingMore)
+                            const Center(child: CircularProgressIndicator()),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: Visibility(
+                        visible:
+                            viewModel.isLastPage && !viewModel.isLoadingMore,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          backgroundColor: Colors.blue,
+                          shape: const CircleBorder(),
+                          child: const Icon(
+                            Icons.arrow_upward,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
       ),
@@ -247,7 +276,9 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
                   ],
                 ),
                 _buildFilters(widget.viewModel),
+                const SizedBox(height: 8.0),
                 _buildPriceRangeFilter(widget.viewModel),
+                const SizedBox(height: 8.0),
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
@@ -263,7 +294,7 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
                       ),
                       minimumSize: const Size(64, 32),
                     ),
-                    child: const Text('Clear'),
+                    child: const Text('Clear Filters'),
                   ),
                 ),
               ],
@@ -275,186 +306,107 @@ class _FilterModalSheetState extends State<_FilterModalSheet> {
   }
 
   Widget _buildFilters(ProductsViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Filtered by:',
-            style: GoogleFonts.poppins(
-              color: const Color.fromARGB(255, 0, 0, 0),
-              fontSize: 12,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildFilterDropdown(
+          'Category',
+          viewModel.categories,
+          viewModel.selectedCategory,
+          (category) => viewModel.setSelectedCategory(category),
+        ),
+        const SizedBox(height: 16.0),
+        _buildFilterDropdown(
+          'Brand',
+          viewModel.brands,
+          viewModel.selectedBrand,
+          (brand) => viewModel.setSelectedBrand(brand),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterDropdown<T>(String label, List<T> items, T? selectedItem,
+      ValueChanged<T?> onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(fontSize: 12),
+        ),
+        const SizedBox(height: 4.0),
+        DropdownButtonFormField<T>(
+          value: selectedItem,
+          onChanged: onChanged,
+          items: items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Text(
+                item.toString(),
+                style: GoogleFonts.poppins(fontSize: 12),
+              ),
+            );
+          }).toList(),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 36.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: DropdownButton<String>(
-                    value: viewModel.selectedCategory,
-                    items: viewModel.categories
-                        .map((String category) => DropdownMenuItem<String>(
-                              value: category,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  category,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        viewModel.setSelectedCategory(newValue);
-                      });
-                    },
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    hint: const Text(
-                      'Select Category',
-                      style: TextStyle(
-                        fontSize: 11.0,
-                      ),
-                    ),
-                    isExpanded: true,
-                    underline: Container(),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Container(
-                  height: 36.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: DropdownButton<String>(
-                    value: viewModel.selectedBrand,
-                    items: viewModel.brands
-                        .map((String brand) => DropdownMenuItem<String>(
-                              value: brand,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  brand,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        viewModel.setSelectedBrand(newValue);
-                      });
-                    },
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    hint: const Text(
-                      'Select Brand',
-                      style: TextStyle(
-                        fontSize: 11.0,
-                      ),
-                    ),
-                    isExpanded: true,
-                    underline: Container(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildPriceRangeFilter(ProductsViewModel viewModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Price Range',
-            style: GoogleFonts.poppins(
-              color: const Color.fromARGB(255, 0, 0, 0),
-              fontSize: 12,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Price Range',
+          style: GoogleFonts.poppins(fontSize: 12),
+        ),
+        const SizedBox(height: 4.0),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: minPriceController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Min Price',
+                  hintStyle: GoogleFonts.poppins(fontSize: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 8.0),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 36.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
+            const SizedBox(width: 8.0),
+            const Text('-'),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: TextField(
+                controller: maxPriceController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Max Price',
+                  hintStyle: GoogleFonts.poppins(fontSize: 12),
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: TextField(
-                    controller: minPriceController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: 'Min Price',
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 11,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.fromLTRB(8.0, 0.0, 10.0, 12.0),
-                    ),
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 10.0,
-                    ),
-                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 8.0),
                 ),
               ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: Container(
-                  height: 36.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: TextField(
-                    controller: maxPriceController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: 'Max Price',
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 11,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.fromLTRB(8.0, 0.0, 10.0, 12.0),
-                    ),
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 10.0,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -471,15 +423,15 @@ class ProductItem extends StatelessWidget {
     required this.onAddToCartTapped,
   }) : super(key: key);
 
-  Future<Uint8List> fetchImageData(String imagePath) async {
-    final cachedImage = imageCacheService.getImage(imagePath);
+  Future<Uint8List> fetchImageData(String imageName) async {
+    final cachedImage = imageCacheService.getImage(imageName);
     if (cachedImage != null) {
       return cachedImage;
     }
 
-    final imageData = await ApiServiceImpl().retrieveProductImage(imagePath);
+    final imageData = await ApiServiceImpl().retrieveProductImage(imageName);
 
-    imageCacheService.setImage(imagePath, imageData);
+    imageCacheService.setImage(imageName, imageData);
 
     return imageData;
   }
@@ -502,7 +454,7 @@ class ProductItem extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 1.0,
                   child: FutureBuilder<Uint8List>(
-                    future: fetchImageData(product.imagePath),
+                    future: fetchImageData(product.imageName),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -519,7 +471,7 @@ class ProductItem extends StatelessWidget {
                         );
                       } else if (snapshot.hasData) {
                         return ProductImage(
-                          imagePath: product.imagePath,
+                          imageName: product.imageName,
                           imageData: snapshot.data!,
                         );
                       } else {
