@@ -28,9 +28,9 @@ class HomeViewModel extends AppBaseViewModel {
   User? user;
 
   void init() async {
-    // setBusy(true);
-    // await _checkAuthentication();
-    // setBusy(false);
+    setBusy(true);
+    await fetchUserData();
+    setBusy(false);
   }
 
   void setIndex(int index) {
@@ -60,8 +60,10 @@ class HomeViewModel extends AppBaseViewModel {
   }
 
   void logout() async {
+    final user = await checkAuthentication();
+    if(user == null) return;
     try {
-      final loggedOut = await authService.logout(user!);
+      final loggedOut = await authService.logout(user);
       if (loggedOut) {
         navigationService.pushNamedAndRemoveUntil(Routes.login);
       }
@@ -97,11 +99,16 @@ class HomeViewModel extends AppBaseViewModel {
       imageName = authData.imageName;
       imageName = authData.imageName;
 
+      user = User(
+          id: userId,
+          email: email,
+          firstName:
+          firstName,
+          lastName: lastName);
+
       if (imageName != null && imageName!.isNotEmpty) {
         await displayProfileImage(imageName!);
       }
-
-      notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
       setError('Error fetching user data: $e');

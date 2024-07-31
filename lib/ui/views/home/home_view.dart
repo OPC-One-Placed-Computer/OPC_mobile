@@ -75,7 +75,7 @@ class HomeView extends StatelessWidget {
         drawer: Drawer(
           child: Container(
             color: const Color.fromARGB(255, 255, 255, 255),
-            child: Stack(
+            child: viewModel.isBusy ? const CircularProgressIndicator() : Stack(
               children: [
                 Positioned(
                   top: 0,
