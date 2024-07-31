@@ -7,9 +7,9 @@ import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
 import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
+import 'package:opc_mobile_development/ui/views/products/products_view_model.dart';
 import 'package:stacked/stacked.dart';
 
-import 'products_view_model.dart';
 
 class ProductsView extends StatelessWidget {
   ProductsView({Key? key}) : super(key: key);
@@ -173,15 +173,7 @@ Widget _buildProductList(BuildContext context, ProductsViewModel viewModel) {
           Routes.products_view,
           arguments: ProductdetailsViewArguments(product: product),
         ),
-        onAddToCartTapped: (product) async {
-          await viewModel.addToCart(product);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${product.productName} added to cart'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        },
+        onAddToCartTapped: viewModel.addToCart,
       );
     }),
   );

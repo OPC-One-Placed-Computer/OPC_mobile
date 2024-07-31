@@ -12,12 +12,11 @@ class WebviewScreenViewModel extends AppBaseViewModel {
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (String url) {
-          logger.i('Page started loading: $url');
-        },
-        onPageFinished: (String url) {
           logger.i('Page finished loading: $url');
           if (url.contains('cancel')) {
             logger.i('Detected cancel session. Navigating back.');
+            final orderId = url.replaceAll('https://order.cancel/', '');
+            logger.i('ORDER_ID: $orderId');
             Future.delayed(const Duration(seconds: 4), () {
               navigationService.back();
             });

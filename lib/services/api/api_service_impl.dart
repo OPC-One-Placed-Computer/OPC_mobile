@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -473,18 +472,10 @@ class ApiServiceImpl implements ApiServiceService {
   @override
   Future<Uint8List> retrieveProductImage(String path) async {
     try {
-      final token = await _sharedPreferenceService.getToken();
-      if (token == null) {
-        throw Exception('No authentication token found');
-      }
-
       final response = await _dio.get(
         '/download/product-image',
         queryParameters: {'image_name': path},
         options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
           responseType: ResponseType.bytes,
         ),
       );
@@ -558,6 +549,7 @@ class ApiServiceImpl implements ApiServiceService {
           'shipping_address': address,
           'total': total.toString(),
           'payment_method': selectedPaymentMethod,
+          'cancel_url': 'https://order.cancel',
           'cart_items': {
             'id': cartItems,
           },

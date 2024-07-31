@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
-import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:stacked/stacked.dart';
 import 'home_view_model.dart';
 
@@ -11,12 +10,8 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<HomeViewModel>.reactive(
-      viewModelBuilder: () => HomeViewModel(
-        apiService: ApiServiceImpl(),
-      ),
-      onModelReady: (viewModel) {
-        viewModel.fetchUserData();
-      },
+      viewModelBuilder: () => HomeViewModel(),
+      onViewModelReady: (model) => model.init(),
       builder: (context, viewModel, child) => Scaffold(
         appBar: AppBar(
           title: Row(
@@ -51,7 +46,9 @@ class HomeView extends StatelessWidget {
           ],
           iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: viewModel.getViewForIndex(viewModel.currentIndex),
+        body: viewModel.isBusy
+            ? const Center(child: CircularProgressIndicator())
+            : viewModel.getViewForIndex(viewModel.currentIndex),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: viewModel.currentIndex,
           onTap: (index) {
