@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -28,67 +30,13 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            toolbarHeight: 100,
+            toolbarHeight: 50,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'My Purchases',
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        if (isDropdownVisible)
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: viewModel.selectedFilter,
-                              items: <String>[
-                                'All',
-                                'Today',
-                                'Last Week',
-                                'Last Month'
-                              ].map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: GoogleFonts.poppins(fontSize: 13.0),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  viewModel.setSelectedFilter(newValue!);
-                                  isDropdownVisible = false;
-                                });
-                              },
-                            ),
-                          ),
-                        IconButton(
-                          icon: Icon(
-                            isDropdownVisible
-                                ? Icons.filter_alt_off
-                                : Icons.filter_alt,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isDropdownVisible = !isDropdownVisible;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
                 SizedBox(
                   width: double.infinity,
                   child: GestureDetector(
-                    onTap: () {},
                     child: AbsorbPointer(
                       child: TabBar(
                         isScrollable: true,
@@ -97,7 +45,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                           color: Colors.blue,
                           radius: 20,
                           horizontalPadding: 6.0,
-                          height: 3.0,
+                          height: 4.0,
                         ),
                         indicatorWeight: 0,
                         indicatorSize: TabBarIndicatorSize.label,
@@ -195,10 +143,8 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
     }
 
     final filteredOrders = viewModel.orders.where((order) {
-      return statusFilters.any((statusFilter) => order.status
-              .toLowerCase()
-              .contains(statusFilter.toLowerCase())) &&
-          viewModel.applyDateFilter(order.createdAt);
+      return statusFilters.any((statusFilter) =>
+          order.status.toLowerCase().contains(statusFilter.toLowerCase()));
     }).toList();
 
     if (filteredOrders.isEmpty) {
@@ -247,34 +193,6 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
 
             final order = filteredOrders[index];
             final createdAt = order.createdAt;
-            final orderId = order.orderId;
-            final status = order.status;
-
-            Color dotColor;
-            Color textColor;
-
-            switch (status) {
-              case 'paid':
-              case 'confirmed':
-              case 'shipped':
-              case 'completed':
-                dotColor = Colors.green;
-                textColor = Colors.green;
-                break;
-              case 'pending':
-                dotColor = Colors.orange;
-                textColor = Colors.orange;
-                break;
-              case 'cancelled':
-              case 'refunded':
-                dotColor = Colors.red;
-                textColor = Colors.red;
-                break;
-
-              default:
-                dotColor = Colors.grey;
-                textColor = Colors.black;
-            }
 
             return GestureDetector(
               onTap: () {
@@ -292,70 +210,105 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                 margin: const EdgeInsets.symmetric(vertical: 4.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(
+                    color: Color.fromARGB(255, 216, 216, 216),
+                    width: 1.0,
+                  ),
                 ),
                 child: Stack(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(7.7),
+                      padding: const EdgeInsets.all(9.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 75.0),
-                                child: Text(
-                                  'Order ID: $orderId',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 10.0,
+                              const SizedBox(width: 10),
+                              FutureBuilder<Uint8List>(
+                                future: viewModel.fetchImageData(
+                                    order.orderItems.first.product.imageName),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const SizedBox(
+                                      width: 80,
+                                      height: 80,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return const Icon(
+                                      Icons.broken_image,
+                                      size: 80,
+                                      color: Color.fromARGB(255, 220, 219, 219),
+                                    );
+                                  } else if (snapshot.hasData) {
+                                    return Image.memory(
+                                      snapshot.data!,
+                                      fit: BoxFit.contain,
+                                      width: 100,
+                                      height: 100,
+                                    );
+                                  } else {
+                                    return const Icon(
+                                      Icons.broken_image,
+                                      size: 80,
+                                      color: Colors.grey,
+                                    );
+                                  }
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        order.orderItems
+                                            .map((item) =>
+                                                item.product?.productName ?? '')
+                                            .join(', '),
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        'Total Amount: \₱ ${order.total.toStringAsFixed(2)}',
+                                        style:
+                                            GoogleFonts.poppins(fontSize: 10.0),
+                                      ),
+                                      const SizedBox(height: 2.0),
+                                      Text(
+                                        'View more >',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.blue,
+                                          fontSize: 10.0,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(right: 8.0),
-                                    width: 7,
-                                    height: 7,
-                                    decoration: BoxDecoration(
-                                      color: dotColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    status,
-                                    style: GoogleFonts.poppins(
-                                      color: textColor,
-                                      fontSize: 9,
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
-                          const SizedBox(height: 13.0),
-                          Align(
-                            alignment: Alignment.bottomRight,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 200.0),
                             child: Text(
-                              DateFormat('dd-MM-yyyy hh:mm a')
+                              DateFormat('yyyy-MM-dd HH:mm:ss')
                                   .format(createdAt),
-                              style: GoogleFonts.poppins(
-                                color: Colors.black54,
-                                fontSize: 9,
-                              ),
+                              style: GoogleFonts.poppins(fontSize: 10.0),
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                    const Positioned(
-                      top: 3.0,
-                      left: 16.0,
-                      child: Icon(
-                        Icons.shopping_bag_sharp,
-                        color: Color.fromARGB(255, 30, 11, 72),
-                        size: 48.0,
                       ),
                     ),
                   ],

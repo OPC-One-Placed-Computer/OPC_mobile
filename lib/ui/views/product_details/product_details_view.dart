@@ -56,7 +56,7 @@ class ProductdetailsView extends StatelessWidget {
                       Text(
                         viewModel.product.productName,
                         style: GoogleFonts.poppins(
-                          fontSize: 23,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -64,7 +64,7 @@ class ProductdetailsView extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           style: GoogleFonts.poppins(
-                            fontSize: 21,
+                            fontSize: 16,
                           ),
                           children: [
                             const TextSpan(
@@ -81,11 +81,11 @@ class ProductdetailsView extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 20),
                       Text(
                         'PRODUCT DETAILS',
                         style: GoogleFonts.poppins(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

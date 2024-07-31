@@ -363,7 +363,7 @@ class ProfileView extends StatelessWidget {
                                       content: SingleChildScrollView(
                                         child: ConstrainedBox(
                                           constraints: const BoxConstraints(
-                                              maxHeight: 400),
+                                              maxHeight: 500),
                                           child: Form(
                                             key: formKey,
                                             child: Column(
@@ -379,7 +379,7 @@ class ProfileView extends StatelessWidget {
                                                   ),
                                                   obscureText: true,
                                                 ),
-                                                const SizedBox(height: 8),
+                                                const SizedBox(height: 6),
                                                 TextFormField(
                                                   controller:
                                                       newPasswordController,
@@ -390,7 +390,7 @@ class ProfileView extends StatelessWidget {
                                                   ),
                                                   obscureText: true,
                                                 ),
-                                                const SizedBox(height: 8),
+                                                const SizedBox(height: 6),
                                                 ValueListenableBuilder<String?>(
                                                   valueListenable:
                                                       passwordError,
@@ -510,8 +510,8 @@ class ProfileView extends StatelessWidget {
                                                                 Colors.green,
                                                           ),
                                                         );
-                                                        model.navigationService
-                                                            .navigateTo(
+                                                        Navigator.of(context)
+                                                            .pushReplacementNamed(
                                                                 Routes.profile);
                                                       }).catchError((error) {
                                                         apiError.value =

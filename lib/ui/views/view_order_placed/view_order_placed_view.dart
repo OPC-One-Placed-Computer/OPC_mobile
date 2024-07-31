@@ -119,7 +119,8 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                       const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(
-                                    color: Colors.grey,
+                                    color: const Color.fromARGB(
+                                        255, 224, 224, 224),
                                     width: 1.0,
                                   ),
                                   boxShadow: [
@@ -498,6 +499,24 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                         if (confirm == true) {
                                           await viewModel.cancelOrder(
                                               orderItems.first.orderId);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Order Cancelled Successfully',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                            ),
+                                          );
+
+                                          await Future.delayed(
+                                              const Duration(seconds: 2));
+
+                                          Navigator.of(context).pop();
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
