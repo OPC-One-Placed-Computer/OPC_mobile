@@ -36,4 +36,5 @@ abstract class ApiServiceService {
     List<String> cartItems,
   );
   Future<void> updateQuantity(int productId, int quantity);
+  Future<String> getSessionStripe(String sessionId);
 }

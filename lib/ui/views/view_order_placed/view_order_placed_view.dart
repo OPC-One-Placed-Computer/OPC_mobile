@@ -451,11 +451,10 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 5.0),
                             Visibility(
                               visible: checkout.status == 'pending' ||
                                   checkout.status == 'paid' ||
-                                  checkout.status == 'confirmed',
+                                  checkout.status == 'awaiting payment',
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -526,6 +525,65 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                       ),
                                       child: Text(
                                         'Cancel',
+                                        style: GoogleFonts.poppins(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Visibility(
+                              visible: checkout.status == 'awaiting payment',
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 5.0),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        bool? confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Confirm Cancellation'),
+                                              content: const Text(
+                                                  'Are you sure you want to Pay the order?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(false);
+                                                  },
+                                                  child: const Text('No'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(true);
+                                                  },
+                                                  child: const Text('Yes'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+
+                                        if (confirm == true) {
+                                          await viewModel
+                                              .openStripeForm(checkout.orderId);
+                                     
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 42, 29, 136),
+                                        foregroundColor: Colors.white,
+                                        minimumSize: const Size(100, 30),
+                                      ),
+                                      child: Text(
+                                        'Pay',
                                         style: GoogleFonts.poppins(),
                                       ),
                                     ),

@@ -2,13 +2,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:opc_mobile_development/models/product.dart';
+import 'package:opc_mobile_development/ui/views/product_details/product_details_view_model.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
 import 'package:stacked/stacked.dart';
 
-import 'productdetails_viewmodel.dart';
-
-class ProductdetailsView extends StatelessWidget {
-  const ProductdetailsView({Key? key, required this.product}) : super(key: key);
+class ProductDetailsView extends StatelessWidget {
+  const ProductDetailsView({Key? key, required this.product}) : super(key: key);
 
   final Product product;
 

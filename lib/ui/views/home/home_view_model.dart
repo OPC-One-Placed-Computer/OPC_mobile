@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/user.dart';
-import 'package:opc_mobile_development/services/api/api_service_service.dart';
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_view.dart';
 import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {
-  @override
-  final ApiServiceService apiService;
 
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
@@ -30,27 +27,15 @@ class HomeViewModel extends AppBaseViewModel {
 
   User? user;
 
-  HomeViewModel({required this.apiService}) {
-    _checkAuthentication();
+  void init() async {
+    setBusy(true);
+    await fetchUserData();
+    setBusy(false);
   }
 
   void setIndex(int index) {
     _currentIndex = index;
     notifyListeners();
-  }
-
-  Future<void> _checkAuthentication() async {
-    try {
-      final cachedUser = await sharedPrefService.getUser();
-      if (cachedUser != null) {
-        user = cachedUser;
-      } else {
-        navigationService.navigateTo(Routes.login);
-      }
-    } catch (e) {
-      log(e.toString());
-      navigationService.navigateTo(Routes.login);
-    }
   }
 
   Widget getViewForIndex(int index) {
@@ -67,16 +52,27 @@ class HomeViewModel extends AppBaseViewModel {
   }
 
   Future<void> checkAuthenticationAndNavigate(VoidCallback action) async {
-    if (user != null) {
+    if (await checkAuthentication() != null) {
       action();
     } else {
       navigationService.navigateTo(Routes.login);
     }
   }
 
+    Future<void> checkAuthenticationForDrawer(VoidCallback action) async {
+    if (await checkAuthentication() != null) {
+      action();
+    } else {
+      navigationService.navigateTo(Routes.login);
+    }
+  }
+
+
   void logout() async {
+    final user = await checkAuthentication();
+    if(user == null) return;
     try {
-      final loggedOut = await authService.logout(user!);
+      final loggedOut = await authService.logout(user);
       if (loggedOut) {
         navigationService.pushNamedAndRemoveUntil(Routes.login);
       }
@@ -105,18 +101,23 @@ class HomeViewModel extends AppBaseViewModel {
 
       final authData = await apiService.getCurrentAuthentication();
       userId = authData.id;
-      firstName = authData.firstName!;
-      lastName = authData.lastName!;
-      email = authData.email!;
+      firstName = authData.firstName;
+      lastName = authData.lastName;
+      email = authData.email;
       address = authData.address;
       imageName = authData.imageName;
       imageName = authData.imageName;
 
+      user = User(
+          id: userId,
+          email: email,
+          firstName:
+          firstName,
+          lastName: lastName);
+
       if (imageName != null && imageName!.isNotEmpty) {
         await displayProfileImage(imageName!);
       }
-
-      notifyListeners();
     } catch (e) {
       print('Error fetching user data: $e');
       setError('Error fetching user data: $e');

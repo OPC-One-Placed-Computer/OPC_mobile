@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -473,18 +472,10 @@ class ApiServiceImpl implements ApiServiceService {
   @override
   Future<Uint8List> retrieveProductImage(String path) async {
     try {
-      final token = await _sharedPreferenceService.getToken();
-      if (token == null) {
-        throw Exception('No authentication token found');
-      }
-
       final response = await _dio.get(
         '/download/product-image',
         queryParameters: {'image_name': path},
         options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
           responseType: ResponseType.bytes,
         ),
       );
@@ -500,8 +491,6 @@ class ApiServiceImpl implements ApiServiceService {
       rethrow;
     }
   }
-
-
 
   @override
   Future<void> canceledOrder(int orderId) async {
@@ -586,5 +575,38 @@ class ApiServiceImpl implements ApiServiceService {
     }
   }
 
+  @override
+  Future<String> getSessionStripe(String sessionId) async {
+    try {
+      final token = await _sharedPreferenceService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
 
+      final response = await _dio.get(
+        '/stripe/checkout-url',
+        queryParameters: {'session_id': sessionId},
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.data is Map<String, dynamic>) {
+          final data = response.data as Map<String, dynamic>;
+          final link = data['data']['url'];
+          return link;
+        } else {
+          throw Exception('Unexpected response format');
+        }
+      } else {
+        throw Exception(
+            'Failed to place order: ${response.statusCode} - ${response.statusMessage}');
+      }
+    } catch (_) {
+      rethrow;
+    }
+  }
 }

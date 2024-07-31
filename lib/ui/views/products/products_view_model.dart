@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:stacked/stacked.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/product.dart';
 
@@ -144,9 +142,13 @@ class ProductsViewModel extends AppBaseViewModel {
   }
 
   Future<void> addToCart(Product product) async {
+    final user = await checkAuthentication();
+    if(user == null) {
+      return;
+    }
     try {
       await apiService.addToCart(product.id!, quantity);
-      print('Product added to cart successfully');
+      snackbarService.showSnackbar(message: '${product.productName} added to cart');
     } catch (e) {
       print('Error: $e');
     }

@@ -129,7 +129,7 @@ class StackedRouter extends _i1.RouterBase {
     ),
     _i1.RouteDef(
       Routes.products_view,
-      page: _i8.ProductdetailsView,
+      page: _i8.ProductDetailsView,
     ),
     _i1.RouteDef(
       Routes.place_order,
@@ -209,11 +209,11 @@ class StackedRouter extends _i1.RouterBase {
         settings: data,
       );
     },
-    _i8.ProductdetailsView: (data) {
+    _i8.ProductDetailsView: (data) {
       final args = data.getArgs<ProductdetailsViewArguments>(nullOk: false);
       return _i18.MaterialPageRoute<dynamic>(
         builder: (context) =>
-            _i8.ProductdetailsView(key: args.key, product: args.product),
+            _i8.ProductDetailsView(key: args.key, product: args.product),
         settings: data,
       );
     },

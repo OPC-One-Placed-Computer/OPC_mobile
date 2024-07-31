@@ -39,7 +39,7 @@ import 'package:opc_mobile_development/ui/views/cancelled_message/cancelled_mess
     MaterialRoute(page: StoreView),
 
     MaterialRoute(page: ProfileView, name: 'profile'),
-    MaterialRoute(page: ProductdetailsView, name: 'products_view'),
+    MaterialRoute(page: ProductDetailsView, name: 'products_view'),
     MaterialRoute(page: PlaceOrderView, name: 'place_order'),
     MaterialRoute(page: AddToCartView, name: 'add_cart'),
     MaterialRoute(page: CheckoutView, name: 'checkout'),

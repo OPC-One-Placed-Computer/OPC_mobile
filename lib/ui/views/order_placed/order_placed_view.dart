@@ -122,8 +122,12 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
           ),
           body: TabBarView(
             children: [
-              buildOrderList(viewModel, ['pending']),
-              buildOrderList(viewModel, ['paid', 'confirmed', 'shipped']),
+              buildOrderList(viewModel, ['pending','awaiting payment']),
+              buildOrderList(viewModel, [
+                'paid',
+                'confirmed',
+                'shipped',
+              ]),
               buildOrderList(viewModel, ['delivered']),
               buildOrderList(viewModel, ['completed']),
               buildOrderList(viewModel, ['cancelled']),

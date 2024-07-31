@@ -54,6 +54,7 @@ class OrderItem {
     required this.quantity,
     required this.subtotal,
     required this.createdAt,
+    this.stripeSessionId,
   });
 
   final int itemId;
@@ -63,6 +64,7 @@ class OrderItem {
   final int quantity;
   final double subtotal;
   final DateTime createdAt;
+  final String? stripeSessionId; 
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
@@ -73,6 +75,7 @@ class OrderItem {
       quantity: json['quantity'] as int,
       subtotal: double.parse(json['subtotal'].toString()),
       createdAt: DateTime.parse(json['created_at']),
+      stripeSessionId: json['stripe_session_id'] as String?, 
     );
   }
 }

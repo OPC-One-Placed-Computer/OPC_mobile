@@ -4,6 +4,7 @@ import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
+import 'package:opc_mobile_development/app/app.router.dart';
 
 class ViewOrderPlacedViewModel extends AppBaseViewModel {
   final ApiServiceService _orderService = ApiServiceImpl();
@@ -44,9 +45,40 @@ class ViewOrderPlacedViewModel extends AppBaseViewModel {
       await _orderService.canceledOrder(orderId);
       _orderItems =
           _orderItems.where((item) => item.orderId != orderId).toList();
+
+      // Print the updated orderItems
+      print('Updated Order Items:');
+      for (var item in _orderItems) {
+        print(
+            'OrderId: ${item.orderId}, OtherDetails: ${item.itemId}'); // Customize as needed
+      }
+
       notifyListeners();
     } catch (e) {
       print('Error canceling order: $e');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  Future<void> openStripeForm(int orderId) async {
+    setBusy(true);
+    try {
+      final orderItem = _orderItems.firstWhere(
+        (item) => item.orderId == orderId,
+        orElse: () => throw Exception('Order item not found for ID: $orderId'),
+      );
+
+      final stripeSessionId = orderItem.stripeSessionId;
+      if (stripeSessionId == null || stripeSessionId.isEmpty) {
+        throw Exception('No Stripe session ID found for this order');
+      }
+
+      final link = await _orderService.getSessionStripe(stripeSessionId);
+      navigationService.navigateTo(Routes.payment,
+          arguments: WebviewScreenViewArguments(url: link));
+    } catch (e) {
+      print('Error opening Stripe form: $e');
     } finally {
       setBusy(false);
     }
