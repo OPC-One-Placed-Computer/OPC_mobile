@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
 import 'package:stacked/stacked.dart';
@@ -77,9 +78,10 @@ class DetailedProductView extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                              text: '\₱ ${viewModel.product.price.toString()}',
+                              text:
+                                  '₱ ${NumberFormat('#,##0.00').format(viewModel.product.price)}',
                               style: const TextStyle(color: Colors.red),
-                            ),
+                            )
                           ],
                         ),
                       ),

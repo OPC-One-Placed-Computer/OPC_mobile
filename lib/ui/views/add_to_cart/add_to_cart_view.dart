@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
@@ -256,7 +257,7 @@ class AddToCartView extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '\₱ ${selectedTotal.toStringAsFixed(2)}',
+                                  '₱ ${NumberFormat('#,##0.00').format(selectedTotal)}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
@@ -472,13 +473,14 @@ class _ProductItemState extends State<ProductItem> {
                               text: 'Price: ',
                             ),
                             const TextSpan(
-                              text: '\₱ ',
+                              text: '₱ ',
                               style: TextStyle(
                                 color: Colors.red,
                               ),
                             ),
                             TextSpan(
-                              text: widget.product.price.toString(),
+                              text: NumberFormat('#,##0.00')
+                                  .format(widget.product.price),
                               style: const TextStyle(
                                 color: Colors.red,
                               ),

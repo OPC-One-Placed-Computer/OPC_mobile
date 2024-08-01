@@ -229,39 +229,6 @@ class ProfileView extends StatelessWidget {
                                           String lastName =
                                               names.length > 1 ? names[1] : '';
 
-                                          final emailRegex =
-                                              RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-
-                                          if (firstName.isEmpty ||
-                                              lastName.isEmpty ||
-                                              email.isEmpty ||
-                                              address.isEmpty) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Please complete the form.',
-                                                  style: GoogleFonts.poppins(),
-                                                ),
-                                                backgroundColor: Colors.orange,
-                                              ),
-                                            );
-                                            return;
-                                          } else if (!emailRegex
-                                              .hasMatch(email)) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Please enter a valid email address.',
-                                                  style: GoogleFonts.poppins(),
-                                                ),
-                                                backgroundColor: Colors.orange,
-                                              ),
-                                            );
-                                            return;
-                                          }
-
                                           await model
                                               .saveUserData(
                                             firstName,
@@ -270,29 +237,8 @@ class ProfileView extends StatelessWidget {
                                             address,
                                           )
                                               .then((value) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Profile updated successfully',
-                                                  style: GoogleFonts.poppins(),
-                                                ),
-                                                backgroundColor: Colors.green,
-                                              ),
-                                            );
                                             model.fetchUserData();
-                                          }).catchError((error) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Error saving user data: $error',
-                                                  style: GoogleFonts.poppins(),
-                                                ),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
-                                          });
+                                          }).catchError((error) {});
                                         },
                                         icon: const Icon(Icons.save,
                                             color: Colors.white),
@@ -349,11 +295,6 @@ class ProfileView extends StatelessWidget {
                                 final confirmPasswordController =
                                     TextEditingController();
 
-                                final formKey = GlobalKey<FormState>();
-                                final passwordError =
-                                    ValueNotifier<String?>(null);
-                                final apiError = ValueNotifier<String?>(null);
-
                                 showDialog(
                                   context: context,
                                   builder: (context) {
@@ -364,78 +305,42 @@ class ProfileView extends StatelessWidget {
                                         child: ConstrainedBox(
                                           constraints: const BoxConstraints(
                                               maxHeight: 500),
-                                          child: Form(
-                                            key: formKey,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextFormField(
-                                                  controller:
-                                                      oldPasswordController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Old Password',
-                                                    labelStyle:
-                                                        GoogleFonts.poppins(),
-                                                  ),
-                                                  obscureText: true,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              TextFormField(
+                                                controller:
+                                                    oldPasswordController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Old Password',
+                                                  labelStyle:
+                                                      GoogleFonts.poppins(),
                                                 ),
-                                                const SizedBox(height: 6),
-                                                TextFormField(
-                                                  controller:
-                                                      newPasswordController,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'New Password',
-                                                    labelStyle:
-                                                        GoogleFonts.poppins(),
-                                                  ),
-                                                  obscureText: true,
+                                                obscureText: true,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              TextFormField(
+                                                controller:
+                                                    newPasswordController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'New Password',
+                                                  labelStyle:
+                                                      GoogleFonts.poppins(),
                                                 ),
-                                                const SizedBox(height: 6),
-                                                ValueListenableBuilder<String?>(
-                                                  valueListenable:
-                                                      passwordError,
-                                                  builder:
-                                                      (context, error, child) {
-                                                    return Column(
-                                                      children: [
-                                                        TextFormField(
-                                                          controller:
-                                                              confirmPasswordController,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            labelText:
-                                                                'Confirm Password',
-                                                            labelStyle:
-                                                                GoogleFonts
-                                                                    .poppins(),
-                                                            errorText: error,
-                                                          ),
-                                                          obscureText: true,
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
+                                                obscureText: true,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              TextFormField(
+                                                controller:
+                                                    confirmPasswordController,
+                                                decoration: InputDecoration(
+                                                  labelText: 'Confirm Password',
+                                                  labelStyle:
+                                                      GoogleFonts.poppins(),
                                                 ),
-                                                const SizedBox(height: 8),
-                                                ValueListenableBuilder<String?>(
-                                                  valueListenable: apiError,
-                                                  builder:
-                                                      (context, error, child) {
-                                                    return error != null
-                                                        ? Text(
-                                                            error,
-                                                            style: GoogleFonts
-                                                                .poppins(
-                                                                    color: Colors
-                                                                        .red,
-                                                                    fontSize:
-                                                                        12),
-                                                          )
-                                                        : Container();
-                                                  },
-                                                ),
-                                              ],
-                                            ),
+                                                obscureText: true,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -448,9 +353,6 @@ class ProfileView extends StatelessWidget {
                                               width: double.infinity,
                                               child: ElevatedButton(
                                                 onPressed: () {
-                                                  passwordError.value = null;
-                                                  apiError.value = null;
-
                                                   final newPassword =
                                                       newPasswordController.text
                                                           .trim();
@@ -458,66 +360,39 @@ class ProfileView extends StatelessWidget {
                                                       confirmPasswordController
                                                           .text
                                                           .trim();
-                                                  if (formKey.currentState
-                                                          ?.validate() ??
-                                                      false) {
-                                                    if (newPassword.length <
-                                                        8) {
-                                                      passwordError.value =
-                                                          'Password must be at least 8 characters long';
-                                                    } else if (newPassword !=
-                                                        confirmPassword) {
-                                                      passwordError.value =
-                                                          'Passwords do not match';
-                                                    } else {
-                                                      List<String> names =
-                                                          fullNameController
-                                                              .text
-                                                              .split(' ');
-                                                      String firstName =
-                                                          names.isNotEmpty
-                                                              ? names[0]
-                                                              : '';
-                                                      String lastName =
-                                                          names.length > 1
-                                                              ? names[1]
-                                                              : '';
+                                                  if (newPassword.length >= 8 &&
+                                                      newPassword ==
+                                                          confirmPassword) {
+                                                    List<String> names =
+                                                        fullNameController.text
+                                                            .split(' ');
+                                                    String firstName =
+                                                        names.isNotEmpty
+                                                            ? names[0]
+                                                            : '';
+                                                    String lastName =
+                                                        names.length > 1
+                                                            ? names[1]
+                                                            : '';
 
-                                                      model
-                                                          .changePassword(
-                                                        oldPasswordController
-                                                            .text,
-                                                        newPassword,
-                                                        confirmPassword,
-                                                        firstName,
-                                                        lastName,
-                                                        emailController.text,
-                                                        addressController.text,
-                                                      )
-                                                          .then((value) {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              'Password changed successfully',
-                                                              style: GoogleFonts
-                                                                  .poppins(),
-                                                            ),
-                                                            backgroundColor:
-                                                                Colors.green,
-                                                          ),
-                                                        );
-                                                        Navigator.of(context)
-                                                            .pushReplacementNamed(
-                                                                Routes.profile);
-                                                      }).catchError((error) {
-                                                        apiError.value =
-                                                            'Incorrect old password';
-                                                      });
-                                                    }
+                                                    model
+                                                        .changePassword(
+                                                      oldPasswordController
+                                                          .text,
+                                                      newPassword,
+                                                      confirmPassword,
+                                                      firstName,
+                                                      lastName,
+                                                      emailController.text,
+                                                      addressController.text,
+                                                    )
+                                                        .then((value) {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.of(context)
+                                                          .pushReplacementNamed(
+                                                              Routes.profile);
+                                                    }).catchError((error) {});
                                                   }
                                                 },
                                                 style: ElevatedButton.styleFrom(
@@ -565,10 +440,10 @@ class ProfileView extends StatelessWidget {
                                 backgroundColor: Colors.blue,
                                 minimumSize: const Size(324, 40),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),

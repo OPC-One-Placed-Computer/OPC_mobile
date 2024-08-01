@@ -49,7 +49,7 @@ class ProfileViewModel extends AppBaseViewModel {
       lastName = authData.lastName;
       email = authData.email;
       address = authData.address;
-      imageName = authData.imageName;
+     
       imageName = authData.imageName;
 
       if (imageName != null && imageName!.isNotEmpty) {
@@ -101,7 +101,9 @@ class ProfileViewModel extends AppBaseViewModel {
       imagePath = updatedUser.imagePath;
 
       notifyListeners();
+      snackbarService.showSnackbar(message: 'Update Profile Successful');
     } catch (e) {
+      snackbarService.showSnackbar(message: 'Update Profile Failed');
       print('Error saving user data: $e');
       setError('Error saving user data: $e');
     } finally {
@@ -141,6 +143,7 @@ class ProfileViewModel extends AppBaseViewModel {
       this.address = changedPass.address;
       oldPassword = changedPass.oldPassword;
       newPassword = changedPass.newPassword;
+      snackbarService.showSnackbar(message: 'Change Password Successfully');
     } on DioException catch (e) {
       if (e.response != null && e.response!.data is Map<String, dynamic>) {
         final errorMessage =

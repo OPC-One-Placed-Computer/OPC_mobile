@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
@@ -9,7 +10,6 @@ import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmo
 import 'package:opc_mobile_development/ui/views/product_details/product_details_view.dart';
 import 'package:opc_mobile_development/ui/views/products/products_view_model.dart';
 import 'package:stacked/stacked.dart';
-
 
 class ProductsView extends StatelessWidget {
   ProductsView({Key? key}) : super(key: key);
@@ -171,7 +171,7 @@ Widget _buildProductList(BuildContext context, ProductsViewModel viewModel) {
         product: product,
         onProductTapped: (product) => viewModel.navigationService.navigateTo(
           Routes.products_view,
-          arguments: ProductdetailsViewArguments(product: product),
+          arguments: ProductDetailsViewArguments(product: product),
         ),
         onAddToCartTapped: viewModel.addToCart,
       );
@@ -505,14 +505,14 @@ class ProductItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    '\₱ ${product.price.toStringAsFixed(2)}',
+                    '₱ ${NumberFormat('#,##0.00').format(product.price)}',
                     style: GoogleFonts.poppins(
                       color: Colors.red,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                )
               ],
             ),
             Positioned(

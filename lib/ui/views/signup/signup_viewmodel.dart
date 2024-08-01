@@ -135,7 +135,7 @@ class SignupViewModel extends AppBaseViewModel {
         snackbarService.showSnackbar(message: 'Failed to register');
       }
     } catch (_) {
-      snackbarService.showSnackbar(message: Constants.errorMessage);
+      snackbarService.showSnackbar(message: Constants.errorRegister);
     }
     setBusy(false);
   }

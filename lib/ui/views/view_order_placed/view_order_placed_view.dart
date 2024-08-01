@@ -180,7 +180,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                     ),
                                     const SizedBox(height: 20.0),
                                     Text(
-                                      '₱ ${item.product.price}',
+                                      '₱ ${NumberFormat('#,##0.00').format(item.product.price)}',
                                       style: GoogleFonts.poppins(),
                                     ),
                                     Text(
@@ -188,7 +188,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                       style: GoogleFonts.poppins(),
                                     ),
                                     Text(
-                                      'Subtotal: ₱ ${item.subtotal}',
+                                      'Subtotal: ₱ ${NumberFormat('#,##0.00').format(item.subtotal)}',
                                       style: GoogleFonts.poppins(),
                                     ),
                                   ],
@@ -440,7 +440,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                       padding:
                                           const EdgeInsets.only(left: 86.0),
                                       child: Text(
-                                        '₱ $totalPrice',
+                                        '₱ ${NumberFormat('#,##0.00').format(totalPrice)}',
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15.0,
@@ -498,22 +498,9 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                         if (confirm == true) {
                                           await viewModel.cancelOrder(
                                               orderItems.first.orderId);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Order Cancelled Successfully',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              backgroundColor: Colors.green,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                            ),
-                                          );
 
                                           await Future.delayed(
-                                              const Duration(seconds: 2));
+                                              const Duration(seconds: 3));
 
                                           Navigator.of(context).pop();
                                         }
@@ -573,7 +560,6 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                         if (confirm == true) {
                                           await viewModel
                                               .openStripeForm(checkout.orderId);
-                                     
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(

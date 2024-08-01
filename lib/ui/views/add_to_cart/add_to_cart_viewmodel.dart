@@ -116,7 +116,7 @@ class AddToCartViewModel extends AppBaseViewModel {
   void navigateToProductDetails(Product product) {
     navigationService.navigateTo(
       Routes.products_view,
-      arguments: ProductdetailsViewArguments(product: product),
+      arguments: ProductDetailsViewArguments(product: product),
     );
   }
 

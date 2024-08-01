@@ -143,12 +143,13 @@ class ProductsViewModel extends AppBaseViewModel {
 
   Future<void> addToCart(Product product) async {
     final user = await checkAuthentication();
-    if(user == null) {
+    if (user == null) {
       return;
     }
     try {
       await apiService.addToCart(product.id!, quantity);
-      snackbarService.showSnackbar(message: '${product.productName} added to cart');
+      snackbarService.showSnackbar(
+          message: '${product.productName} added to cart');
     } catch (e) {
       print('Error: $e');
     }

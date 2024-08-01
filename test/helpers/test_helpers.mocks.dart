@@ -938,9 +938,9 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i5.Checkout>);
 
   @override
-  _i10.Future<Map<String, dynamic>> getOrdersDetails({
-    int? page = 1,
-    int? pageSize = 10,
+  _i10.Future<List<_i5.Checkout>> getOrdersDetails({
+    required int? page,
+    required int? pageSize,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -951,11 +951,10 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
             #pageSize: pageSize,
           },
         ),
-        returnValue:
-            _i10.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+        returnValue: _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
         returnValueForMissingStub:
-            _i10.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i10.Future<Map<String, dynamic>>);
+            _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
+      ) as _i10.Future<List<_i5.Checkout>>);
 
   @override
   _i10.Future<_i6.UpdateUser> updateUser(
@@ -1116,4 +1115,28 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
         returnValue: _i10.Future<void>.value(),
         returnValueForMissingStub: _i10.Future<void>.value(),
       ) as _i10.Future<void>);
+
+  @override
+  _i10.Future<String> getSessionStripe(String? sessionId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getSessionStripe,
+          [sessionId],
+        ),
+        returnValue: _i10.Future<String>.value(_i8.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getSessionStripe,
+            [sessionId],
+          ),
+        )),
+        returnValueForMissingStub:
+            _i10.Future<String>.value(_i8.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getSessionStripe,
+            [sessionId],
+          ),
+        )),
+      ) as _i10.Future<String>);
 }

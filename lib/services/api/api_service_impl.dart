@@ -372,8 +372,13 @@ class ApiServiceImpl implements ApiServiceService {
 
       if (response.statusCode == 200) {
         print('User updated successfully');
+
         if (response.data is Map<String, dynamic>) {
-          return UpdateUser.fromJson(response.data);
+          final responseData = response.data as Map<String, dynamic>;
+
+          print('Response Data: $responseData');
+
+          return UpdateUser.fromJson(responseData['user']);
         } else {
           throw Exception('Invalid response data format');
         }

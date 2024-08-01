@@ -3,6 +3,7 @@ import 'package:opc_mobile_development/app/app_base_view_model.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/ui/views/order_placed/order_placed_viewmodel.dart';
+import 'package:opc_mobile_development/utils/constants.dart';
 
 class ProductdetailsViewModel extends AppBaseViewModel {
   @override
@@ -60,9 +61,9 @@ class ProductdetailsViewModel extends AppBaseViewModel {
   Future<void> addToCart() async {
     try {
       await apiService.addToCart(product.id!, quantity);
-      print('Product added to cart successfully');
+        snackbarService.showSnackbar(message: '${product.productName} added to cart');
     } catch (e) {
-      print('Error adding product to cart: $e');
+      snackbarService.showSnackbar(message: Constants.cartFailed);
     }
   }
 }

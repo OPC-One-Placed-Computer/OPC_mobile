@@ -10,7 +10,6 @@ import 'package:opc_mobile_development/ui/views/products/products_view.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class HomeViewModel extends AppBaseViewModel {
-
   int _currentIndex = 0;
   int get currentIndex => _currentIndex;
 
@@ -59,18 +58,9 @@ class HomeViewModel extends AppBaseViewModel {
     }
   }
 
-    Future<void> checkAuthenticationForDrawer(VoidCallback action) async {
-    if (await checkAuthentication() != null) {
-      action();
-    } else {
-      navigationService.navigateTo(Routes.login);
-    }
-  }
-
-
   void logout() async {
     final user = await checkAuthentication();
-    if(user == null) return;
+    if (user == null) return;
     try {
       final loggedOut = await authService.logout(user);
       if (loggedOut) {
@@ -78,7 +68,7 @@ class HomeViewModel extends AppBaseViewModel {
       }
     } catch (e) {
       log(e.toString());
-      snackbarService.showSnackbar(message: Constants.errorMessage);
+      snackbarService.showSnackbar(message: Constants.errorLogout);
     }
   }
 
@@ -109,11 +99,7 @@ class HomeViewModel extends AppBaseViewModel {
       imageName = authData.imageName;
 
       user = User(
-          id: userId,
-          email: email,
-          firstName:
-          firstName,
-          lastName: lastName);
+          id: userId, email: email, firstName: firstName, lastName: lastName);
 
       if (imageName != null && imageName!.isNotEmpty) {
         await displayProfileImage(imageName!);

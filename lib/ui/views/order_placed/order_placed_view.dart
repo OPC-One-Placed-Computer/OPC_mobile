@@ -122,7 +122,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
           ),
           body: TabBarView(
             children: [
-              buildOrderList(viewModel, ['pending','awaiting payment']),
+              buildOrderList(viewModel, ['pending', 'awaiting payment']),
               buildOrderList(viewModel, [
                 'paid',
                 'confirmed',
@@ -286,7 +286,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                                       ),
                                       const SizedBox(height: 4.0),
                                       Text(
-                                        'Total Amount: \₱ ${order.total.toStringAsFixed(2)}',
+                                        'Total Amount: ₱ ${NumberFormat('#,##0.00').format(order.total)}',
                                         style:
                                             GoogleFonts.poppins(fontSize: 10.0),
                                       ),

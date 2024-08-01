@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/product.dart';
@@ -380,7 +381,7 @@ class CheckoutView extends StatelessWidget {
                                           ),
                                           TextSpan(
                                             text:
-                                                '₱ ${product.price.toString()}',
+                                                '₱ ${NumberFormat('#,##0.00').format(product.price)}',
                                             style: GoogleFonts.poppins(
                                               fontSize: 10,
                                               color: Colors.red,
@@ -409,7 +410,7 @@ class CheckoutView extends StatelessWidget {
                                           children: <TextSpan>[
                                             TextSpan(
                                               text:
-                                                  ' \₱ ${viewModel.getSubtotal(item).toStringAsFixed(2)}',
+                                                  '₱ ${NumberFormat('#,##0.00').format(viewModel.getSubtotal(item))}',
                                               style: GoogleFonts.poppins(
                                                 fontSize: 11,
                                                 fontWeight: FontWeight.bold,
@@ -492,7 +493,7 @@ class CheckoutView extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '\$ ${viewModel.totalAmount.toStringAsFixed(2)}',
+                                  '\$ ${NumberFormat('#,##0.00').format(viewModel.totalAmount)}',
                                   style: GoogleFonts.poppins(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,

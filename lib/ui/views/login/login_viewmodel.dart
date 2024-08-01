@@ -75,11 +75,16 @@ class LoginViewModel extends AppBaseViewModel {
       }
 
       final user = await authService.loginUser(email, _password);
-      snackbarService.showSnackbar(message: user.token ?? 'null');
+      if (user.token != null) {
+        snackbarService.showSnackbar(message: Constants.loginSuccesful);
+      } else {
+        snackbarService.showSnackbar(message: Constants.errorLogin);
+      }
+
       setBusy(false);
       return true;
     } catch (_) {
-      snackbarService.showSnackbar(message: Constants.errorMessage);
+      snackbarService.showSnackbar(message: Constants.errorLogin);
     }
     setBusy(false);
     return false;

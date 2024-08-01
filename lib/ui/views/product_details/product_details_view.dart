@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/ui/views/product_details/product_details_view_model.dart';
 import 'package:opc_mobile_development/ui/views/widgets/my_circle_loading.dart';
@@ -74,9 +75,10 @@ class ProductDetailsView extends StatelessWidget {
                               ),
                             ),
                             TextSpan(
-                              text: '\₱ ${viewModel.product.price.toString()}',
+                              text:
+                                  '₱ ${NumberFormat('#,##0.00').format(viewModel.product.price)}',
                               style: const TextStyle(color: Colors.red),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -199,55 +201,38 @@ class ProductDetailsView extends StatelessWidget {
                             ],
                           ),
                           Transform(
-                            transform:
-                                Matrix4.translationValues(-0.0, 0.0, 0.0),
-                            child: SizedBox(
-                              width: 125,
-                              child: ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.shopping_cart,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                label: const Text(
-                                  'Add to Cart',
-                                  style: TextStyle(
+                              transform:
+                                  Matrix4.translationValues(-0.0, 0.0, 0.0),
+                              child: SizedBox(
+                                width: 125,
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.shopping_cart,
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    size: 20,
                                   ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 0, 0, 153),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                ),
-                                onPressed: () async {
-                                  viewModel.setBusy(true);
-                                  try {
+                                  label: const Text(
+                                    'Add to Cart',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 0, 0, 153),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                  ),
+                                  onPressed: () async {
+                                    viewModel.setBusy(true);
+
                                     await viewModel.addToCart();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Product added to cart'),
-                                        duration: Duration(seconds: 2),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error: $e'),
-                                        duration: const Duration(seconds: 2),
-                                        backgroundColor: Color(0xFFD22630),
-                                      ),
-                                    );
-                                  } finally {
+
                                     viewModel.setBusy(false);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
+                                  },
+                                ),
+                              )),
                         ],
                       ),
                       const SizedBox(height: 20),

@@ -56,7 +56,7 @@ class Routes {
 
   static const profile = '/profile-view';
 
-  static const products_view = '/productdetails-view';
+  static const products_view = '/product-details-view';
 
   static const place_order = '/place-order-view';
 
@@ -210,7 +210,7 @@ class StackedRouter extends _i1.RouterBase {
       );
     },
     _i8.ProductDetailsView: (data) {
-      final args = data.getArgs<ProductdetailsViewArguments>(nullOk: false);
+      final args = data.getArgs<ProductDetailsViewArguments>(nullOk: false);
       return _i18.MaterialPageRoute<dynamic>(
         builder: (context) =>
             _i8.ProductDetailsView(key: args.key, product: args.product),
@@ -315,8 +315,8 @@ class LoginViewArguments {
   }
 }
 
-class ProductdetailsViewArguments {
-  const ProductdetailsViewArguments({
+class ProductDetailsViewArguments {
+  const ProductDetailsViewArguments({
     this.key,
     required this.product,
   });
@@ -331,7 +331,7 @@ class ProductdetailsViewArguments {
   }
 
   @override
-  bool operator ==(covariant ProductdetailsViewArguments other) {
+  bool operator ==(covariant ProductDetailsViewArguments other) {
     if (identical(this, other)) return true;
     return other.key == key && other.product == product;
   }
@@ -578,7 +578,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.products_view,
-        arguments: ProductdetailsViewArguments(key: key, product: product),
+        arguments: ProductDetailsViewArguments(key: key, product: product),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -843,7 +843,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.products_view,
-        arguments: ProductdetailsViewArguments(key: key, product: product),
+        arguments: ProductDetailsViewArguments(key: key, product: product),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

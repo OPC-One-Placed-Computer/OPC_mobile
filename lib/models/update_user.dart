@@ -33,18 +33,17 @@ class UpdateUser {
         imageUrl: json['image'] != null ? json['image']['url'] : null,
       );
 
-  UpdateUser copyWith(
-      {int? id,
-      String? email,
-      String? firstName,
-      String? lastName,
-      String? address,
-      String? imageName,
-      String? imagePath,
-      String? token,
-      String? imageFileName,
-      String? imageUrl,
-      k}) {
+  UpdateUser copyWith({
+    int? id,
+    String? email,
+    String? firstName,
+    String? lastName,
+    String? address,
+    String? imageName,
+    String? imagePath,
+    String? token,
+    String? imageUrl,
+  }) {
     return UpdateUser(
       id: id ?? this.id,
       email: email ?? this.email,
@@ -58,6 +57,7 @@ class UpdateUser {
     );
   }
 }
+
 
 class UpdatePassword {
   UpdatePassword({
