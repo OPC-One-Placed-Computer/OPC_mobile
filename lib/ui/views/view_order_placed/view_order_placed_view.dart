@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:opc_mobile_development/app/app.router.dart';
+import 'package:opc_mobile_development/models/Order.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:stacked/stacked.dart';
@@ -12,13 +13,13 @@ import 'view_order_placed_viewmodel.dart';
 
 class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
   final List<OrderItem> orderItems;
-  final Checkout checkout;
+  final Order order;
   final ValueChanged<Product> onProductTapped;
 
   const ViewOrderPlacedView({
     Key? key,
     required this.orderItems,
-    required this.checkout,
+    required this.order,
     required this.onProductTapped,
   }) : super(key: key);
 
@@ -220,7 +221,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 68.0),
                                 child: Text(
-                                  '# ${checkout.orderId}',
+                                  '# ${order.id}',
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
@@ -273,7 +274,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                                 padding: const EdgeInsets.only(right: 30.0),
                                 child: Text(
                                   DateFormat('d-M-yyyy')
-                                      .format(checkout.createdAt),
+                                      .format(order.createdAt!),
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
@@ -299,7 +300,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 20.0),
                                 child: Text(
-                                  checkout.selectedPaymentMethod,
+                                  order.selectedPaymentMethod!,
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
@@ -325,7 +326,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 50.0),
                                 child: Text(
-                                  checkout.status,
+                                  order.status!,
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
@@ -351,7 +352,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 94.0),
                                 child: Text(
-                                  checkout.fullName,
+                                  order.fullName!,
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.poppins(fontSize: 13),
                                 ),
@@ -376,7 +377,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 22.0),
                                 child: Text(
-                                  checkout.shippingAddress,
+                                  order.shippingAddress!,
                                   softWrap: true,
                                   style: GoogleFonts.poppins(
                                     fontSize: 13,
@@ -452,9 +453,9 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               ],
                             ),
                             Visibility(
-                              visible: checkout.status == 'pending' ||
-                                  checkout.status == 'paid' ||
-                                  checkout.status == 'awaiting payment',
+                              visible: order.status == 'pending' ||
+                                  order.status == 'paid' ||
+                                  order.status == 'awaiting payment',
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -520,7 +521,7 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
                               ),
                             ),
                             Visibility(
-                              visible: checkout.status == 'awaiting payment',
+                              visible: order.status == 'awaiting payment',
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -559,7 +560,8 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
 
                                         if (confirm == true) {
                                           await viewModel
-                                              .openStripeForm(checkout.orderId);
+                                              .openStripeForm(order);
+                                     
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -590,5 +592,5 @@ class ViewOrderPlacedView extends StackedView<ViewOrderPlacedViewModel> {
 
   @override
   ViewOrderPlacedViewModel viewModelBuilder(BuildContext context) =>
-      ViewOrderPlacedViewModel();
+      ViewOrderPlacedViewModel(orderItems);
 }

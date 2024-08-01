@@ -9,6 +9,7 @@ import 'package:flutter/material.dart' as _i18;
 import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/models/cart.dart' as _i20;
 import 'package:opc_mobile_development/models/checkout.dart' as _i21;
+import 'package:opc_mobile_development/models/Order.dart' as _i22;
 import 'package:opc_mobile_development/models/product.dart' as _i19;
 import 'package:opc_mobile_development/ui/views/add_to_cart/add_to_cart_view.dart'
     as _i10;
@@ -39,7 +40,7 @@ import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_pla
 import 'package:opc_mobile_development/ui/views/webview_screen/webview_screen_view.dart'
     as _i14;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i22;
+import 'package:stacked_services/stacked_services.dart' as _i23;
 
 class Routes {
   static const startupView = '/startup-view';
@@ -251,7 +252,7 @@ class StackedRouter extends _i1.RouterBase {
         builder: (context) => _i13.ViewOrderPlacedView(
             key: args.key,
             orderItems: args.orderItems,
-            checkout: args.checkout,
+            order: args.order,
             onProductTapped: args.onProductTapped),
         settings: data,
       );
@@ -378,7 +379,7 @@ class ViewOrderPlacedViewArguments {
   const ViewOrderPlacedViewArguments({
     this.key,
     required this.orderItems,
-    required this.checkout,
+    required this.order,
     required this.onProductTapped,
   });
 
@@ -386,13 +387,13 @@ class ViewOrderPlacedViewArguments {
 
   final List<_i21.OrderItem> orderItems;
 
-  final _i21.Checkout checkout;
+  final _i22.Order order;
 
   final void Function(_i19.Product) onProductTapped;
 
   @override
   String toString() {
-    return '{"key": "$key", "orderItems": "$orderItems", "checkout": "$checkout", "onProductTapped": "$onProductTapped"}';
+    return '{"key": "$key", "orderItems": "$orderItems", "order": "$order", "onProductTapped": "$onProductTapped"}';
   }
 
   @override
@@ -400,7 +401,7 @@ class ViewOrderPlacedViewArguments {
     if (identical(this, other)) return true;
     return other.key == key &&
         other.orderItems == orderItems &&
-        other.checkout == checkout &&
+        other.order == order &&
         other.onProductTapped == onProductTapped;
   }
 
@@ -408,7 +409,7 @@ class ViewOrderPlacedViewArguments {
   int get hashCode {
     return key.hashCode ^
         orderItems.hashCode ^
-        checkout.hashCode ^
+        order.hashCode ^
         onProductTapped.hashCode;
   }
 }
@@ -467,7 +468,7 @@ class DetailedProductViewArguments {
   }
 }
 
-extension NavigatorStateExtension on _i22.NavigationService {
+extension NavigatorStateExtension on _i23.NavigationService {
   Future<dynamic> navigateToStartupView([
     int? routerId,
     bool preventDuplicates = true,
@@ -651,7 +652,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
   Future<dynamic> navigateToView_order_placed({
     _i18.Key? key,
     required List<_i21.OrderItem> orderItems,
-    required _i21.Checkout checkout,
+    required _i22.Order order,
     required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
@@ -663,7 +664,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
         arguments: ViewOrderPlacedViewArguments(
             key: key,
             orderItems: orderItems,
-            checkout: checkout,
+            order: order,
             onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,
@@ -916,7 +917,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
   Future<dynamic> replaceWithView_order_placed({
     _i18.Key? key,
     required List<_i21.OrderItem> orderItems,
-    required _i21.Checkout checkout,
+    required _i22.Order order,
     required void Function(_i19.Product) onProductTapped,
     int? routerId,
     bool preventDuplicates = true,
@@ -928,7 +929,7 @@ extension NavigatorStateExtension on _i22.NavigationService {
         arguments: ViewOrderPlacedViewArguments(
             key: key,
             orderItems: orderItems,
-            checkout: checkout,
+            order: order,
             onProductTapped: onProductTapped),
         id: routerId,
         preventDuplicates: preventDuplicates,

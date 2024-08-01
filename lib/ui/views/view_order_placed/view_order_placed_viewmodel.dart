@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/Order.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
 import 'package:opc_mobile_development/services/api/api_service_service.dart';
@@ -8,6 +9,7 @@ import 'package:opc_mobile_development/app/app.router.dart';
 import 'package:opc_mobile_development/utils/constants.dart';
 
 class ViewOrderPlacedViewModel extends AppBaseViewModel {
+  ViewOrderPlacedViewModel(this._orderItems);
   final ApiServiceService _orderService = ApiServiceImpl();
   final ImageCacheService imageCacheService = ImageCacheService();
 
@@ -55,20 +57,10 @@ class ViewOrderPlacedViewModel extends AppBaseViewModel {
     }
   }
 
-  Future<void> openStripeForm(int orderId) async {
+  Future<void> openStripeForm(Order order) async {
     setBusy(true);
     try {
-      final orderItem = _orderItems.firstWhere(
-        (item) => item.orderId == orderId,
-        orElse: () => throw Exception('Order item not found for ID: $orderId'),
-      );
-
-      final stripeSessionId = orderItem.stripeSessionId;
-      if (stripeSessionId == null || stripeSessionId.isEmpty) {
-        throw Exception('No Stripe session ID found for this order');
-      }
-
-      final link = await _orderService.getSessionStripe(stripeSessionId);
+      final link = await _orderService.getSessionStripe(order.stripeSessionId!);
       navigationService.navigateTo(Routes.payment,
           arguments: WebviewScreenViewArguments(url: link));
     } catch (e) {

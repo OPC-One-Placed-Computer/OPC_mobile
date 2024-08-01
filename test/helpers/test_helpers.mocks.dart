@@ -4,7 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i10;
-import 'dart:typed_data' as _i13;
+import 'dart:typed_data' as _i14;
 import 'dart:ui' as _i11;
 
 import 'package:flutter/material.dart' as _i9;
@@ -14,6 +14,7 @@ import 'package:opc_mobile_development/models/cart.dart' as _i3;
 import 'package:opc_mobile_development/models/checkout.dart' as _i5;
 import 'package:opc_mobile_development/models/current_authentication.dart'
     as _i4;
+import 'package:opc_mobile_development/models/Order.dart' as _i13;
 import 'package:opc_mobile_development/models/product.dart' as _i2;
 import 'package:opc_mobile_development/models/update_user.dart' as _i6;
 import 'package:opc_mobile_development/services/api/api_service_service.dart'
@@ -938,7 +939,7 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i5.Checkout>);
 
   @override
-  _i10.Future<List<_i5.Checkout>> getOrdersDetails({
+  _i10.Future<List<_i13.Order>> getOrdersDetails({
     required int? page,
     required int? pageSize,
   }) =>
@@ -951,15 +952,15 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
             #pageSize: pageSize,
           },
         ),
-        returnValue: _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
+        returnValue: _i10.Future<List<_i13.Order>>.value(<_i13.Order>[]),
         returnValueForMissingStub:
-            _i10.Future<List<_i5.Checkout>>.value(<_i5.Checkout>[]),
-      ) as _i10.Future<List<_i5.Checkout>>);
+            _i10.Future<List<_i13.Order>>.value(<_i13.Order>[]),
+      ) as _i10.Future<List<_i13.Order>>);
 
   @override
   _i10.Future<_i6.UpdateUser> updateUser(
     _i6.UpdateUser? user,
-    _i13.Uint8List? imageBytes,
+    _i14.Uint8List? imageBytes,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1018,28 +1019,28 @@ class MockApiServiceService extends _i1.Mock implements _i12.ApiServiceService {
       ) as _i10.Future<_i6.UpdatePassword>);
 
   @override
-  _i10.Future<_i13.Uint8List> retrieveProfileImage(String? filename) =>
+  _i10.Future<_i14.Uint8List> retrieveProfileImage(String? filename) =>
       (super.noSuchMethod(
         Invocation.method(
           #retrieveProfileImage,
           [filename],
         ),
-        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+        returnValue: _i10.Future<_i14.Uint8List>.value(_i14.Uint8List(0)),
         returnValueForMissingStub:
-            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-      ) as _i10.Future<_i13.Uint8List>);
+            _i10.Future<_i14.Uint8List>.value(_i14.Uint8List(0)),
+      ) as _i10.Future<_i14.Uint8List>);
 
   @override
-  _i10.Future<_i13.Uint8List> retrieveProductImage(String? path) =>
+  _i10.Future<_i14.Uint8List> retrieveProductImage(String? path) =>
       (super.noSuchMethod(
         Invocation.method(
           #retrieveProductImage,
           [path],
         ),
-        returnValue: _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
+        returnValue: _i10.Future<_i14.Uint8List>.value(_i14.Uint8List(0)),
         returnValueForMissingStub:
-            _i10.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-      ) as _i10.Future<_i13.Uint8List>);
+            _i10.Future<_i14.Uint8List>.value(_i14.Uint8List(0)),
+      ) as _i10.Future<_i14.Uint8List>);
 
   @override
   _i10.Future<void> canceledOrder(int? orderId) => (super.noSuchMethod(

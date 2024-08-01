@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:opc_mobile_development/app/app_base_view_model.dart';
+import 'package:opc_mobile_development/models/Order.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/product.dart';
 import 'package:opc_mobile_development/services/api/api_service_impl.dart';
@@ -10,8 +11,8 @@ import 'package:opc_mobile_development/ui/views/view_order_placed/view_order_pla
 class OrderPlacedViewModel extends AppBaseViewModel {
   final ApiServiceService _orderService = ApiServiceImpl();
 
-  List<Checkout> _orders = [];
-  List<Checkout> get orders => _orders;
+  List<Order> _orders = [];
+  List<Order> get orders => _orders;
 
   final Map<int, bool> _expandedOrders = {};
   Map<int, bool> get expandedOrders => _expandedOrders;
@@ -43,7 +44,7 @@ class OrderPlacedViewModel extends AppBaseViewModel {
         _currentPage++;
 
         for (var order in newOrders) {
-          _expandedOrders[order.orderId] = false;
+          _expandedOrders[order.id!] = false;
         }
 
         if (newOrders.length < pageSize) {
@@ -70,12 +71,12 @@ class OrderPlacedViewModel extends AppBaseViewModel {
   }
 
   void navigateToOrderDetails(
-      BuildContext context, List<OrderItem> orderItems, Checkout order) {
+      BuildContext context, List<OrderItem> orderItems, Order order) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ViewOrderPlacedView(
           orderItems: orderItems,
-          checkout: order,
+          order: order,
           onProductTapped: (Product value) {},
         ),
       ),
