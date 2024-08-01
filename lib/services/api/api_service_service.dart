@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:opc_mobile_development/models/Order.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/current_authentication.dart';
@@ -20,7 +21,7 @@ abstract class ApiServiceService {
     int total,
     List<String> cartItems,
   );
-  Future<List<Checkout>> getOrdersDetails(
+  Future<List<Order>> getOrdersDetails(
       {required int page, required int pageSize});
   Future<UpdateUser> updateUser(UpdateUser user, Uint8List? imageBytes);
   Future<UpdatePassword> updatePassword(UpdatePassword user);

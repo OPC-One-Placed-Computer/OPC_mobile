@@ -148,7 +148,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
 
     final filteredOrders = viewModel.orders.where((order) {
       return statusFilters.any((statusFilter) =>
-          order.status.toLowerCase().contains(statusFilter.toLowerCase()));
+          order.status!.toLowerCase().contains(statusFilter.toLowerCase()));
     }).toList();
 
     if (filteredOrders.isEmpty) {
@@ -196,15 +196,14 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
             }
 
             final order = filteredOrders[index];
-            final createdAt = order.createdAt;
 
             return GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => ViewOrderPlacedView(
-                      orderItems: order.orderItems,
-                      checkout: order,
+                      orderItems: order.orderItems!,
+                      order: order,
                       onProductTapped: (Product value) {},
                     ),
                   ),
@@ -231,7 +230,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                               const SizedBox(width: 10),
                               FutureBuilder<Uint8List>(
                                 future: viewModel.fetchImageData(
-                                    order.orderItems.first.product.imageName),
+                                    order.orderItems!.first.product.imageName),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
@@ -273,9 +272,9 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        order.orderItems
+                                        order.orderItems!
                                             .map((item) =>
-                                                item.product?.productName ?? '')
+                                                item.product.productName)
                                             .join(', '),
                                         style: GoogleFonts.poppins(
                                           fontSize: 13.0,
@@ -286,7 +285,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                                       ),
                                       const SizedBox(height: 4.0),
                                       Text(
-                                        'Total Amount: \₱ ${order.total.toStringAsFixed(2)}',
+                                        'Total Amount: \₱ ${order.total!.toStringAsFixed(2)}',
                                         style:
                                             GoogleFonts.poppins(fontSize: 10.0),
                                       ),
@@ -308,7 +307,7 @@ class _OrderPlacedViewState extends State<OrderPlacedView> {
                             padding: const EdgeInsets.only(left: 200.0),
                             child: Text(
                               DateFormat('yyyy-MM-dd HH:mm:ss')
-                                  .format(createdAt),
+                                  .format(order.createdAt!),
                               style: GoogleFonts.poppins(fontSize: 10.0),
                             ),
                           ),

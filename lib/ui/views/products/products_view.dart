@@ -171,7 +171,7 @@ Widget _buildProductList(BuildContext context, ProductsViewModel viewModel) {
         product: product,
         onProductTapped: (product) => viewModel.navigationService.navigateTo(
           Routes.products_view,
-          arguments: ProductdetailsViewArguments(product: product),
+          arguments: ProductDetailsViewArguments(product: product),
         ),
         onAddToCartTapped: viewModel.addToCart,
       );

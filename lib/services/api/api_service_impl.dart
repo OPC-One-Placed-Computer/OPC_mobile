@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:opc_mobile_development/models/Order.dart';
 import 'package:opc_mobile_development/models/cart.dart';
 import 'package:opc_mobile_development/models/checkout.dart';
 import 'package:opc_mobile_development/models/product.dart';
@@ -298,7 +299,7 @@ class ApiServiceImpl implements ApiServiceService {
   }
 
   @override
-  Future<List<Checkout>> getOrdersDetails(
+  Future<List<Order>> getOrdersDetails(
       {int page = 1, int pageSize = 10}) async {
     try {
       final token = await _sharedPreferenceService.getToken();
@@ -323,8 +324,8 @@ class ApiServiceImpl implements ApiServiceService {
         final responseData = response.data['data']['data'] as List<dynamic>;
         print('Response Data: $responseData');
 
-        final List<Checkout> orders =
-            responseData.map((order) => Checkout.fromJson(order)).toList();
+        final List<Order> orders =
+            responseData.map((order) => Order.fromJson(order)).toList();
         print('Parsed Orders: $orders');
 
         return orders;
@@ -596,7 +597,7 @@ class ApiServiceImpl implements ApiServiceService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (response.data is Map<String, dynamic>) {
           final data = response.data as Map<String, dynamic>;
-          final link = data['data']['url'];
+          final link = data['data']['checkout_url'];
           return link;
         } else {
           throw Exception('Unexpected response format');
